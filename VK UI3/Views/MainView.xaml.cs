@@ -407,7 +407,8 @@ namespace VK_UI3.Views
                     int index = 0;
                     this.DispatcherQueue.TryEnqueue(async () =>
                     {
-                        index = NavWiv.MenuItems.IndexOf(NavWiv.MenuItems.OfType<NavigationViewItemHeader>().First());
+                        var header = NavWiv.MenuItems.OfType<NavigationViewItemHeader>().FirstOrDefault();
+                        index = header != null ? NavWiv.MenuItems.IndexOf(header) : NavWiv.MenuItems.Count;
                     });
 
                     token.ThrowIfCancellationRequested();
@@ -467,7 +468,8 @@ namespace VK_UI3.Views
             int index = 0;
             this.DispatcherQueue.TryEnqueue(async () =>
             {
-                index = NavWiv.MenuItems.IndexOf(NavWiv.MenuItems.OfType<NavigationViewItemHeader>().First());
+                var header = NavWiv.MenuItems.OfType<NavigationViewItemHeader>().FirstOrDefault();
+                index = header != null ? NavWiv.MenuItems.IndexOf(header) : NavWiv.MenuItems.Count;
             });
 
             this.DispatcherQueue.TryEnqueue(async () =>
@@ -587,11 +589,11 @@ namespace VK_UI3.Views
 
         public async void RemoveNavItems()
         {
-            var separator = NavWiv.MenuItems.OfType<NavigationViewItemSeparator>().First();
-            var header = NavWiv.MenuItems.OfType<NavigationViewItemHeader>().First();
+            var separator = NavWiv.MenuItems.OfType<NavigationViewItemSeparator>().FirstOrDefault();
+            var header = NavWiv.MenuItems.OfType<NavigationViewItemHeader>().FirstOrDefault();
 
-            int startIndex = NavWiv.MenuItems.IndexOf(separator);
-            int endIndex = NavWiv.MenuItems.IndexOf(header);
+            int startIndex = separator != null ? NavWiv.MenuItems.IndexOf(separator) : -1;
+            int endIndex = header != null ? NavWiv.MenuItems.IndexOf(header) : NavWiv.MenuItems.Count;
 
             for (int i = endIndex; i > startIndex; i--)
             {
