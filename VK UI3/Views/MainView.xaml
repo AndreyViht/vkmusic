@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="VK_UI3.Views.MainView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -154,7 +154,7 @@
                 x:Name="LyricPage"
                 Grid.Row="3"
                 VerticalAlignment="Stretch"
-                Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+                Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
                 Opacity="0"
                 Visibility="Collapsed"
                 AutomationProperties.Name="Страница текстов песен"
@@ -163,7 +163,7 @@
                 x:Name="EqualizerControlPage"
                 Grid.Row="3"
                 VerticalAlignment="Stretch"
-                Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+                Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
                 Opacity="0"
                 Visibility="Collapsed"
                 AutomationProperties.Name="Эквалайзер"
@@ -172,7 +172,7 @@
                 x:Name="SectionViewPageNowPlayingList"
                 Grid.Row="3"
                 VerticalAlignment="Stretch"
-                Background="{ThemeResource SystemControlAltHighAcrylicElementBrush}"
+                Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
                 Opacity="0"
                 Visibility="Collapsed"
                 AutomationProperties.Name="Список воспроизведения"

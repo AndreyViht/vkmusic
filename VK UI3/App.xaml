@@ -16,6 +16,29 @@
 
 
             <Thickness x:Key="ContentDialogPadding">0,0,0,0</Thickness>
+            
+            <!-- Global iOS-style Corner Radii for standard controls -->
+            <CornerRadius x:Key="ControlCornerRadius">12</CornerRadius>
+            <CornerRadius x:Key="OverlayCornerRadius">16</CornerRadius>
+            <CornerRadius x:Key="FlyoutCornerRadius">16</CornerRadius>
+            <CornerRadius x:Key="PopupCornerRadius">16</CornerRadius>
+
+            <!-- Lightweight Styling for iOS-like Controls -->
+            <!-- ToggleSwitch (Pill shape) -->
+            <SolidColorBrush x:Key="ToggleSwitchFillOn" Color="#34C759" /> <!-- iOS Green -->
+            <SolidColorBrush x:Key="ToggleSwitchFillOnPointerOver" Color="#30D158" />
+            <SolidColorBrush x:Key="ToggleSwitchFillOnPressed" Color="#28B84E" />
+            <SolidColorBrush x:Key="ToggleSwitchStrokeOn" Color="Transparent" />
+            <SolidColorBrush x:Key="ToggleSwitchStrokeOnPointerOver" Color="Transparent" />
+            <SolidColorBrush x:Key="ToggleSwitchStrokeOnPressed" Color="Transparent" />
+
+            <!-- Slider (Thin line, clean thumb) -->
+            <x:Double x:Key="SliderTrackThemeHeight">3</x:Double>
+            <Thickness x:Key="SliderThumbBorderThemeThickness">0</Thickness>
+            <SolidColorBrush x:Key="SliderThumbBackground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="SliderThumbBackgroundPressed" Color="#E5E5E5" />
+            <SolidColorBrush x:Key="SliderTrackValueFill" Color="{ThemeResource SystemAccentColor}" />
 
             <!--  Other app resources here  -->
             <AcrylicBrush
