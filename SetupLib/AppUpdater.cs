@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
@@ -61,7 +61,7 @@ namespace SetupLib
         {
             InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия обновлений..." });
 
-            _currentReleaseInfo = await _gitHubClientService.GetLatestReleaseInfo("MaKrotos", "Music-M", currentVersion);
+            _currentReleaseInfo = await _gitHubClientService.GetLatestReleaseInfo("AndreyViht", "vkmusic", currentVersion);
 
             if (_currentReleaseInfo == null)
             {

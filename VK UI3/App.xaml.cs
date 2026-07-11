@@ -123,7 +123,7 @@ namespace VK_UI3
         {
             statSlyRun();
 
-            const string mutexName = "VKMMaKrotosApps";
+            const string mutexName = "VihtMusicVKApps";
             bool createdNew;
 
          
