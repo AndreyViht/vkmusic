@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -411,8 +411,6 @@ namespace VK_UI3.Controllers
         private async void Page_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             isPointerOver = true;
-            var storyboard = (Storyboard)this.Resources["SliderTrackMoveUp"];
-            storyboard.Begin();
             _ = StartTitleMarqueeIfNeeded();
             _ = StartArtistMarqueeIfNeeded();
         }
@@ -420,8 +418,6 @@ namespace VK_UI3.Controllers
         private void Page_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             isPointerOver = false;
-            var storyboard = (Storyboard)this.Resources["SliderTrackMoveDown"];
-            storyboard.Begin();
             ReverseTitleMarquee();
             ReverseArtistMarquee();
         }
@@ -630,25 +626,7 @@ namespace VK_UI3.Controllers
 
         private void AnimateRedRectangle()
         {
-            if (RootGrid == null || RedRectangle == null) return;
-
-            this.DispatcherQueue.TryEnqueue(() =>
-            {
-                double toWidth = RootGrid.ActualWidth * RedFillPercent;
-                var animation = new DoubleAnimation
-                {
-                    To = toWidth,
-                    Duration = new Duration(TimeSpan.FromMilliseconds(40)),
-                    EnableDependentAnimation = true,
-                };
-
-                Storyboard.SetTarget(animation, RedRectangle);
-                Storyboard.SetTargetProperty(animation, "Width");
-                var sb = new Storyboard();
-                sb.Children.Add(animation);
-                sb.Begin();
-                RedRectangle.Width = toWidth;
-            });
+            // Removed
         }
 
         private void UpdateRedFillPercent()

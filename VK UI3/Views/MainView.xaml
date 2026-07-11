@@ -76,14 +76,14 @@
             <NavigationView
                 Name="NavWiv"
                 Grid.RowSpan="2"
-                Margin="0,0,0,0"
+                Margin="0"
                 HorizontalAlignment="Stretch"
                 IsBackButtonVisible="Collapsed"
                 IsBackEnabled="False"
                 IsPaneOpen="False"
                 IsSettingsVisible="True"
                 ItemInvoked="NavWiv_ItemInvoked"
-                PaneDisplayMode="Auto"
+                PaneDisplayMode="Top"
                 AutomationProperties.Name="Навигационное меню"
                 AutomationProperties.HelpText="Основное меню навигации приложения">
 
@@ -124,9 +124,6 @@
                             <FontIcon Glyph="&#xEC32;" AutomationProperties.Name="Иконка рекомендаций" AutomationProperties.HelpText="Иконка раздела рекомендаций" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
-
-                    <NavigationViewItemSeparator />
-                    <NavigationViewItemHeader />
 
                 </NavigationView.MenuItems>
                 <Grid
