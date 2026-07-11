@@ -289,10 +289,6 @@ namespace VK_UI3.Controllers
         private void RootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             AnimateRedRectangle();
-            this.DispatcherQueue.TryEnqueue(() =>
-            {
-                sliderTrackGridUP.Width = RootGrid.ActualWidth;
-            });
         }
 
         #endregion
