@@ -180,11 +180,16 @@
         </Grid>
         <Frame
             Grid.Row="1"
+            Margin="16,0,16,16"
+            CornerRadius="20"
             VerticalAlignment="Bottom"
-            BorderThickness="0,1,0,0"
+            BorderThickness="1"
+            BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+            Shadow="{StaticResource SharedShadow}"
+            Translation="0,0,16"
             AutomationProperties.Name="Плеер"
             AutomationProperties.HelpText="Основной музыкальный плеер приложения">
-            <custom:AudioPlayer Margin="0,0,0,0" AutomationProperties.Name="Аудио плеер" AutomationProperties.HelpText="Компонент управления воспроизведением музыки" />
+            <custom:AudioPlayer Margin="0" AutomationProperties.Name="Аудио плеер" AutomationProperties.HelpText="Компонент управления воспроизведением музыки" />
         </Frame>
     </Grid>
 </Page>

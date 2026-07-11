@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
 	x:Class="VK_UI3.Controls.TrackControl"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -90,10 +90,10 @@
 			x:Name="Card"
 			Width="Auto"
 			Margin="0,0,0,0"
-			Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+			Background="Transparent"
 			BorderBrush="{ThemeResource ApplicationForegroundThemeBrush}"
 			BorderThickness="0"
-			CornerRadius="5">
+			CornerRadius="8">
 
 
 			<Grid.RowDefinitions>
@@ -114,10 +114,10 @@
 					Margin="8,6.5,6,6"
 					VerticalAlignment="Center">
 					<Grid
-						Width="45"
-						Height="45"
+						Width="48"
+						Height="48"
 						Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
-						CornerRadius="5">
+						CornerRadius="8">
 						<FontIcon Foreground="{ThemeResource TextOnAccentFillColorSelectedText}" Glyph="&#xEC4F;" AutomationProperties.Name="Обложка трека" />
 
 						<Grid x:Name="ImageThumbGrid">
@@ -131,7 +131,7 @@
 						<Grid
 							x:Name="GridPlayIcon"
 							Background="{StaticResource CustomAcrylicInAppBrush}"
-							CornerRadius="0"
+							CornerRadius="8"
 							Opacity="0">
 							<SymbolIcon
 								x:Name="PlayBTN"
@@ -200,7 +200,7 @@
 							x:Name="Title"
 							Grid.Column="0"
 							HorizontalAlignment="Left"
-							FontSize="16"
+							FontSize="15"
 							FontWeight="SemiBold"
 							Text="Музыка качает"
 							TextTrimming="CharacterEllipsis" AutomationProperties.Name="Название трека" />
@@ -222,7 +222,7 @@
 						Grid.Column="0"
 						Margin="0,2,0,0"
 						HorizontalAlignment="Left"
-						FontSize="11"
+						FontSize="13"
 						Opacity="0.6"
 						Text="Artist"
 						TextTrimming="CharacterEllipsis"
