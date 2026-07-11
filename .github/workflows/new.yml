@@ -1,4 +1,4 @@
-name: Автосборка Music M
+name: Автосборка Viht Music VK
 
 on:
   workflow_dispatch:
