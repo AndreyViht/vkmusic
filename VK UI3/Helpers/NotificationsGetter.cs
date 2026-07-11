@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -45,7 +45,7 @@ namespace VK_UI3.Helpers
 
     internal class NotificationsGetter
     {
-        private const string NotificationsUrl = "https://vkm.makrotos.ru/notifications.json";
+        private const string NotificationsUrl = "https://anviht.ru/notifications.json";
         private HttpClient _client;
 
         public NotificationsGetter()

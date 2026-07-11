@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="VK_UI3.Views.Settings.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -331,7 +331,7 @@
                 AutomationProperties.HelpText="Ссылка на Telegram канал разработчика"
                 AutomationProperties.Name="Ссылка на Telegram"
                 TextAlignment="Center">
-                <Hyperlink NavigateUri="https://t.me/VK_M_creator">Music M в telegram</Hyperlink>
+                <Hyperlink NavigateUri="https://t.me/vihtikai">Viht Music VK в Telegram</Hyperlink>
             </TextBlock>
 
         </StackPanel>
