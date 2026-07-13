@@ -114,18 +114,23 @@
                         <Border>
                             <local:BackDropSetting AutomationProperties.HelpText="Включает или выключает эффект прозрачности в приложении" AutomationProperties.Name="Выключить прозрачность" />
                         </Border>
-                        <Border>
+                        <Border Visibility="Collapsed">
                             <local:OverlaySetting AutomationProperties.HelpText="Включает или выключает оверлейный мини-плеер поверх всех окон" AutomationProperties.Name="Показывать мини-плеер поверх всех окон" />
                         </Border>
                         <Border>
                             <local:DisableNavigationAnimationsSetting AutomationProperties.HelpText="Включает или выключает анимации при переходе между разделами. Отключение анимаций может ускорить восприятие загрузки." AutomationProperties.Name="Отключить анимации переходов" />
                         </Border>
-                 
                             <local:SnowflakesSettingsExpander AutomationProperties.HelpText="Настройки анимации снежинок" AutomationProperties.Name="Настройки снежинок" />
                      
-                     
-                            <local:ConfettiSettingsExpander AutomationProperties.HelpText="Настройки анимации конфетти" AutomationProperties.Name="Настройки конфетти" />
-                
+                        <Border>
+                            <StackPanel Orientation="Horizontal" Spacing="15">
+                                <FontIcon Glyph="&#xE790;" FontSize="18" />
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Тема оформления" FontWeight="SemiBold" />
+                                    <TextBlock Text="Дополнительные возможности кастомизации будут доступны в следующих обновлениях." FontSize="12" Opacity="0.6" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
                         <Border>
                             <local:HighlightPlayedTracks AutomationProperties.HelpText="Выделяет цветом треки, которые были полностью прослушаны" AutomationProperties.Name="Выделять полностью прослушанные треки" />
                         </Border>

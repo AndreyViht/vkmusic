@@ -98,16 +98,17 @@
 					<Button
 						x:Name="repeatBTN"
 						Grid.Column="4"
-						Width="35"
-						Height="35"
-						Margin="0,0,8,0"
+						Width="40"
+						Height="40"
+						Margin="0,0,12,0"
 						Padding="0"
+						CornerRadius="20"
 						Background="Transparent"
 						Tapped="repeatBTN_Tapped"
 						AutomationProperties.Name="Повтор">
 						<FontIcon
 							x:Name="repeatBTNIcon"
-							FontSize="14"
+							FontSize="16"
 							Glyph="" />
 					</Button>
 
@@ -115,43 +116,45 @@
 					<Button
 						x:Name="PreviousBTN"
 						Grid.Column="0"
-						Width="35"
-						Height="35"
+						Width="40"
+						Height="40"
 						Margin="0,0,0,0"
 						Padding="0"
+						CornerRadius="20"
 						Background="Transparent"
 						FocusVisualPrimaryBrush="Transparent"
 						FocusVisualSecondaryThickness="0"
 						Tapped="PreviousBTN_Tapped"
 						AutomationProperties.Name="Предыдущий трек">
-						<FontIcon FontSize="12" Glyph="" />
+						<FontIcon FontSize="16" Glyph="" />
 					</Button>
 
 					<Button
-						Width="48"
-						Height="48"
-						Margin="8,0,8,0"
+						Width="56"
+						Height="56"
+						Margin="12,0,12,0"
 						Padding="0"
-						CornerRadius="24"
+						CornerRadius="28"
 						Style="{ThemeResource AccentButtonStyle}"
 						Tapped="Button_Play_Tapped"
 						AutomationProperties.Name="Воспроизвести">
 						<FontIcon
 							x:Name="PlayBTN"
-							FontSize="18"
+							FontSize="22"
 							Glyph="" />
 					</Button>
 
 					<Button
 						x:Name="NextBTN"
-						Width="35"
-						Height="35"
-						Margin="0,0,8,0"
+						Width="40"
+						Height="40"
+						Margin="0,0,12,0"
 						Padding="0"
+						CornerRadius="20"
 						Background="Transparent"
 						Tapped="NextBTN_Tapped"
 						AutomationProperties.Name="Следующий трек">
-						<FontIcon FontSize="12" Glyph="" />
+						<FontIcon FontSize="16" Glyph="" />
 					</Button>
 
 
@@ -197,7 +200,12 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 					<TextBlock x:Name="textBlock" Text="{x:Bind TrackPositionMs, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}" VerticalAlignment="Center" FontSize="12" Opacity="0.6" Margin="0,0,12,0" />
-					<Slider x:Name="VolumeSlider" Grid.Column="1" VerticalAlignment="Center" Margin="0" StepFrequency="1" Maximum="{x:Bind TrackDurationMs, Mode=TwoWay, Converter={StaticResource LongToDoubleConverter}}" Value="{x:Bind SliderPositionMs, Mode=TwoWay, Converter={StaticResource LongToDoubleConverter}}" PointerEntered="VolumeSlider_PointerEntered" PointerExited="VolumeSlider_PointerExited" ValueChanged="VolumeSlider_ValueChanged" />
+					<Slider x:Name="VolumeSlider" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,0,0" StepFrequency="1" Maximum="{x:Bind TrackDurationMs, Mode=TwoWay, Converter={StaticResource LongToDoubleConverter}}" Value="{x:Bind SliderPositionMs, Mode=TwoWay, Converter={StaticResource LongToDoubleConverter}}" PointerEntered="VolumeSlider_PointerEntered" PointerExited="VolumeSlider_PointerExited" ValueChanged="VolumeSlider_ValueChanged">
+						<Slider.Resources>
+							<x:Double x:Key="SliderTrackThemeHeight">4</x:Double>
+							<x:Double x:Key="SliderThumbThemeSize">14</x:Double>
+						</Slider.Resources>
+					</Slider>
 					<TextBlock Grid.Column="2" Text="{x:Bind TrackDurationMs, Mode=OneWay, Converter={StaticResource SecondsToTimeConverter}}" VerticalAlignment="Center" FontSize="12" Opacity="0.6" Margin="12,0,0,0" />
 				</Grid>
 
