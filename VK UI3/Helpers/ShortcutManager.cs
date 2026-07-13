@@ -86,7 +86,11 @@ namespace VK_UI3.Helpers
                     return true;
                 }
 
-                var success = await CreateShortcutUsingPowerShellAsync(shortcutPath, appUserModelId, appName, shortcutType);
+                string iconLocation = Path.Combine(package.InstalledLocation.Path, "Assets", "icon.ico");
+                if (!File.Exists(iconLocation)) iconLocation = Path.Combine(package.InstalledLocation.Path, "icon.ico");
+                if (!File.Exists(iconLocation)) iconLocation = $"shell:AppsFolder\\{appUserModelId}";
+
+                var success = await CreateShortcutUsingPowerShellAsync(shortcutPath, appUserModelId, appName, shortcutType, iconLocation);
                 return success;
             }
             catch (Exception ex)
@@ -121,7 +125,12 @@ namespace VK_UI3.Helpers
                     return true;
                 }
 
-                var success = await CreateUnpackagedShortcutUsingPowerShellAsync(shortcutPath, appPath, appName, shortcutType);
+                var appDir = Path.GetDirectoryName(appPath);
+                string iconLocation = Path.Combine(appDir, "Assets", "icon.ico");
+                if (!File.Exists(iconLocation)) iconLocation = Path.Combine(appDir, "icon.ico");
+                if (!File.Exists(iconLocation)) iconLocation = appPath;
+
+                var success = await CreateUnpackagedShortcutUsingPowerShellAsync(shortcutPath, appPath, appName, shortcutType, iconLocation);
                 return success;
             }
             catch (Exception ex)
@@ -131,7 +140,7 @@ namespace VK_UI3.Helpers
             }
         }
 
-        private static async Task<bool> CreateShortcutUsingPowerShellAsync(string shortcutPath, string appUserModelId, string appName, string shortcutType)
+        private static async Task<bool> CreateShortcutUsingPowerShellAsync(string shortcutPath, string appUserModelId, string appName, string shortcutType, string iconLocation)
         {
             try
             {
@@ -149,7 +158,7 @@ try {{
     $Shortcut.TargetPath = 'explorer.exe'
     $Shortcut.Arguments = 'shell:AppsFolder\{appUserModelId.Replace("'", "''")}'
     $Shortcut.Description = '{appName.Replace("'", "''")}'
-    $Shortcut.IconLocation = 'shell:AppsFolder\{appUserModelId.Replace("'", "''")}'
+    $Shortcut.IconLocation = '{iconLocation.Replace("'", "''")}'
     $Shortcut.WorkingDirectory = '{Environment.GetFolderPath(Environment.SpecialFolder.System).Replace("'", "''")}'
     $Shortcut.Save()
     Write-Host 'SUCCESS'
@@ -166,7 +175,7 @@ try {{
             }
         }
 
-        private static async Task<bool> CreateUnpackagedShortcutUsingPowerShellAsync(string shortcutPath, string appPath, string appName, string shortcutType)
+        private static async Task<bool> CreateUnpackagedShortcutUsingPowerShellAsync(string shortcutPath, string appPath, string appName, string shortcutType, string iconLocation)
         {
             try
             {
@@ -183,7 +192,7 @@ try {{
     $Shortcut = $WshShell.CreateShortcut('{shortcutPath.Replace("'", "''")}')
     $Shortcut.TargetPath = '{appPath.Replace("'", "''")}'
     $Shortcut.Description = '{appName.Replace("'", "''")}'
-    $Shortcut.IconLocation = '{appPath.Replace("'", "''")}'
+    $Shortcut.IconLocation = '{iconLocation.Replace("'", "''")}'
     $Shortcut.WorkingDirectory = '{Path.GetDirectoryName(appPath).Replace("'", "''")}'
     $Shortcut.Save()
     Write-Host 'SUCCESS'
