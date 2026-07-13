@@ -115,6 +115,9 @@
                             <local:BackDropSetting AutomationProperties.HelpText="Включает или выключает эффект прозрачности в приложении" AutomationProperties.Name="Выключить прозрачность" />
                         </Border>
                         <Border>
+                            <local:OverlaySetting AutomationProperties.HelpText="Включает или выключает оверлейный мини-плеер поверх всех окон" AutomationProperties.Name="Показывать мини-плеер поверх всех окон" />
+                        </Border>
+                        <Border>
                             <local:DisableNavigationAnimationsSetting AutomationProperties.HelpText="Включает или выключает анимации при переходе между разделами. Отключение анимаций может ускорить восприятие загрузки." AutomationProperties.Name="Отключить анимации переходов" />
                         </Border>
                  

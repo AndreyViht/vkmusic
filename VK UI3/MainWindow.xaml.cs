@@ -1,4 +1,4 @@
-﻿#define SKIP_ERROR_PRONE_CODE
+#define SKIP_ERROR_PRONE_CODE
 using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Dispatching;
@@ -253,6 +253,12 @@ namespace VK_UI3
             LoadIcon(iconPath);
 
             hvn = (HWND)WinRT.Interop.WindowNative.GetWindowHandle(this);
+            
+            var overlaySetting = SettingsTable.GetSetting("overlayPlayer");
+            if (overlaySetting != null && overlaySetting.settingValue == "1")
+            {
+                VK_UI3.Views.Settings.OverlaySetting.UpdateOverlayState(true);
+            }
         }
 
         private void InitializeNavigation()
