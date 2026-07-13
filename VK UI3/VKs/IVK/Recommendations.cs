@@ -131,21 +131,25 @@ namespace VK_UI3.VKs.IVK
                         audios = await VK.api.Audio.GetRecommendationsAsync(targetAudio: targetAudio, count: count, offset: offset, shuffle: false);
                     }
                     
-                    ManualResetEvent resetEvent = new ManualResetEvent(false);
-                    
+                    var extendedAudios = new List<ExtendedAudio>();
                     foreach (var item in audios)
                     {
-                        ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                        
-                        DispatcherQueue.TryEnqueue(() =>
-                        {
-                            listAudio.Add(extendedAudio);
-                            resetEvent.Set();
-                        });
-                        
-                        resetEvent.WaitOne();
-                        resetEvent.Reset();
+                        extendedAudios.Add(new ExtendedAudio(item, this));
                     }
+                    
+                    ManualResetEvent resetEvent = new ManualResetEvent(false);
+                    
+                    DispatcherQueue.TryEnqueue(() =>
+                    {
+                        foreach (var item in extendedAudios)
+                        {
+                            listAudio.Add(item);
+                        }
+                        resetEvent.Set();
+                    });
+                    
+                    resetEvent.WaitOne();
+                    resetEvent.Dispose();
                     
                     if (countTracks == listAudio.Count()) itsAll = true;
                     

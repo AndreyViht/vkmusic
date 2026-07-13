@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Dispatching;
+using Microsoft.UI.Dispatching;
 using MusicX.Core.Models;
 using MusicX.Core.Models.General;
 using System;
@@ -143,34 +143,41 @@ namespace VK_UI3.VKs.IVK
                             countTracks = listAudio.Count;
                             itsAll = true;
                         }
+                        var extendedAudios = new List<ExtendedAudio>();
                         foreach (var item in audios)
                         {
-                            ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                            ManualResetEvent resetEvent = new ManualResetEvent(false);
-                            
-                            try
+                            extendedAudios.Add(new ExtendedAudio(item, this));
+                        }
+
+                        ManualResetEvent resetEvent = new ManualResetEvent(false);
+                        
+                        try
+                        {
+                            bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
                             {
-                                bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
+                                foreach (var item in extendedAudios)
                                 {
-                                    listAudio.Add(extendedAudio);
-                                    resetEvent.Set();
-                                });
-                                
-                                if (!isEnqueued)
-                                {
-                                    // Действия при неудачной попытке добавления в очередь
-                                    Console.WriteLine("TryEnqueue не удалось добавить задачу в очередь.");
+                                    listAudio.Add(item);
                                 }
-                                
-                            }
-                            catch (Exception ex)
+                                resetEvent.Set();
+                            });
+                            
+                            if (!isEnqueued)
                             {
-                                // Логируем ошибку и продолжаем выполнение
-                                Console.WriteLine($"Ошибка при добавлении аудиозаписи в список: {ex.Message}");
-                                throw;
+                                Console.WriteLine("TryEnqueue не удалось добавить задачу в очередь.");
+                                resetEvent.Set();
                             }
                             
                             resetEvent.WaitOne();
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Ошибка при добавлении аудиозаписи в список: {ex.Message}");
+                            throw;
+                        }
+                        finally
+                        {
+                            resetEvent.Dispose();
                         }
                         this.countTracks = this.listAudio.Count;
                         NotifyOnListUpdate();

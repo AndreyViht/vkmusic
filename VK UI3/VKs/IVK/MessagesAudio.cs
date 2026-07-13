@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Dispatching;
+using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -172,20 +172,24 @@ namespace VK_UI3.VKs.IVK
                         };
                         
                         var attach = (VK.api.Messages.GetHistoryAttachments(messagesGetHistoryAttachmentsParams, out nextFrom));
-                        ManualResetEvent resetEvent = new ManualResetEvent(false);
+                        var extendedAudios = new List<ExtendedAudio>();
                         foreach (var item in attach)
                         {
-                            ExtendedAudio extendedAudio = new ExtendedAudio(item.Attachment.Instance as Audio, this);
-                            
-                            DispatcherQueue.TryEnqueue(() =>
-                            {
-                                listAudio.Add(extendedAudio);
-                                resetEvent.Set();
-                            });
-                            
-                            resetEvent.WaitOne(); 
-                            resetEvent.Reset(); 
+                            extendedAudios.Add(new ExtendedAudio(item.Attachment.Instance as Audio, this));
                         }
+
+                        ManualResetEvent resetEvent = new ManualResetEvent(false);
+                        DispatcherQueue.TryEnqueue(() =>
+                        {
+                            foreach (var item in extendedAudios)
+                            {
+                                listAudio.Add(item);
+                            }
+                            resetEvent.Set();
+                        });
+                        
+                        resetEvent.WaitOne(); 
+                        resetEvent.Dispose(); 
                         
                         if (nextFrom == null) itsAll = true;
                         

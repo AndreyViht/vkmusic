@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Dispatching;
+using Microsoft.UI.Dispatching;
 using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -291,19 +291,25 @@ namespace VK_UI3.VKs.IVK
                         {
                             var response = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey, listAudio.Count, count);
                             
+                            var extendedAudios = new List<ExtendedAudio>();
                             foreach (var item in response.Items)
                             {
-                                ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                                ManualResetEvent resetEvent = new ManualResetEvent(false);
-                                
-                                DispatcherQueue.TryEnqueue(() =>
-                                {
-                                    listAudio.Add(extendedAudio);
-                                    resetEvent.Set();
-                                });
-                                
-                                resetEvent.WaitOne();
+                                extendedAudios.Add(new ExtendedAudio(item, this));
                             }
+
+                            ManualResetEvent resetEvent = new ManualResetEvent(false);
+                            
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                foreach (var item in extendedAudios)
+                                {
+                                    listAudio.Add(item);
+                                }
+                                resetEvent.Set();
+                            });
+                            
+                            resetEvent.WaitOne();
+                            resetEvent.Dispose();
                             
                             if (countTracks == listAudio.Count()) itsAll = true;
                             
@@ -361,19 +367,25 @@ namespace VK_UI3.VKs.IVK
                         {
                             var response = await VK.vkService.AudioGetAsync(playlist.Id, playlist.OwnerId, playlist.AccessKey, listAudio.Count, count);
                             
+                            var extendedAudios = new List<ExtendedAudio>();
                             foreach (var item in response.Items)
                             {
-                                ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                                ManualResetEvent resetEvent = new ManualResetEvent(false);
-                                
-                                DispatcherQueue.TryEnqueue(() =>
-                                {
-                                    listAudio.Add(extendedAudio);
-                                    resetEvent.Set();
-                                });
-                                
-                                resetEvent.WaitOne();
+                                extendedAudios.Add(new ExtendedAudio(item, this));
                             }
+
+                            ManualResetEvent resetEvent = new ManualResetEvent(false);
+                            
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                foreach (var item in extendedAudios)
+                                {
+                                    listAudio.Add(item);
+                                }
+                                resetEvent.Set();
+                            });
+                            
+                            resetEvent.WaitOne();
+                            resetEvent.Dispose();
                             
                             if (countTracks == listAudio.Count()) itsAll = true;
                             
