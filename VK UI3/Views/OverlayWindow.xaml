@@ -25,8 +25,7 @@
               Background="Transparent"
               Tapped="ToggleExpand_Click"
               Visibility="Visible"
-              HorizontalAlignment="Center" VerticalAlignment="Center"
-              Cursor="Hand">
+              HorizontalAlignment="Center" VerticalAlignment="Center">
             <!-- App Logo for collapsed state -->
             <Image Source="ms-appx:///Assets/StoreLogo.scale-400.png" Stretch="UniformToFill" Width="60" Height="60"/>
         </Grid>
@@ -69,19 +68,19 @@
                         <TextBlock x:Name="CurrentTrackArtist" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="13" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
                     </StackPanel>
 
-                    <Grid Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="ToggleExpand_Click" Background="Transparent" Padding="5" Cursor="Hand">
+                    <Grid Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="ToggleExpand_Click" Background="Transparent" Padding="5">
                         <FontIcon Glyph="&#xE711;" FontSize="12" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
                     </Grid>
 
                     <!-- Controls -->
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="25" Margin="0,15,0,5">
-                        <Grid Tapped="Prev_Click" Background="Transparent" Padding="10" Cursor="Hand">
+                        <Grid Tapped="Prev_Click" Background="Transparent" Padding="10">
                             <FontIcon Glyph="&#xE892;" FontSize="20" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
                         </Grid>
-                        <Grid x:Name="PlayPauseButton" Tapped="PlayPause_Click" Background="Transparent" Padding="10" Cursor="Hand">
+                        <Grid x:Name="PlayPauseButton" Tapped="PlayPause_Click" Background="Transparent" Padding="10">
                             <FontIcon x:Name="PlayPauseIcon" Glyph="&#xE768;" FontSize="28" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
                         </Grid>
-                        <Grid Tapped="Next_Click" Background="Transparent" Padding="10" Cursor="Hand">
+                        <Grid Tapped="Next_Click" Background="Transparent" Padding="10">
                             <FontIcon Glyph="&#xE893;" FontSize="20" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
                         </Grid>
                     </StackPanel>
