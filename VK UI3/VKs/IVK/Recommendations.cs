@@ -137,19 +137,20 @@ namespace VK_UI3.VKs.IVK
                         extendedAudios.Add(new ExtendedAudio(item, this));
                     }
                     
-                    ManualResetEvent resetEvent = new ManualResetEvent(false);
-                    
-                    DispatcherQueue.TryEnqueue(() =>
+                    int batchSize = 25;
+                    for (int i = 0; i < extendedAudios.Count; i += batchSize)
                     {
-                        foreach (var item in extendedAudios)
+                        var batch = extendedAudios.Skip(i).Take(batchSize).ToList();
+                        ManualResetEvent batchReset = new ManualResetEvent(false);
+                        bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
                         {
-                            listAudio.Add(item);
-                        }
-                        resetEvent.Set();
-                    });
-                    
-                    resetEvent.WaitOne();
-                    resetEvent.Dispose();
+                            foreach(var item in batch) listAudio.Add(item);
+                            batchReset.Set();
+                        });
+                        if (!isEnqueued) batchReset.Set();
+                        batchReset.WaitOne();
+                        batchReset.Dispose();
+                    }
                     
                     if (countTracks == listAudio.Count()) itsAll = true;
                     

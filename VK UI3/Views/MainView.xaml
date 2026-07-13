@@ -80,51 +80,13 @@
                 IsBackButtonVisible="Collapsed"
                 IsBackEnabled="False"
                 IsPaneOpen="False"
-                IsSettingsVisible="True"
-                ItemInvoked="NavWiv_ItemInvoked"
+                IsSettingsVisible="False"
+                IsPaneVisible="False"
                 PaneDisplayMode="Top"
                 AutomationProperties.Name="Навигационное меню"
                 AutomationProperties.HelpText="Основное меню навигации приложения">
 
-                <NavigationView.MenuItems>
-                    <NavigationViewItem Tag="Моя музыка" ToolTipService.ToolTip="Моя музыка" AutomationProperties.Name="Моя музыка" AutomationProperties.HelpText="Перейти к моей музыке">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xEC4F;" AutomationProperties.Name="Иконка музыки" AutomationProperties.HelpText="Иконка раздела музыки" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
 
-
-                    <NavigationViewItem Tag="Мои плейлисты" ToolTipService.ToolTip="Мои плейлисты" AutomationProperties.Name="Мои плейлисты" AutomationProperties.HelpText="Перейти к моим плейлистам">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE93C;" AutomationProperties.Name="Иконка плейлиста" AutomationProperties.HelpText="Иконка раздела плейлистов" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-
-                    <NavigationViewItem Tag="Плейлисты" ToolTipService.ToolTip="Плейлисты" AutomationProperties.Name="Плейлисты" AutomationProperties.HelpText="Перейти к плейлистам">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xEB51;" AutomationProperties.Name="Иконка плейлиста" AutomationProperties.HelpText="Иконка раздела плейлистов" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-
-                    <NavigationViewItem Tag="Музыка друзей" ToolTipService.ToolTip="Музыка друзей" AutomationProperties.Name="Музыка друзей" AutomationProperties.HelpText="Перейти к музыке друзей">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE716;" AutomationProperties.Name="Иконка друзей" AutomationProperties.HelpText="Иконка раздела друзей" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-
-                    <NavigationViewItem Tag="Вложения" ToolTipService.ToolTip="Вложения" AutomationProperties.Name="Вложения" AutomationProperties.HelpText="Перейти к вложениям">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xE8F2;" AutomationProperties.Name="Иконка вложений" AutomationProperties.HelpText="Иконка раздела вложений" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-
-                    <NavigationViewItem Tag="Для Вас" ToolTipService.ToolTip="Для Вас" AutomationProperties.Name="Для Вас" AutomationProperties.HelpText="Перейти к рекомендациям">
-                        <NavigationViewItem.Icon>
-                            <FontIcon Glyph="&#xEC32;" AutomationProperties.Name="Иконка рекомендаций" AutomationProperties.HelpText="Иконка раздела рекомендаций" />
-                        </NavigationViewItem.Icon>
-                    </NavigationViewItem>
-
-                </NavigationView.MenuItems>
                 <Grid
                     x:Name="MainGridLir"
                     Margin="0"
@@ -133,17 +95,74 @@
                     AutomationProperties.HelpText="Основная область отображения содержимого приложения">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
+                    
+                    <!-- Кастомная панель навигации -->
+                    <StackPanel Grid.Row="0" x:Name="CustomTopNav" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4" Margin="0,10,0,10">
+                        <StackPanel.Resources>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="12,8"/>
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </StackPanel.Resources>
+                        
+                        <Button Tag="Моя музыка" PointerEntered="NavBtn_PointerEntered" PointerExited="NavBtn_PointerExited" Click="NavBtn_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xEC4F;" />
+                                <TextBlock Text="Моя музыка" Visibility="Collapsed" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Tag="Мои плейлисты" PointerEntered="NavBtn_PointerEntered" PointerExited="NavBtn_PointerExited" Click="NavBtn_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE93C;" />
+                                <TextBlock Text="Мои плейлисты" Visibility="Collapsed" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Tag="Плейлисты" PointerEntered="NavBtn_PointerEntered" PointerExited="NavBtn_PointerExited" Click="NavBtn_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xEB51;" />
+                                <TextBlock Text="Плейлисты" Visibility="Collapsed" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Tag="Музыка друзей" PointerEntered="NavBtn_PointerEntered" PointerExited="NavBtn_PointerExited" Click="NavBtn_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE716;" />
+                                <TextBlock Text="Музыка друзей" Visibility="Collapsed" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Tag="Вложения" PointerEntered="NavBtn_PointerEntered" PointerExited="NavBtn_PointerExited" Click="NavBtn_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE8F2;" />
+                                <TextBlock Text="Вложения" Visibility="Collapsed" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Tag="Для Вас" PointerEntered="NavBtn_PointerEntered" PointerExited="NavBtn_PointerExited" Click="NavBtn_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xEC32;" />
+                                <TextBlock Text="Для Вас" Visibility="Collapsed" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Tag="Параметры" PointerEntered="NavBtn_PointerEntered" PointerExited="NavBtn_PointerExited" Click="NavBtn_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE713;" />
+                                <TextBlock Text="Настройки" Visibility="Collapsed" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
                     <animations:AnimatedSearch
                         x:Name="Search"
-                        Grid.Row="0"
+                        Grid.Row="1"
                         Height="0"
                         Margin="0"
                         OriginalHeight="50"
                         AutomationProperties.Name="Панель поиска"
                         AutomationProperties.HelpText="Панель для поиска музыки и контента" />
-                    <krotos:NavigateFrame x:Name="ContentFrame" Grid.Row="1" AutomationProperties.Name="Фрейм содержимого" AutomationProperties.HelpText="Область отображения основного содержимого" />
+                    <krotos:NavigateFrame x:Name="ContentFrame" Grid.Row="2" AutomationProperties.Name="Фрейм содержимого" AutomationProperties.HelpText="Область отображения основного содержимого" />
                 </Grid>
             </NavigationView>
             <controlLyryc:LyricsPage

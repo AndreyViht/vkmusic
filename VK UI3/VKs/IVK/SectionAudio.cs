@@ -149,35 +149,27 @@ namespace VK_UI3.VKs.IVK
                             extendedAudios.Add(new ExtendedAudio(item, this));
                         }
 
-                        ManualResetEvent resetEvent = new ManualResetEvent(false);
-                        
                         try
                         {
-                            bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
+                            int batchSize = 25;
+                            for (int i = 0; i < extendedAudios.Count; i += batchSize)
                             {
-                                foreach (var item in extendedAudios)
+                                var batch = extendedAudios.Skip(i).Take(batchSize).ToList();
+                                ManualResetEvent batchReset = new ManualResetEvent(false);
+                                bool isEnqueued = DispatcherQueue.TryEnqueue(() =>
                                 {
-                                    listAudio.Add(item);
-                                }
-                                resetEvent.Set();
-                            });
-                            
-                            if (!isEnqueued)
-                            {
-                                Console.WriteLine("TryEnqueue не удалось добавить задачу в очередь.");
-                                resetEvent.Set();
+                                    foreach(var item in batch) listAudio.Add(item);
+                                    batchReset.Set();
+                                });
+                                if (!isEnqueued) batchReset.Set();
+                                batchReset.WaitOne();
+                                batchReset.Dispose();
                             }
-                            
-                            resetEvent.WaitOne();
                         }
                         catch (Exception ex)
                         {
                             Console.WriteLine($"Ошибка при добавлении аудиозаписи в список: {ex.Message}");
                             throw;
-                        }
-                        finally
-                        {
-                            resetEvent.Dispose();
                         }
                         this.countTracks = this.listAudio.Count;
                         NotifyOnListUpdate();

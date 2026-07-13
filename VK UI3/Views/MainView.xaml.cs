@@ -790,18 +790,6 @@ namespace VK_UI3.Views
             Search.Hide();
         }
 
-        private void NavWiv_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
-        {
-            if (args.IsSettingsInvoked)
-            {
-                mainView.hideSearch();
-                frame.Navigate(typeof(Settings.SettingsPage), null, new DrillInNavigationTransitionInfo());
-            }
-            else
-            {
-                navigateInvoke();
-            }
-        }
 
         bool lyrClosed = true;
 
@@ -914,83 +902,79 @@ namespace VK_UI3.Views
             }
         }
 
-        private void navigateInvoke()
+        private void NavBtn_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            var invokedItem = NavWiv.SelectedItem as NavigationViewItem;
-
-            if (invokedItem == null)
+            if (sender is Microsoft.UI.Xaml.Controls.Button btn && btn.Content is Microsoft.UI.Xaml.Controls.StackPanel sp)
             {
-                NavWiv.SelectedItem = NavWiv.MenuItems[0];
-                invokedItem = NavWiv.SelectedItem as NavigationViewItem;
-            }
-
-            if (invokedItem != null && invokedItem.Tag != null)
-            {
-
-                navToAnotherPage = true;
-                switch (invokedItem.Tag.ToString().ToLower())
+                if (sp.Children.Count > 1 && sp.Children[1] is Microsoft.UI.Xaml.Controls.TextBlock txt)
                 {
-                    case "моя музыка":
-
-                        OpenMyPage(SectionType.MyListAudio);
-
-                        break;
-
-                    case "мои плейлисты":
-                        OpenPlayListLists(openedPlayList: OpenedPlayList.UserPlayList);
-                        break;
-
-                    case "для вас":
-                        OpenPlayList(-21, AccountsDB.activeAccount.id);
-                        break;
-
-                    case "плейлисты":
-                        OpenPlayListLists(openedPlayList: OpenedPlayList.UserAlbums);
-                        break;
-
-                    case "параметры":
-                        mainView.hideSearch();
-                        frame.Navigate(typeof(Settings.SettingsPage), null, new DrillInNavigationTransitionInfo());
-                        break;
-
-                    case "музыка друзей":
-                        OpenMyPage(SectionType.LoadFriends);
-                        break;
-
-                    case "вложения":
-                        OpenMyPage(SectionType.ConversDialogs);
-                        break;
-                    case "запросить повторно":
-                        CreateNavigation();
-                        return;
-                        break;
-
-
-                    default:
-                        var Item = NavWiv.SelectedItem as NavMenuController;
-                        if (Item == null)
-                            return;
-                        OpenSection(Item.navSettings.section.Id);
-
-
-
-                        break;
-
-
+                    txt.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
                 }
-
-
-                ContentFrame.ClearBackStack();
-                MainWindow.mainWindow.backBTNHide();
-
             }
-            else
+        }
+
+        private void NavBtn_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            if (sender is Microsoft.UI.Xaml.Controls.Button btn && btn.Content is Microsoft.UI.Xaml.Controls.StackPanel sp)
             {
-
-
-
-
+                if (sp.Children.Count > 1 && sp.Children[1] is Microsoft.UI.Xaml.Controls.TextBlock txt)
+                {
+                    txt.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+                }
             }
+        }
+
+        private void NavBtn_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+        {
+            if (sender is Microsoft.UI.Xaml.Controls.Button btn && btn.Tag != null)
+            {
+                var tag = btn.Tag.ToString().ToLower();
+                if (tag == "параметры")
+                {
+                    mainView.hideSearch();
+                    frame.Navigate(typeof(Settings.SettingsPage), null, new Microsoft.UI.Xaml.Media.Animation.DrillInNavigationTransitionInfo());
+                }
+                else
+                {
+                    navigateInvokeCustom(tag);
+                }
+            }
+        }
+
+        private void navigateInvokeCustom(string tag)
+        {
+            navToAnotherPage = true;
+            switch (tag)
+            {
+                case "моя музыка":
+                    OpenMyPage(SectionType.MyListAudio);
+                    break;
+                case "мои плейлисты":
+                    OpenPlayListLists(openedPlayList: OpenedPlayList.UserPlayList);
+                    break;
+                case "для вас":
+                    OpenPlayList(-21, AccountsDB.activeAccount.id);
+                    break;
+                case "плейлисты":
+                    OpenPlayListLists(openedPlayList: OpenedPlayList.UserAlbums);
+                    break;
+                case "музыка друзей":
+                    OpenMyPage(SectionType.LoadFriends);
+                    break;
+                case "вложения":
+                    OpenMyPage(SectionType.ConversDialogs);
+                    break;
+                case "запросить повторно":
+                    CreateNavigation();
+                    return;
+                default:
+                    // Here we can't easily resolve Sections because NavMenuController was tied to NavigationView
+                    // but we only support the main tabs here for now.
+                    break;
+            }
+
+            ContentFrame.ClearBackStack();
+            MainWindow.mainWindow.backBTNHide();
         }
 
      
