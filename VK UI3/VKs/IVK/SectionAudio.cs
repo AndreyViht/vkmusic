@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using VK_UI3.Helpers;
+using System.Linq;
 
 namespace VK_UI3.VKs.IVK
 {

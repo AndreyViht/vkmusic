@@ -367,8 +367,7 @@ namespace VK_UI3.Views
 
                     this.DispatcherQueue.TryEnqueue(async () =>
                     {
-                        NavWiv.SelectedItem = 0;
-                        navigateInvoke();
+                        navigateInvokeCustom("моя музыка");
                         ClearMenuItems();
                     });
                     var catalogs = await VK.vkService.GetAudioCatalogAsync();
