@@ -924,11 +924,11 @@ namespace VK_UI3.Views
                 invokedItem = NavWiv.SelectedItem as NavigationViewItem;
             }
 
-            if (invokedItem != null && invokedItem.Content != null)
+            if (invokedItem != null && invokedItem.Tag != null)
             {
 
                 navToAnotherPage = true;
-                switch (invokedItem.Content.ToString().ToLower())
+                switch (invokedItem.Tag.ToString().ToLower())
                 {
                     case "моя музыка":
 

@@ -82,43 +82,43 @@
                 IsPaneOpen="False"
                 IsSettingsVisible="True"
                 ItemInvoked="NavWiv_ItemInvoked"
-                PaneDisplayMode="LeftCompact"
+                PaneDisplayMode="Top"
                 AutomationProperties.Name="Навигационное меню"
                 AutomationProperties.HelpText="Основное меню навигации приложения">
 
                 <NavigationView.MenuItems>
-                    <NavigationViewItem Content="Моя музыка" AutomationProperties.Name="Моя музыка" AutomationProperties.HelpText="Перейти к моей музыке">
+                    <NavigationViewItem Tag="Моя музыка" ToolTipService.ToolTip="Моя музыка" AutomationProperties.Name="Моя музыка" AutomationProperties.HelpText="Перейти к моей музыке">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xEC4F;" AutomationProperties.Name="Иконка музыки" AutomationProperties.HelpText="Иконка раздела музыки" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
 
-                    <NavigationViewItem Content="Мои плейлисты" AutomationProperties.Name="Мои плейлисты" AutomationProperties.HelpText="Перейти к моим плейлистам">
+                    <NavigationViewItem Tag="Мои плейлисты" ToolTipService.ToolTip="Мои плейлисты" AutomationProperties.Name="Мои плейлисты" AutomationProperties.HelpText="Перейти к моим плейлистам">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE93C;" AutomationProperties.Name="Иконка плейлиста" AutomationProperties.HelpText="Иконка раздела плейлистов" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Плейлисты" AutomationProperties.Name="Плейлисты" AutomationProperties.HelpText="Перейти к плейлистам">
+                    <NavigationViewItem Tag="Плейлисты" ToolTipService.ToolTip="Плейлисты" AutomationProperties.Name="Плейлисты" AutomationProperties.HelpText="Перейти к плейлистам">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xEB51;" AutomationProperties.Name="Иконка плейлиста" AutomationProperties.HelpText="Иконка раздела плейлистов" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Музыка друзей" AutomationProperties.Name="Музыка друзей" AutomationProperties.HelpText="Перейти к музыке друзей">
+                    <NavigationViewItem Tag="Музыка друзей" ToolTipService.ToolTip="Музыка друзей" AutomationProperties.Name="Музыка друзей" AutomationProperties.HelpText="Перейти к музыке друзей">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE716;" AutomationProperties.Name="Иконка друзей" AutomationProperties.HelpText="Иконка раздела друзей" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Вложения" AutomationProperties.Name="Вложения" AutomationProperties.HelpText="Перейти к вложениям">
+                    <NavigationViewItem Tag="Вложения" ToolTipService.ToolTip="Вложения" AutomationProperties.Name="Вложения" AutomationProperties.HelpText="Перейти к вложениям">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xE8F2;" AutomationProperties.Name="Иконка вложений" AutomationProperties.HelpText="Иконка раздела вложений" />
                         </NavigationViewItem.Icon>
                     </NavigationViewItem>
 
-                    <NavigationViewItem Content="Для Вас" AutomationProperties.Name="Для Вас" AutomationProperties.HelpText="Перейти к рекомендациям">
+                    <NavigationViewItem Tag="Для Вас" ToolTipService.ToolTip="Для Вас" AutomationProperties.Name="Для Вас" AutomationProperties.HelpText="Перейти к рекомендациям">
                         <NavigationViewItem.Icon>
                             <FontIcon Glyph="&#xEC32;" AutomationProperties.Name="Иконка рекомендаций" AutomationProperties.HelpText="Иконка раздела рекомендаций" />
                         </NavigationViewItem.Icon>
