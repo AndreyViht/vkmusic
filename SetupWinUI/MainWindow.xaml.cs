@@ -1,4 +1,4 @@
-using Microsoft.UI.Input;
+п»їusing Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -17,7 +17,7 @@ namespace SetupWinUI
     {
         private AppUpdater appUpdater;
         private string installLog = "";
-        private const int MaxWindowWidth = 800; // Максимальная ширина окна
+        private const int MaxWindowWidth = 800; // РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ С€РёСЂРёРЅР° РѕРєРЅР°
         Microsoft.UI.Windowing.AppWindow m_AppWindow = null;
 
         public MainWindow()
@@ -25,7 +25,7 @@ namespace SetupWinUI
             this.InitializeComponent();
             this.Activated += MainWindow_Activated;
 
-            // Ограничение максимальной ширины окна
+            // РћРіСЂР°РЅРёС‡РµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ С€РёСЂРёРЅС‹ РѕРєРЅР°
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
             var windowId = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
             var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(windowId);
@@ -39,8 +39,8 @@ namespace SetupWinUI
                 }
             };
             m_AppWindow = this.AppWindow;
-            // Включаем системный TitleBar
-            appWindow.Title = "Установщик Viht Music VK";
+            // Р’РєР»СЋС‡Р°РµРј СЃРёСЃС‚РµРјРЅС‹Р№ TitleBar
+            appWindow.Title = "РЈСЃС‚Р°РЅРѕРІС‰РёРє Viht Music VK";
             InitializeWindowProperties();
 
         }
@@ -62,24 +62,24 @@ namespace SetupWinUI
             var nonClientInputSrc = InputNonClientPointerSource.GetForWindowId(m_AppWindow.Id);
 
 
-            // Получите все дочерние элементы StackPanel
+            // РџРѕР»СѓС‡РёС‚Рµ РІСЃРµ РґРѕС‡РµСЂРЅРёРµ СЌР»РµРјРµРЅС‚С‹ StackPanel
             var children = AppTitleBar.Children;
 
-            // Создайте список для хранения прямоугольников каждого элемента
+            // РЎРѕР·РґР°Р№С‚Рµ СЃРїРёСЃРѕРє РґР»СЏ С…СЂР°РЅРµРЅРёСЏ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРєРѕРІ РєР°Р¶РґРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
             List<Windows.Graphics.RectInt32> rects = new List<Windows.Graphics.RectInt32>();
 
             foreach (var child in children)
             {
                 var frameworkElement = child as FrameworkElement;
-                // Пропустите TitIcon и AppTitle
+                // РџСЂРѕРїСѓСЃС‚РёС‚Рµ TitIcon Рё AppTitle
                 if (frameworkElement.Name == "TitIcon" || frameworkElement.Name == "AppTitle")
                     continue;
 
-                // Получите границы каждого элемента
+                // РџРѕР»СѓС‡РёС‚Рµ РіСЂР°РЅРёС†С‹ РєР°Р¶РґРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
                 var transform = child.TransformToVisual(null);
                 var bounds = transform.TransformBounds(new Rect(0, 0, frameworkElement.ActualWidth, frameworkElement.ActualHeight));
 
-                // Преобразуйте координаты DPI
+                // РџСЂРµРѕР±СЂР°Р·СѓР№С‚Рµ РєРѕРѕСЂРґРёРЅР°С‚С‹ DPI
 
                 var rect = new Windows.Graphics.RectInt32(
                     _X: (int)Math.Round(bounds.X * scaleAdjustment),
@@ -88,11 +88,11 @@ namespace SetupWinUI
                     _Height: (int)Math.Round(bounds.Height * scaleAdjustment)
                 );
 
-                // Добавьте прямоугольник в список
+                // Р”РѕР±Р°РІСЊС‚Рµ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРє РІ СЃРїРёСЃРѕРє
                 rects.Add(rect);
             }
 
-            // Установите области, которые будут прозрачными для кликов мыши
+            // РЈСЃС‚Р°РЅРѕРІРёС‚Рµ РѕР±Р»Р°СЃС‚Рё, РєРѕС‚РѕСЂС‹Рµ Р±СѓРґСѓС‚ РїСЂРѕР·СЂР°С‡РЅС‹РјРё РґР»СЏ РєР»РёРєРѕРІ РјС‹С€Рё
             nonClientInputSrc.SetRegionRects(NonClientRegionKind.Passthrough, rects.ToArray());
 
 
@@ -115,7 +115,7 @@ namespace SetupWinUI
                 label10.Text = appUpdater.version;
                 label9.Text = appUpdater.Name;
                 whatsNews.Text = appUpdater.Tit;
-                label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " Мб";
+                label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " РњР±";
                 label10.Text = appUpdater.version;
                 button1.IsEnabled = true;
                 progressBar1.IsIndeterminate = false;
@@ -135,7 +135,7 @@ namespace SetupWinUI
             }
             catch (Exception ex)
             {
-                await ShowMessageDialog("Ошибка при проверке обновлений: " + ex.Message);
+                await ShowMessageDialog("РћС€РёР±РєР° РїСЂРё РїСЂРѕРІРµСЂРєРµ РѕР±РЅРѕРІР»РµРЅРёР№: " + ex.Message);
             }
         }
 
@@ -143,7 +143,7 @@ namespace SetupWinUI
         {
             var dialog = new ContentDialog
             {
-                Title = "Ошибка",
+                Title = "РћС€РёР±РєР°",
                 Content = message,
                 CloseButtonText = "OK",
                 XamlRoot = this.Content.XamlRoot
@@ -162,7 +162,7 @@ namespace SetupWinUI
         private void AppUpdater_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             progressBar1.Value = e.Percentage;
-            label6.Text = Math.Round((float)e.BytesDownloaded / 1024 / 1024, 2).ToString() + " Мб";
+            label6.Text = Math.Round((float)e.BytesDownloaded / 1024 / 1024, 2).ToString() + " РњР±";
         }
 
         private async void button1_Click(object sender, RoutedEventArgs e)
@@ -179,10 +179,10 @@ namespace SetupWinUI
                 {
                     var dialog = new ContentDialog
                     {
-                        Title = ".NET не установлен",
-                        Content = $"Необходимо установить .NET версии минимум {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}",
-                        PrimaryButtonText = "Установить",
-                        CloseButtonText = "Отмена",
+                        Title = ".NET РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅ",
+                        Content = $"РќРµРѕР±С…РѕРґРёРјРѕ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ .NET РІРµСЂСЃРёРё РјРёРЅРёРјСѓРј {System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription}",
+                        PrimaryButtonText = "РЈСЃС‚Р°РЅРѕРІРёС‚СЊ",
+                        CloseButtonText = "РћС‚РјРµРЅР°",
                         XamlRoot = this.Content.XamlRoot
                     };
                     var result = await dialog.ShowAsync();
@@ -195,7 +195,7 @@ namespace SetupWinUI
                         }
                         else
                         {
-                            await ShowMessageDialog("Отсуствуют некоторые компоненты для автоматической установки .NET После установки приложения, .NET необходимо будет установить вручную.");
+                            await ShowMessageDialog("РћС‚СЃСѓСЃС‚РІСѓСЋС‚ РЅРµРєРѕС‚РѕСЂС‹Рµ РєРѕРјРїРѕРЅРµРЅС‚С‹ РґР»СЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕР№ СѓСЃС‚Р°РЅРѕРІРєРё .NET РџРѕСЃР»Рµ СѓСЃС‚Р°РЅРѕРІРєРё РїСЂРёР»РѕР¶РµРЅРёСЏ, .NET РЅРµРѕР±С…РѕРґРёРјРѕ Р±СѓРґРµС‚ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РІСЂСѓС‡РЅСѓСЋ.");
                         }
                     }
                 }
@@ -205,7 +205,7 @@ namespace SetupWinUI
             }
             catch (Exception ex)
             {
-                await ShowMessageDialog("Ошибка при установке: " + ex.Message);
+                await ShowMessageDialog("РћС€РёР±РєР° РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ: " + ex.Message);
             }
         }
 
@@ -213,7 +213,7 @@ namespace SetupWinUI
         {
             var psi = new System.Diagnostics.ProcessStartInfo
             {
-                FileName = "https://t.me/vihtikai",
+                FileName = "https://t.me/vihtm",
                 UseShellExecute = true
             };
             System.Diagnostics.Process.Start(psi);
@@ -229,7 +229,7 @@ namespace SetupWinUI
             {
                 appUpdater.SelectedPackageType = PackageType.ZIP;
             }
-            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " Мб";
+            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " РњР±";
         }
     }
 }

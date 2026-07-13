@@ -257,7 +257,7 @@ namespace VK_UI3.Views
                     Process.Start(new ProcessStartInfo
                     {
                         UseShellExecute = true,
-                        FileName = "https://t.me/vihtikai"
+                        FileName = "https://t.me/vihtm"
                     });
 
                 }), true),

@@ -1,5 +1,6 @@
 using Microsoft.UI;
 using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -20,7 +21,7 @@ namespace VK_UI3.Views
     public sealed partial class OverlayWindow : Window
     {
         private AppWindow m_AppWindow;
-        public ObservableCollection<Audio> NextTracks { get; set; } = new ObservableCollection<Audio>();
+        public ObservableCollection<VkNet.Model.Attachments.Audio> NextTracks { get; set; } = new ObservableCollection<VkNet.Model.Attachments.Audio>();
 
         public OverlayWindow()
         {
@@ -39,8 +40,7 @@ namespace VK_UI3.Views
             if (presenter != null)
             {
                 presenter.IsAlwaysOnTop = true;
-                presenter.HasBorder = false;
-                presenter.HasTitleBar = false;
+                presenter.SetBorderAndTitleBar(false, false);
                 presenter.IsResizable = false;
                 presenter.IsMaximizable = false;
                 presenter.IsMinimizable = false;

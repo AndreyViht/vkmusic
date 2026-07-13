@@ -1,4 +1,4 @@
-
+﻿
 using SetupLib;
 using System.Runtime.InteropServices;
 
@@ -29,7 +29,7 @@ namespace Setup
                 label10.Text = appUpdater.version;
                 label9.Text = appUpdater.Name;
                 whatsNews.Text = appUpdater.Tit;
-                label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " МБ";
+                label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " РњР‘";
                 label10.Text = appUpdater.version;
                 button1.Enabled = true;
                 progressBar1.Style = ProgressBarStyle.Blocks;
@@ -50,7 +50,7 @@ namespace Setup
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка при проверке обновлений: " + ex.Message);
+                MessageBox.Show("РћС€РёР±РєР° РїСЂРё РїСЂРѕРІРµСЂРєРµ РѕР±РЅРѕРІР»РµРЅРёР№: " + ex.Message);
             }
         }
 
@@ -75,7 +75,7 @@ namespace Setup
                 return;
             }
             progressBar1.Value = (int)Math.Round(e.Percentage);
-            label6.Text = Math.Round((float)e.BytesDownloaded / 1024 / 1024, 2).ToString() + " МБ";
+            label6.Text = Math.Round((float)e.BytesDownloaded / 1024 / 1024, 2).ToString() + " РњР‘";
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -91,8 +91,8 @@ namespace Setup
                 if (!a)
                 {
                     var result = MessageBox.Show(
-                         $"Необходимо установить .NET версии минимум {RuntimeInformation.FrameworkDescription}",
-                         "Установить?",
+                         $"РќРµРѕР±С…РѕРґРёРјРѕ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ .NET РІРµСЂСЃРёРё РјРёРЅРёРјСѓРј {RuntimeInformation.FrameworkDescription}",
+                         "РЈСЃС‚Р°РЅРѕРІРёС‚СЊ?",
                          MessageBoxButtons.YesNo,
                          MessageBoxIcon.Question
                     );
@@ -108,7 +108,7 @@ namespace Setup
                         else
                         {
                             var resultw = MessageBox.Show(
-                               $"Отсутствуют некоторые компоненты для автоматической установки .NET. После установки приложения .NET необходимо будет установить вручную."
+                               $"РћС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ РЅРµРєРѕС‚РѕСЂС‹Рµ РєРѕРјРїРѕРЅРµРЅС‚С‹ РґР»СЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕР№ СѓСЃС‚Р°РЅРѕРІРєРё .NET. РџРѕСЃР»Рµ СѓСЃС‚Р°РЅРѕРІРєРё РїСЂРёР»РѕР¶РµРЅРёСЏ .NET РЅРµРѕР±С…РѕРґРёРјРѕ Р±СѓРґРµС‚ СѓСЃС‚Р°РЅРѕРІРёС‚СЊ РІСЂСѓС‡РЅСѓСЋ."
                             );
                         }
                     }
@@ -128,7 +128,7 @@ namespace Setup
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка при установке: " + ex.Message);
+                MessageBox.Show("РћС€РёР±РєР° РїСЂРё СѓСЃС‚Р°РЅРѕРІРєРµ: " + ex.Message);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Setup
         {
             var psi = new System.Diagnostics.ProcessStartInfo
             {
-                FileName = "https://t.me/vihtikai",
+                FileName = "https://t.me/vihtm",
                 UseShellExecute = true
             };
             System.Diagnostics.Process.Start(psi);
@@ -152,7 +152,7 @@ namespace Setup
             {
                 appUpdater.SelectedPackageType = PackageType.ZIP;
             }
-            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " МБ";
+            label7.Text = Math.Round((float)appUpdater.sizeFile / 1024 / 1024, 2).ToString() + " РњР‘";
         }
     }
 }

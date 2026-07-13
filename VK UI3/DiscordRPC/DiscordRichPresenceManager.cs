@@ -135,7 +135,7 @@ namespace VK_UI3.DiscordRPC
                             new Button()
                             {
                                 Label = "ТГ Канал",
-                                Url = "https://t.me/vihtikai"
+                                Url = "https://t.me/vihtm"
                             }
                         }
                     };

@@ -30,7 +30,7 @@ namespace VK_UI3.Controllers
     {
         #region Fields
 
-        private DiscordRichPresenceManager discordRichPresenceManager = new DiscordRichPresenceManager();
+        // Removed Discord integration
         private static WeakEventManager TrackDataThisChanged = new WeakEventManager();
 
         // Animation fields
@@ -589,11 +589,7 @@ namespace VK_UI3.Controllers
 
         private void UpdateDiscordState()
         {
-            var setting = DB.SettingsTable.GetSetting("DisableDiscordIntegration");
-            if (setting != null && setting.settingValue.Equals("1"))
-                return;
-
-            discordRichPresenceManager.SetTrack(TrackDataThis, VK_UI3.Services.MediaPlayerService.MediaPlayer);
+            // Removed Discord integration
         }
 
         private void DisableAllChildren(DependencyObject parent, bool enable = false)
