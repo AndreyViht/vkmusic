@@ -622,7 +622,25 @@ namespace VK_UI3.Controllers
 
         private void AnimateRedRectangle()
         {
-            // Removed
+            if (RootGrid == null || RedRectangle == null) return;
+
+            this.DispatcherQueue.TryEnqueue(() =>
+            {
+                double toWidth = RootGrid.ActualWidth * RedFillPercent;
+                var animation = new DoubleAnimation
+                {
+                    To = toWidth,
+                    Duration = new Duration(TimeSpan.FromMilliseconds(40)),
+                    EnableDependentAnimation = true,
+                };
+
+                Storyboard.SetTarget(animation, RedRectangle);
+                Storyboard.SetTargetProperty(animation, "Width");
+                var sb = new Storyboard();
+                sb.Children.Add(animation);
+                sb.Begin();
+                RedRectangle.Width = toWidth;
+            });
         }
 
         private void UpdateRedFillPercent()

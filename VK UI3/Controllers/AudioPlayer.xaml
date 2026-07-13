@@ -62,10 +62,18 @@
 			VerticalAlignment="Stretch"
 			CornerRadius="20"
 			Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}" />
+		<Rectangle
+			x:Name="RedRectangle"
+			Width="0"
+			Height="Auto"
+			HorizontalAlignment="Left"
+			Fill="{ThemeResource AccentAAFillColorDisabledBrush}"
+			RadiusX="20"
+			RadiusY="20" />
 		<!--  Основной контент  -->
 		<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="75" />
+				<ColumnDefinition Width="88" />
 				<ColumnDefinition Width="150" />
 				<ColumnDefinition Width="*" />
 				<ColumnDefinition Width="225" />
