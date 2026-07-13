@@ -132,6 +132,27 @@ namespace VK_UI3.Views
                 CollapsedButton.Visibility = Visibility.Collapsed;
                 ExpandedPanel.Visibility = Visibility.Visible;
                 m_AppWindow.Resize(new SizeInt32(320, 420));
+
+                // Adjust position to stay on screen
+                var displayArea = Microsoft.UI.Windowing.DisplayArea.GetFromWindowId(m_AppWindow.Id, Microsoft.UI.Windowing.DisplayAreaFallback.Nearest);
+                var workArea = displayArea.WorkArea;
+                var currentPos = m_AppWindow.Position;
+                int newX = currentPos.X;
+                int newY = currentPos.Y;
+                
+                if (newX + 320 > workArea.X + workArea.Width) newX = workArea.X + workArea.Width - 320;
+                if (newY + 420 > workArea.Y + workArea.Height) newY = workArea.Y + workArea.Height - 420;
+                if (newX < workArea.X) newX = workArea.X;
+                if (newY < workArea.Y) newY = workArea.Y;
+
+                if (newX != currentPos.X || newY != currentPos.Y)
+                {
+                    m_AppWindow.Move(new PointInt32(newX, newY));
+                }
+
+                // Play animation
+                FadeInAnimation.Begin();
+
                 UpdateUI();
             }
             else
@@ -156,13 +177,12 @@ namespace VK_UI3.Views
 
         private void Next_Click(object sender, RoutedEventArgs e)
         {
-            // Reflection since method might be private or we need to enqueue it
-            typeof(MediaPlayerService).GetMethod("PlayNextTrack", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?.Invoke(null, null);
+            MediaPlayerService.PlayNextTrack();
         }
 
         private void Prev_Click(object sender, RoutedEventArgs e)
         {
-            typeof(MediaPlayerService).GetMethod("HandlePreviousTrack", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?.Invoke(null, null);
+            MediaPlayerService.PlayPreviousTrack();
         }
 
         private void NextTracksList_ItemClick(object sender, ItemClickEventArgs e)

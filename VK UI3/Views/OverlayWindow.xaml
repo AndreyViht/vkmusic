@@ -10,27 +10,32 @@
     mc:Ignorable="d">
 
     <Grid x:Name="RootGrid" Background="Transparent" PointerPressed="RootGrid_PointerPressed">
+        
+        <Grid.Resources>
+            <Storyboard x:Name="FadeInAnimation">
+                <DoubleAnimation Storyboard.TargetName="ExpandedPanel" 
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0.0" To="1.0" Duration="0:0:0.2" />
+            </Storyboard>
+        </Grid.Resources>
+
         <!-- Кнопка-состояние (свернуто) -->
-        <Button x:Name="CollapsedButton" 
-                Width="60" Height="60" 
-                CornerRadius="30" 
-                Background="Transparent"
-                BorderThickness="0"
-                Padding="0"
-                Click="ToggleExpand_Click"
-                Visibility="Visible"
-                HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid x:Name="CollapsedButton" 
+              Width="60" Height="60" 
+              Background="Transparent"
+              Tapped="ToggleExpand_Click"
+              Visibility="Visible"
+              HorizontalAlignment="Center" VerticalAlignment="Center"
+              Cursor="Hand">
             <!-- App Logo for collapsed state -->
             <Image Source="ms-appx:///Assets/StoreLogo.scale-400.png" Stretch="UniformToFill" Width="60" Height="60"/>
-        </Button>
+        </Grid>
 
         <!-- Развернутое состояние (Мини-плеер) -->
         <Border x:Name="ExpandedPanel" 
                 Visibility="Collapsed"
-                Background="{ThemeResource SolidBackgroundFillColorBaseBrush}"
-                Opacity="0.95"
-                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                BorderThickness="1"
+                Background="Transparent"
+                BorderThickness="0"
                 CornerRadius="12"
                 Width="320" Height="420"
                 Padding="15">
@@ -52,8 +57,11 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     
-                    <Border Grid.Column="0" Width="60" Height="60" CornerRadius="6" Background="Black">
-                        <Image x:Name="CurrentTrackImage" Stretch="UniformToFill"/>
+                    <Border Grid.Column="0" Width="60" Height="60" CornerRadius="6" Background="#20FFFFFF">
+                        <Grid>
+                            <FontIcon Glyph="&#xE8D6;" FontSize="24" Foreground="#80FFFFFF" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <Image x:Name="CurrentTrackImage" Stretch="UniformToFill"/>
+                        </Grid>
                     </Border>
                     
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
@@ -61,21 +69,21 @@
                         <TextBlock x:Name="CurrentTrackArtist" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="13" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
                     </StackPanel>
 
-                    <Button Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Click="ToggleExpand_Click" Background="Transparent" BorderThickness="0" Padding="5">
+                    <Grid Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="ToggleExpand_Click" Background="Transparent" Padding="5" Cursor="Hand">
                         <FontIcon Glyph="&#xE711;" FontSize="12" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
-                    </Button>
+                    </Grid>
 
                     <!-- Controls -->
                     <StackPanel Grid.Row="1" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="25" Margin="0,15,0,5">
-                        <Button Click="Prev_Click" Background="Transparent" BorderThickness="0" Padding="10">
+                        <Grid Tapped="Prev_Click" Background="Transparent" Padding="10" Cursor="Hand">
                             <FontIcon Glyph="&#xE892;" FontSize="20" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
-                        </Button>
-                        <Button x:Name="PlayPauseButton" Click="PlayPause_Click" Background="Transparent" BorderThickness="0" Padding="10">
+                        </Grid>
+                        <Grid x:Name="PlayPauseButton" Tapped="PlayPause_Click" Background="Transparent" Padding="10" Cursor="Hand">
                             <FontIcon x:Name="PlayPauseIcon" Glyph="&#xE768;" FontSize="28" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
-                        </Button>
-                        <Button Click="Next_Click" Background="Transparent" BorderThickness="0" Padding="10">
+                        </Grid>
+                        <Grid Tapped="Next_Click" Background="Transparent" Padding="10" Cursor="Hand">
                             <FontIcon Glyph="&#xE893;" FontSize="20" FontFamily="{ThemeResource SymbolThemeFontFamily}"/>
-                        </Button>
+                        </Grid>
                     </StackPanel>
                 </Grid>
 
@@ -83,9 +91,12 @@
                 <ListView Grid.Row="1" x:Name="NextTracksList" SelectionMode="Single" IsItemClickEnabled="True" ItemClick="NextTracksList_ItemClick" ShowsScrollingPlaceholders="False" Background="Transparent">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,5">
-                                <Border Width="40" Height="40" CornerRadius="4">
-                                    <Image Source="{Binding Album.Thumb.Photo34}" Stretch="UniformToFill"/>
+                            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,5" Background="Transparent">
+                                <Border Width="40" Height="40" CornerRadius="4" Background="#20FFFFFF">
+                                    <Grid>
+                                        <FontIcon Glyph="&#xE8D6;" FontSize="20" Foreground="#80FFFFFF" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <Image Source="{Binding Album.Thumb.Photo34}" Stretch="UniformToFill"/>
+                                    </Grid>
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
