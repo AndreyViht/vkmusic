@@ -178,7 +178,7 @@ namespace VK_UI3.VKs.IVK
                             extendedAudios.Add(new ExtendedAudio(item.Attachment.Instance as Audio, this));
                         }
 
-                        int batchSize = 25;
+                        int batchSize = 250;
                         for (int i = 0; i < extendedAudios.Count; i += batchSize)
                         {
                             var batch = extendedAudios.Skip(i).Take(batchSize).ToList();

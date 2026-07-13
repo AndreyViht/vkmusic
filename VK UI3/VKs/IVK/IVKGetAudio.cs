@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Dispatching;
+using Microsoft.UI.Dispatching;
 using MusicX.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -43,6 +43,8 @@ namespace VK_UI3.VKs.IVK
         /// </summary>
         public string id;
         
+        public bool IsCancelled { get; set; } = false;
+
         /// <summary>
         /// Флаг перемешивания треков
         /// </summary>

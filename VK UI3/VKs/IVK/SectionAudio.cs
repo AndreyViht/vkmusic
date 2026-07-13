@@ -152,7 +152,7 @@ namespace VK_UI3.VKs.IVK
 
                         try
                         {
-                            int batchSize = 25;
+                            int batchSize = 250;
                             for (int i = 0; i < extendedAudios.Count; i += batchSize)
                             {
                                 var batch = extendedAudios.Skip(i).Take(batchSize).ToList();
