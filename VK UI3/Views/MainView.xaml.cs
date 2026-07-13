@@ -792,7 +792,15 @@ namespace VK_UI3.Views
 
         private void NavWiv_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            navigateInvoke();
+            if (args.IsSettingsInvoked)
+            {
+                mainView.hideSearch();
+                frame.Navigate(typeof(Settings.SettingsPage), null, new DrillInNavigationTransitionInfo());
+            }
+            else
+            {
+                navigateInvoke();
+            }
         }
 
         bool lyrClosed = true;
