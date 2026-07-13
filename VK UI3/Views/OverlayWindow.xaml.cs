@@ -75,7 +75,7 @@ namespace VK_UI3.Views
             DispatcherQueue.TryEnqueue(() =>
             {
                 bool isPlaying = sender.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Playing;
-                PlayPauseIcon.Glyph = isPlaying ? "&#xE769;" : "&#xE768;";
+                PlayPauseIcon.Glyph = isPlaying ? "\uE769" : "\uE768";
             });
         }
 
@@ -105,7 +105,7 @@ namespace VK_UI3.Views
                 }
 
                 bool isPlaying = MediaPlayerService.MediaPlayer?.PlaybackSession?.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Playing;
-                PlayPauseIcon.Glyph = isPlaying ? "&#xE769;" : "&#xE768;";
+                PlayPauseIcon.Glyph = isPlaying ? "\uE769" : "\uE768";
 
                 // Update next 5 tracks
                 NextTracks.Clear();
@@ -165,6 +165,22 @@ namespace VK_UI3.Views
             typeof(MediaPlayerService).GetMethod("HandlePreviousTrack", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)?.Invoke(null, null);
         }
 
+        private void NextTracksList_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            if (e.ClickedItem is VkNet.Model.Attachments.Audio audio)
+            {
+                var list = MediaPlayerService.iVKGetAudio?.listAudio;
+                if (list != null)
+                {
+                    var track = list.FirstOrDefault(x => x.audio.Id == audio.Id);
+                    if (track != null)
+                    {
+                        MediaPlayerService.iVKGetAudio.playTrack(track.NumberInList);
+                    }
+                }
+            }
+        }
+
         // Native dragging mechanism
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
@@ -173,9 +189,10 @@ namespace VK_UI3.Views
 
         private void RootGrid_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            var properties = e.GetCurrentPoint(RootGrid).Properties;
+            var properties = e.GetCurrentPoint((UIElement)sender).Properties;
             if (properties.IsLeftButtonPressed)
             {
+                ((UIElement)sender).ReleasePointerCapture(e.Pointer);
                 IntPtr hWnd = WindowNative.GetWindowHandle(this);
                 ReleaseCapture();
                 SendMessage(hWnd, 0xA1, (IntPtr)0x2 /* HTCAPTION */, IntPtr.Zero);
