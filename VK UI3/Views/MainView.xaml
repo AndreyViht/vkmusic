@@ -60,7 +60,6 @@
     <Grid AutomationProperties.Name="Основная сетка приложения" AutomationProperties.HelpText="Основная область компоновки приложения">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid
             Grid.Row="0"
@@ -83,7 +82,7 @@
                 IsPaneOpen="False"
                 IsSettingsVisible="True"
                 ItemInvoked="NavWiv_ItemInvoked"
-                PaneDisplayMode="Top"
+                PaneDisplayMode="LeftCompact"
                 AutomationProperties.Name="Навигационное меню"
                 AutomationProperties.HelpText="Основное меню навигации приложения">
 
@@ -176,12 +175,13 @@
                 AutomationProperties.HelpText="Отображает список треков в текущем плейлисте" />
         </Grid>
         <Frame
-            Grid.Row="1"
+            Grid.Row="0"
             Margin="16,0,16,16"
             CornerRadius="20"
             VerticalAlignment="Bottom"
-            BorderThickness="1"
-            BorderBrush="{ThemeResource SurfaceStrokeColorDefaultBrush}"
+            BorderThickness="0"
+            Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+            BorderBrush="Transparent"
             AutomationProperties.Name="Плеер"
             AutomationProperties.HelpText="Основной музыкальный плеер приложения">
             <custom:AudioPlayer Margin="0" AutomationProperties.Name="Аудио плеер" AutomationProperties.HelpText="Компонент управления воспроизведением музыки" />

@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,10 @@ namespace VK_UI3.Views.LoginWindow
     {
         public void GoBack(ArgSender argSender)
         {
-            base.GoBack();
+            if (this.CanGoBack)
+            {
+                base.GoBack();
+            }
 
             if (this.Content is NavigateArgsSender sender)
             {

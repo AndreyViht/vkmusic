@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Dispatching;
+using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -157,21 +157,25 @@ namespace VK_UI3.VKs.IVK
                                 Count = count
                             }).Result;
                             
-                            ManualResetEvent resetEvent = new ManualResetEvent(false);
-                            
+                            var extendedAudios = new List<ExtendedAudio>();
                             foreach (var item in audios)
                             {
-                                ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                                
-                                DispatcherQueue.TryEnqueue(() =>
-                                {
-                                    listAudio.Add(extendedAudio);
-                                    resetEvent.Set(); // Сигнализирует о завершении задачи
-                                });
-                                
-                                resetEvent.WaitOne(); // Ожидает сигнала о завершении задачи
-                                resetEvent.Reset(); // Сбрасывает событие для следующей итерации
+                                extendedAudios.Add(new ExtendedAudio(item, this));
                             }
+                            
+                            ManualResetEvent resetEvent = new ManualResetEvent(false);
+                            
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                foreach (var item in extendedAudios)
+                                {
+                                    listAudio.Add(item);
+                                }
+                                resetEvent.Set();
+                            });
+                            
+                            resetEvent.WaitOne();
+                            resetEvent.Dispose();
                             
                             if (countTracks == listAudio.Count()) itsAll = true;
                             
@@ -229,21 +233,25 @@ namespace VK_UI3.VKs.IVK
                                 Count = count
                             }).Result;
                             
-                            ManualResetEvent resetEvent = new ManualResetEvent(false);
-                            
+                            var extendedAudios = new List<ExtendedAudio>();
                             foreach (var item in audios)
                             {
-                                ExtendedAudio extendedAudio = new ExtendedAudio(item, this);
-                                
-                                DispatcherQueue.TryEnqueue(() =>
-                                {
-                                    listAudio.Add(extendedAudio);
-                                    resetEvent.Set(); // Сигнализирует о завершении задачи
-                                });
-                                
-                                resetEvent.WaitOne(); // Ожидает сигнала о завершении задачи
-                                resetEvent.Reset(); // Сбрасывает событие для следующей итерации
+                                extendedAudios.Add(new ExtendedAudio(item, this));
                             }
+                            
+                            ManualResetEvent resetEvent = new ManualResetEvent(false);
+                            
+                            DispatcherQueue.TryEnqueue(() =>
+                            {
+                                foreach (var item in extendedAudios)
+                                {
+                                    listAudio.Add(item);
+                                }
+                                resetEvent.Set();
+                            });
+                            
+                            resetEvent.WaitOne();
+                            resetEvent.Dispose();
                             
                             if (countTracks == listAudio.Count()) itsAll = true;
                             
