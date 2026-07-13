@@ -224,7 +224,7 @@ jobs:
         id: get_releases
         run: |
           $headers = @{
-            "Authorization" = "token ${{ secrets.TOKEN }}"
+            "Authorization" = "token ${{ secrets.GITHUB_TOKEN }}"
           }
           $releases = Invoke-RestMethod -Uri "https://api.github.com/repos/${{ github.repository }}/releases" -Headers $headers
           echo "::set-output name=releases::$releases"
@@ -345,7 +345,7 @@ jobs:
         run: |
           $version = "${{ steps.get_version.outputs.VERSION }}"
           $headers = @{
-            "Authorization" = "token ${{ secrets.TOKEN }}"
+            "Authorization" = "token ${{ secrets.GITHUB_TOKEN }}"
             "Accept" = "application/vnd.github.v3+json"
           }
           try {
@@ -369,7 +369,7 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.get_version.outputs.VERSION }}
           name: ${{ github.event.inputs.namevers }}
@@ -385,7 +385,7 @@ jobs:
       - name: Upload zips to release
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: VK_UI3_*.zip
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
@@ -396,7 +396,7 @@ jobs:
       - name: Upload packages to release
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ env.Solution_Name }}/Packages/*
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
