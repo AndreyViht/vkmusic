@@ -397,6 +397,12 @@ namespace VK_UI3.Views
 
                     foreach (var section in catalogs.Catalog.Sections)
                     {
+                        var titleLower = section.Title?.ToLower();
+                        if (titleLower == "обзор" || titleLower == "каталоги" || titleLower == "плейлисты")
+                        {
+                            playlistsCatalogSectionId = section.Id;
+                        }
+
                         var navSet = CreateNavSettings(section, icons);
                         if (navSet != null)
                         {
@@ -940,6 +946,43 @@ namespace VK_UI3.Views
             }
         }
 
+        public static string? playlistsCatalogSectionId = null;
+
+        public static async void OpenCatalogPlaylists()
+        {
+            if (!string.IsNullOrEmpty(playlistsCatalogSectionId))
+            {
+                OpenSection(playlistsCatalogSectionId);
+                return;
+            }
+
+            try
+            {
+                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.ru/audio?section=explore");
+                if (catalog?.Catalog?.DefaultSection != null)
+                {
+                    playlistsCatalogSectionId = catalog.Catalog.DefaultSection;
+                    OpenSection(playlistsCatalogSectionId);
+                    return;
+                }
+            }
+            catch { }
+
+            try
+            {
+                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.ru/audio?section=playlists");
+                if (catalog?.Catalog?.DefaultSection != null)
+                {
+                    playlistsCatalogSectionId = catalog.Catalog.DefaultSection;
+                    OpenSection(playlistsCatalogSectionId);
+                    return;
+                }
+            }
+            catch { }
+
+            OpenPlayListLists(openedPlayList: OpenedPlayList.UserAlbums);
+        }
+
         private void navigateInvokeCustom(string tag)
         {
             navToAnotherPage = true;
@@ -955,7 +998,7 @@ namespace VK_UI3.Views
                     OpenPlayList(-21, AccountsDB.activeAccount.id);
                     break;
                 case "плейлисты":
-                    OpenPlayListLists(openedPlayList: OpenedPlayList.UserAlbums);
+                    OpenCatalogPlaylists();
                     break;
                 case "музыка друзей":
                     OpenMyPage(SectionType.LoadFriends);
@@ -963,12 +1006,13 @@ namespace VK_UI3.Views
                 case "вложения":
                     OpenMyPage(SectionType.ConversDialogs);
                     break;
+                case "поиск":
+                    OpenSearchSection("");
+                    break;
                 case "запросить повторно":
                     CreateNavigation();
                     return;
                 default:
-                    // Here we can't easily resolve Sections because NavMenuController was tied to NavigationView
-                    // but we only support the main tabs here for now.
                     break;
             }
 

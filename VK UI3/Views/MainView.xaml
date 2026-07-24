@@ -146,6 +146,12 @@
                                 <TextBlock Text="Для Вас" Visibility="Collapsed" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
+                        <Button Tag="Поиск" PointerEntered="NavBtn_PointerEntered" PointerExited="NavBtn_PointerExited" Click="NavBtn_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <FontIcon Glyph="&#xE721;" />
+                                <TextBlock Text="Поиск" Visibility="Collapsed" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                         <Button Tag="Параметры" PointerEntered="NavBtn_PointerEntered" PointerExited="NavBtn_PointerExited" Click="NavBtn_Click">
                             <StackPanel Orientation="Horizontal" Spacing="8">
                                 <FontIcon Glyph="&#xE713;" />
