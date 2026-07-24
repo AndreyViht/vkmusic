@@ -365,7 +365,7 @@ jobs:
             echo "exists=false" >> $env:GITHUB_OUTPUT
           }
         shell: pwsh
-        if: github.event.inputs.release == 'true'
+        if: github.event.inputs.release == 'true' || github.event_name == 'push'
       
       - name: Создать релиз
         id: create_release
@@ -374,13 +374,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.get_version.outputs.VERSION }}
-          name: ${{ github.event.inputs.namevers }}
+          name: ${{ github.event.inputs.namevers != '' && github.event.inputs.namevers || format('🚀 Обновление {0} — Верхнее меню и поиск', steps.get_version.outputs.VERSION) }}
           body: |
-            ${{ github.event.inputs.descr }}
+            ${{ github.event.inputs.descr != '' && github.event.inputs.descr || 'В этом обновлении добавлена кнопка поиска в верхнее меню, подборки и рекомендации плейлистов ВКонтакте, а также оптимизирована навигация.' }}
           draft: false
-          prerelease: ${{ github.event.inputs.prerelease == 'true' }}
+          prerelease: false
           generate_release_notes: false
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+        if: steps.check_release.outputs.exists == 'false' && (github.event.inputs.release == 'true' || github.event_name == 'push')
         
       
       # Загрузка zip файлов
@@ -392,7 +392,7 @@ jobs:
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
           file_glob: true
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+        if: steps.check_release.outputs.exists == 'false' && (github.event.inputs.release == 'true' || github.event_name == 'push')
       
       # Загрузка пакетов
       - name: Upload packages to release
@@ -403,7 +403,7 @@ jobs:
           tag: ${{ steps.get_version.outputs.VERSION }}
           overwrite: true
           file_glob: true
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+        if: steps.check_release.outputs.exists == 'false' && (github.event.inputs.release == 'true' || github.event_name == 'push')
 
 
       - name: Отправить сообщение в Telegram
@@ -415,10 +415,14 @@ jobs:
           $telegramBotToken = '${{ secrets.TELEGRAM_BOT_TOKEN }}'
           $telegramChatId = '${{ secrets.TELEGRAM_CHAT_ID }}'
           $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
+          $namevers = '${{ github.event.inputs.namevers }}'
+          if ([string]::IsNullOrEmpty($namevers)) { $namevers = '🚀 Обновление ' + '${{ steps.get_version.outputs.VERSION }}' + ' — Верхнее меню и поиск' }
+          $descr = '${{ github.event.inputs.descr }}'
+          if ([string]::IsNullOrEmpty($descr)) { $descr = 'Добавлен раздел «Поиск» в верхнее меню, подборки и рекомендации плейлистов ВКонтакте.' }
           $message = @"
-          <b>🎉 Новый релиз:</b> ${{ github.event.inputs.namevers }}
+          <b>🎉 Новый релиз:</b> $namevers
           <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
-          <b>📝 Описание:</b> ${{ github.event.inputs.descr }}
+          <b>📝 Описание:</b> $descr
           <b>🔗 <a href='$releaseUrl'>Ссылка на релиз</a></b>
           "@
           $uri = 'https://api.telegram.org/bot' + $telegramBotToken + '/sendMessage'
@@ -429,4 +433,5 @@ jobs:
           }
           $bodyJson = $body | ConvertTo-Json -Compress
           Invoke-RestMethod -Uri $uri -Method Post -Body $bodyJson -ContentType 'application/json'
-        if: steps.check_release.outputs.exists == 'false' && github.event.inputs.release == 'true'
+        if: steps.check_release.outputs.exists == 'false' && (github.event.inputs.release == 'true' || github.event_name == 'push')
+
