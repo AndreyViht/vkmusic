@@ -164,39 +164,34 @@ namespace VK_UI3.Views
         ResponseData res = null;
         private async Task LoadSearchSection(string query)
         {
-
             try
             {
-                if (query == null && nowOpenSearchSug) return;
+                if (string.IsNullOrWhiteSpace(query) && nowOpenSearchSug) return;
 
                 if (res == null)
                     res = await VK.vkService.GetAudioSearchAsync(query);
 
-                if (query == null)
+                if (res?.Catalog?.Sections != null && res.Catalog.Sections.Count > 0)
                 {
-
-                    try
+                    var targetSection = res.Catalog.Sections.FirstOrDefault(s => s.Id == res.Catalog.DefaultSection) ?? res.Catalog.Sections[0];
+                    if (targetSection.Blocks != null)
                     {
-                        res.Catalog.Sections[0].Blocks[1].Suggestions = res.Suggestions;
-                        loadBlocks(res.Catalog.Sections[0].Blocks);
-                        nowOpenSearchSug = true;
+                        loadBlocks(targetSection.Blocks);
                     }
-                    catch (Exception ex)
-                    {
-                        loadBlocks(res.Catalog.Sections[0].Blocks);
-                    }
-
                     return;
                 }
 
-                nowOpenSearchSug = false;
-                loadSection(res.Catalog.DefaultSection);
-
+                if (!string.IsNullOrEmpty(res?.Catalog?.DefaultSection))
+                {
+                    await loadSection(res.Catalog.DefaultSection);
+                }
             }
             catch (Exception ex)
             {
-
-
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    HideLoad();
+                });
             }
         }
 
@@ -205,10 +200,6 @@ namespace VK_UI3.Views
         {
             try
             {
-
-               
-
-
                 await (sectionType switch
                 {
                     SectionType.None => loadSection(section.Id),
@@ -270,8 +261,10 @@ namespace VK_UI3.Views
             catch (Exception e)
             {
                 blockLoad = false;
-               
-                throw e;
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    HideLoad();
+                });
             }
         }
 
@@ -344,18 +337,18 @@ namespace VK_UI3.Views
                 var toReplaceBlockIds = replaces.Replacements.ReplacementsModels.SelectMany(b => b.FromBlockIds)
                     .ToHashSet();
 
-                // Найти блоки, которые нужно заменить
+                // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 var blocksToReplace = blocks.Where(block => toReplaceBlockIds.Contains(block.Id)).ToList();
 
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    // Удалить блоки
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
                     foreach (var block in blocksToReplace)
                     {
                         blocks.Remove(block);
                     }
 
-                    // Добавить новые блоки
+                    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
                     foreach (var block in replaces.Replacements.ReplacementsModels.SelectMany(b => b.ToBlocks))
                     {
                         blocks.Add(block);
@@ -364,7 +357,7 @@ namespace VK_UI3.Views
             }
             catch (Exception ex)
             {
-                // Обработка исключений
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             }
         }
 

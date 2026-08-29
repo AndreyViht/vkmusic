@@ -8,13 +8,15 @@
     xmlns:local="using:VK_UI3.Controls"
     xmlns:customFlyout="using:VK_UI3.Views.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Width="198"
-    Height="250"
-    Margin="3,0,4,0"
-    CornerRadius="8"
+    Width="194"
+    Height="252"
+    Margin="4,0,8,0"
+    CornerRadius="16"
     PointerEntered="UserControl_PointerEntered"
     PointerExited="UserControl_PointerExited"
     PointerPressed="UserControl_PointerPressed"
+    PointerReleased="UserControl_PointerReleased"
+    PointerCanceled="UserControl_PointerCanceled"
     Translation="0,0,8"
     mc:Ignorable="d">
 
@@ -42,25 +44,25 @@
         </customFlyout:CustomFlyout>
     </UserControl.ContextFlyout>
 
-    <Grid Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" CornerRadius="8">
+    <Grid x:Name="CardBackgroundGrid" CornerRadius="16" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
         <Grid.Resources>
-            <!--  Анимация прозрачности от 0 до 1  -->
+            <!-- Анимация прозрачности кнопки Play -->
             <Storyboard x:Name="FadeInAnimationGridPlayIcon">
                 <DoubleAnimation
                     Storyboard.TargetName="btnGrid"
                     Storyboard.TargetProperty="Opacity"
                     To="1"
-                    Duration="0:0:0.25" />
+                    Duration="0:0:0.2" />
             </Storyboard>
-            <!--  Анимация прозрачности от 1 до 0  -->
             <Storyboard x:Name="FadeOutAnimationGridPlayIcon">
                 <DoubleAnimation
                     Storyboard.TargetName="btnGrid"
                     Storyboard.TargetProperty="Opacity"
                     To="0"
-                    Duration="0:0:0.25" />
+                    Duration="0:0:0.2" />
             </Storyboard>
 
+            <!-- Анимация появления обложки -->
             <Storyboard x:Name="FadeInAnimationGrid">
                 <DoubleAnimation
                     Storyboard.TargetName="fadeOp"
@@ -68,85 +70,110 @@
                     To="1"
                     Duration="0:0:0.25" />
             </Storyboard>
-            <!--  Анимация прозрачности от 1 до 0  -->
             <Storyboard x:Name="FadeOutAnimationGrid">
                 <DoubleAnimation
                     Storyboard.TargetName="fadeOp"
                     Storyboard.TargetProperty="Opacity"
                     To="0"
-                    Duration="0:0:0.25" />
+                    Duration="0:0:0.2" />
             </Storyboard>
-
-
         </Grid.Resources>
 
-
-        <Grid>
-            <FontIcon Glyph="&#xE90B;" AutomationProperties.Name="Обложка плейлиста" />
-            <Grid
-                x:Name="fadeOp"
-                Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                Opacity="0">
-                <custom:GridImagesCustom x:Name="GridThumbs" AutomationProperties.Name="Изображения плейлиста">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                </custom:GridImagesCustom>
-            </Grid>
+        <!-- Подложка с обложками -->
+        <Grid x:Name="fadeOp" Opacity="0" CornerRadius="16">
+            <custom:GridImagesCustom x:Name="GridThumbs" CornerRadius="16" AutomationProperties.Name="Изображения плейлиста">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+            </custom:GridImagesCustom>
         </Grid>
 
-        <Grid Padding="10">
-            <StackPanel HorizontalAlignment="Left" Orientation="Vertical">
+        <!-- Градиентное затемнение для читаемости текста -->
+        <Border CornerRadius="16">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#55000000" Offset="0.0" />
+                    <GradientStop Color="#00000000" Offset="0.45" />
+                    <GradientStop Color="#90000000" Offset="1.0" />
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <!-- Контент карточки -->
+        <Grid Padding="14">
+            <!-- Верхняя часть: Название и описание -->
+            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Spacing="4">
                 <TextBlock
-                    FontSize="20"
                     x:Name="Title"
-                    TextWrapping="Wrap" AutomationProperties.Name="Название плейлиста" />
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    TextWrapping="Wrap"
+                    MaxLines="2"
+                    TextTrimming="CharacterEllipsis"
+                    AutomationProperties.Name="Название плейлиста" />
                 <TextBlock
                     x:Name="Subtitle"
-                    TextWrapping="Wrap" AutomationProperties.Name="Описание плейлиста" />
+                    FontSize="12"
+                    FontWeight="Normal"
+                    Foreground="#E0FFFFFF"
+                    TextWrapping="Wrap"
+                    MaxLines="3"
+                    TextTrimming="CharacterEllipsis"
+                    AutomationProperties.Name="Описание плейлиста" />
             </StackPanel>
 
-            <SymbolIcon
-                Width="24"
-                Height="24"
+            <!-- Нижняя часть: Иконка типа и кнопка воспроизведения -->
+            <FontIcon
+                Glyph="&#xE93C;"
+                FontSize="16"
+                Foreground="#B0FFFFFF"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
-                Symbol="List" AutomationProperties.Name="Иконка списка" />
+                AutomationProperties.Name="Иконка плейлиста" />
+
             <Grid
                 x:Name="btnGrid"
-                Width="50"
-                Height="50"
+                Width="46"
+                Height="46"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
-                Background="{ThemeResource SystemControlBackgroundAltMediumHighBrush}"
-                CornerRadius="100"
+                Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+                CornerRadius="23"
                 Opacity="0">
                 <Button
-                    Width="50"
-                    Height="50"
+                    Width="46"
+                    Height="46"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Click="Button_Click"
-                    CornerRadius="50"
-                    Opacity="1"
-                    Translation="0,0,8">
+                    CornerRadius="23"
+                    Padding="0"
+                    Background="Transparent"
+                    BorderThickness="0">
                     <FontIcon
                         x:Name="PlayPause"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Glyph="&#xF5B0;" AutomationProperties.Name="Кнопка воспроизведения" />
+                        FontSize="18"
+                        Glyph="&#xF5B0;"
+                        AutomationProperties.Name="Кнопка воспроизведения" />
                 </Button>
             </Grid>
         </Grid>
 
-
-
-
+        <!-- Тонкая рамка при наведении -->
+        <Border
+            x:Name="HoverBorder"
+            BorderThickness="1"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            CornerRadius="16"
+            IsHitTestVisible="False"
+            Opacity="0.4" />
     </Grid>
 </UserControl>

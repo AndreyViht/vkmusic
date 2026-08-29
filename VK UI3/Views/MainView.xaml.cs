@@ -402,6 +402,10 @@ namespace VK_UI3.Views
                         {
                             playlistsCatalogSectionId = section.Id;
                         }
+                        if (titleLower == "главная" || titleLower == "для вас" || titleLower == "рекомендации" || titleLower == "собрано алгоритмами")
+                        {
+                            forYouCatalogSectionId = section.Id;
+                        }
 
                         var navSet = CreateNavSettings(section, icons);
                         if (navSet != null)
@@ -947,6 +951,77 @@ namespace VK_UI3.Views
         }
 
         public static string? playlistsCatalogSectionId = null;
+        public static string? forYouCatalogSectionId = null;
+
+        public static async void OpenForYouSection()
+        {
+            if (!string.IsNullOrEmpty(forYouCatalogSectionId))
+            {
+                OpenSection(forYouCatalogSectionId);
+                return;
+            }
+
+            try
+            {
+                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.ru/audio?section=recomms");
+                if (catalog?.Catalog?.DefaultSection != null)
+                {
+                    forYouCatalogSectionId = catalog.Catalog.DefaultSection;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
+                if (catalog?.Catalog?.Sections?.Count > 0)
+                {
+                    forYouCatalogSectionId = catalog.Catalog.Sections[0].Id;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
+            }
+            catch { }
+
+            try
+            {
+                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.ru/audio?section=feed");
+                if (catalog?.Catalog?.DefaultSection != null)
+                {
+                    forYouCatalogSectionId = catalog.Catalog.DefaultSection;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
+                if (catalog?.Catalog?.Sections?.Count > 0)
+                {
+                    forYouCatalogSectionId = catalog.Catalog.Sections[0].Id;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
+            }
+            catch { }
+
+            try
+            {
+                var catalog = await VK.vkService.GetAudioCatalogAsync();
+                var mainSec = catalog?.Catalog?.Sections?.FirstOrDefault(s =>
+                    s.Title?.ToLower() == "главная" ||
+                    s.Title?.ToLower() == "для вас" ||
+                    s.Title?.ToLower() == "рекомендации" ||
+                    s.Title?.ToLower() == "собрано алгоритмами");
+                if (mainSec != null)
+                {
+                    forYouCatalogSectionId = mainSec.Id;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
+                if (catalog?.Catalog?.DefaultSection != null)
+                {
+                    forYouCatalogSectionId = catalog.Catalog.DefaultSection;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
+            }
+            catch { }
+
+            OpenPlayList(-21, AccountsDB.activeAccount.id);
+        }
 
         public static async void OpenCatalogPlaylists()
         {
@@ -995,7 +1070,7 @@ namespace VK_UI3.Views
                     OpenPlayListLists(openedPlayList: OpenedPlayList.UserPlayList);
                     break;
                 case "для вас":
-                    OpenPlayList(-21, AccountsDB.activeAccount.id);
+                    OpenForYouSection();
                     break;
                 case "плейлисты":
                     OpenCatalogPlaylists();

@@ -374,9 +374,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.get_version.outputs.VERSION }}
-          name: ${{ github.event.inputs.namevers != '' && github.event.inputs.namevers || format('🚀 Обновление {0} — Верхнее меню и поиск', steps.get_version.outputs.VERSION) }}
+          name: ${{ github.event.inputs.namevers != '' && github.event.inputs.namevers || format('🚀 Обновление {0} — Исправление поиска и раздел «Для вас»', steps.get_version.outputs.VERSION) }}
           body: |
-            ${{ github.event.inputs.descr != '' && github.event.inputs.descr || 'В этом обновлении добавлена кнопка поиска в верхнее меню, подборки и рекомендации плейлистов ВКонтакте, а также оптимизирована навигация.' }}
+            ${{ github.event.inputs.descr != '' && github.event.inputs.descr || 'В этом обновлении исправлено падение при поиске песен, раздел «Для вас» переведён в полный каталог рекомендаций ВК («Собрано алгоритмами») с выбором плейлистов, и обновлен дизайн карточек рекомендаций.' }}
           draft: false
           prerelease: false
           generate_release_notes: false
@@ -421,9 +421,9 @@ jobs:
           }
           $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
           $namevers = '${{ github.event.inputs.namevers }}'
-          if ([string]::IsNullOrEmpty($namevers)) { $namevers = '🚀 Обновление ' + '${{ steps.get_version.outputs.VERSION }}' + ' — Верхнее меню и поиск' }
+          if ([string]::IsNullOrEmpty($namevers)) { $namevers = '🚀 Обновление ' + '${{ steps.get_version.outputs.VERSION }}' + ' — Исправление поиска и раздел «Для вас»' }
           $descr = '${{ github.event.inputs.descr }}'
-          if ([string]::IsNullOrEmpty($descr)) { $descr = 'Добавлен раздел «Поиск» в верхнее меню, подборки и рекомендации плейлистов ВКонтакте.' }
+          if ([string]::IsNullOrEmpty($descr)) { $descr = 'Исправлено падение при поиске песен, раздел «Для вас» переведён в каталог рекомендаций ВК («Собрано алгоритмами»), обновлён дизайн карточек.' }
           $message = @"
           <b>🎉 Новый релиз:</b> $namevers
           <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}

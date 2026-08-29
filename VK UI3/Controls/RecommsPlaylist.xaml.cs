@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -205,30 +205,74 @@ namespace VK_UI3.Controls
             update();
         }
 
+        private void SetFallbackGradient(string title)
+        {
+            var brush = new Microsoft.UI.Xaml.Media.LinearGradientBrush
+            {
+                StartPoint = new Windows.Foundation.Point(0, 0),
+                EndPoint = new Windows.Foundation.Point(1, 1)
+            };
+
+            var t = title?.ToLower() ?? "";
+            if (t.Contains("для вас"))
+            {
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 132, 255), Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 80, 200), Offset = 0.5 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 10, 30, 120), Offset = 1.0 });
+            }
+            else if (t.Contains("открыти"))
+            {
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 233, 30, 99), Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 171, 71, 188), Offset = 0.5 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 106, 27, 154), Offset = 1.0 });
+            }
+            else if (t.Contains("новинк"))
+            {
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 180, 216), Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 119, 182), Offset = 0.5 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 3, 4, 94), Offset = 1.0 });
+            }
+            else if (t.Contains("дня"))
+            {
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 142, 36, 170), Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 94, 53, 177), Offset = 0.5 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 49, 27, 146), Offset = 1.0 });
+            }
+            else
+            {
+                int hash = Math.Abs(t.GetHashCode());
+                byte r1 = (byte)(40 + (hash % 160));
+                byte g1 = (byte)(40 + ((hash / 3) % 160));
+                byte b1 = (byte)(110 + ((hash / 7) % 140));
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, r1, g1, b1), Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, (byte)(r1 / 2), (byte)(g1 / 2), (byte)(b1 / 2)), Offset = 1.0 });
+            }
+
+            CardBackgroundGrid.Background = brush;
+        }
+
         public void update()
         {
-
             AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
 
             if (_PlayList.Description != null)
             {
                 descrAnim.ChangeTextWithAnimation(_PlayList.Description);
             }
-            else
-            if (_PlayList.MainArtists != null && _PlayList.MainArtists.Count != 0)
+            else if (_PlayList.MainArtists != null && _PlayList.MainArtists.Count != 0)
+            {
                 descrAnim.ChangeTextWithAnimation(_PlayList.MainArtists[0].Name);
+            }
 
             titleAnim.ChangeTextWithAnimation(_PlayList.Title);
 
-
-
-
+            SetFallbackGradient(_PlayList.Title);
 
             if (_PlayList.Cover != null)
             {
                 GridThumbs.AddImagesToGrid(_PlayList.Cover);
             }
-            else if (_PlayList.Thumbs != null)
+            else if (_PlayList.Thumbs != null && _PlayList.Thumbs.Count > 0)
             {
                 int count = _PlayList.Thumbs.Count;
                 int index = 0;
@@ -236,12 +280,13 @@ namespace VK_UI3.Controls
                 foreach (var item in _PlayList.Thumbs)
                 {
                     string photo = item.Photo600 ?? item.Photo1200 ?? item.Photo300 ?? item.Photo34 ?? item.Photo270 ?? item.Photo135 ?? item.Photo68;
-                    list.Add(photo);
+                    if (!string.IsNullOrEmpty(photo))
+                        list.Add(photo);
                     index++;
                 }
-                GridThumbs.AddImagesToGrid(list);
+                if (list.Count > 0)
+                    GridThumbs.AddImagesToGrid(list);
             }
-
 
             updateAddedBTN();
             updatePlayState();
@@ -256,10 +301,8 @@ namespace VK_UI3.Controls
                 bool canEdit = _PlayList.Permissions.Edit;
                 bool canDelete = _PlayList.Permissions.Delete;
 
-
                 editAlbum.Visibility = canEdit ? Visibility.Visible : Visibility.Collapsed;
                 DeleteAlbum.Visibility = canDelete ? Visibility.Visible : Visibility.Collapsed;
-
 
                 AddRemove.Visibility = Visibility.Visible;
 
@@ -270,20 +313,18 @@ namespace VK_UI3.Controls
                     AddRemove.Visibility = Visibility.Collapsed;
 
                 if (AddRemove.Visibility != Visibility.Collapsed)
+                {
                     if (!_PlayList.IsFollowing && _PlayList.OwnerId != AccountsDB.activeAccount.id)
                     {
-                        AddRemove.Text = "�������� � ����";
+                        AddRemove.Text = "Добавить к себе";
                         AddRemove.Icon = new SymbolIcon(Symbol.Add);
                     }
                     else
                     {
-                        AddRemove.Text = "����������";
+                        AddRemove.Text = "Удалить";
                         AddRemove.Icon = new SymbolIcon(Symbol.Delete);
-
-
                     }
-
-
+                }
             });
         }
 
@@ -291,6 +332,9 @@ namespace VK_UI3.Controls
         private void UserControl_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
             entered = true;
+            this.Scale = new System.Numerics.Vector3(1.02f, 1.02f, 1.0f);
+            this.Translation = new System.Numerics.Vector3(0, -2, 10);
+            HoverBorder.Opacity = 0.9;
             FadeOutAnimationGridPlayIcon.Pause();
             FadeInAnimationGridPlayIcon.Begin();
         }
@@ -298,6 +342,9 @@ namespace VK_UI3.Controls
         private void UserControl_PointerExited(object sender, PointerRoutedEventArgs e)
         {
             entered = false;
+            this.Scale = new System.Numerics.Vector3(1.0f, 1.0f, 1.0f);
+            this.Translation = new System.Numerics.Vector3(0, 0, 8);
+            HoverBorder.Opacity = 0.4;
             if (!isThisPlayList_Now_Play)
             {
                 FadeInAnimationGridPlayIcon.Pause();
@@ -309,6 +356,7 @@ namespace VK_UI3.Controls
         {
             if (e.GetCurrentPoint(sender as UIElement).Properties.IsLeftButtonPressed)
             {
+                this.Scale = new System.Numerics.Vector3(0.98f, 0.98f, 1.0f);
                 if (iVKGetAudio == null)
                     MainView.OpenPlayList(_PlayList);
                 else
@@ -318,6 +366,15 @@ namespace VK_UI3.Controls
             }
         }
 
+        private void UserControl_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            this.Scale = entered ? new System.Numerics.Vector3(1.02f, 1.02f, 1.0f) : new System.Numerics.Vector3(1.0f, 1.0f, 1.0f);
+        }
+
+        private void UserControl_PointerCanceled(object sender, PointerRoutedEventArgs e)
+        {
+            this.Scale = new System.Numerics.Vector3(1.0f, 1.0f, 1.0f);
+        }
 
         IVKGetAudio iVKGetAudio = null;
 

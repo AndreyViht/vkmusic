@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Exceptions.Boom;
 using MusicX.Core.Models;
@@ -140,37 +140,33 @@ namespace VK_UI3.Views
         {
             try
             {
-                if (query == null)
+                if (string.IsNullOrWhiteSpace(query))
                     return;
 
                 var res = await VK.vkService.GetAudioSearchAsync(query);
 
-                if (query == null)
+                if (res?.Catalog?.Sections != null && res.Catalog.Sections.Count > 0)
                 {
-
-                    try
+                    var targetSection = res.Catalog.Sections.FirstOrDefault(s => s.Id == res.Catalog.DefaultSection) ?? res.Catalog.Sections[0];
+                    this.waitParameters.section = targetSection;
+                    this.DispatcherQueue.TryEnqueue(() =>
                     {
-                        res.Catalog.Sections[0].Blocks[1].Suggestions = res.Suggestions;
-                        // loadBlocks(res.Catalog.Sections[0].Blocks);
-                        //   nowOpenSearchSug = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        // frameSection.Navigate(typeof(SectionView), section, new DrillInNavigationTransitionInfo());
-                        // loadBlocks(res.Catalog.Sections[0].Blocks);
-                    }
-                    frameSection.Navigate(typeof(SectionView), res.Catalog.Sections[0], GetNavigationTransitionInfo());
+                        frameSection.Navigate(typeof(SectionView), targetSection, GetNavigationTransitionInfo());
+                    });
                     return;
                 }
 
-                // nowOpenSearchSug = false;
-
-                loadSection(res.Catalog.DefaultSection);
+                if (!string.IsNullOrEmpty(res?.Catalog?.DefaultSection))
+                {
+                    await loadSection(res.Catalog.DefaultSection);
+                }
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                this.DispatcherQueue.TryEnqueue(() =>
+                {
+                    frameSection.Navigate(typeof(ErrorPage), ex, GetNavigationTransitionInfo());
+                });
             }
         }
 
@@ -428,15 +424,21 @@ namespace VK_UI3.Views
                 try
                 {
                     var sectin = await VK.vkService.GetSectionAsync(sectionID);
-                    this.waitParameters.section = sectin.Section;
-                    this.DispatcherQueue.TryEnqueue(() =>
+                    if (sectin?.Section != null)
                     {
-                        frameSection.Navigate(typeof(SectionView), waitParameters.section, new DrillInNavigationTransitionInfo());
-                    });
+                        this.waitParameters.section = sectin.Section;
+                        this.DispatcherQueue.TryEnqueue(() =>
+                        {
+                            frameSection.Navigate(typeof(SectionView), waitParameters.section, GetNavigationTransitionInfo());
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    this.DispatcherQueue.TryEnqueue(() =>
+                    {
+                        frameSection.Navigate(typeof(ErrorPage), ex, GetNavigationTransitionInfo());
+                    });
                 }
             });
         }

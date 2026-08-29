@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using MusicX.Core.Models;
 using MusicX.Core.Models.General;
 using MusicX.Core.Services;
@@ -71,12 +71,27 @@ public class CustomSectionsService : ICustomSectionsService
 
     private async Task<Section> GetSearchSectionAsync()
     {
-        var vkService = StaticService.Container.GetRequiredService<VkService>();
-        var response = await vkService.GetAudioSearchAsync();
+        try
+        {
+            var vkService = StaticService.Container.GetRequiredService<VkService>();
+            var response = await vkService.GetAudioSearchAsync();
 
-        response.Catalog.Sections[0].Blocks[1].Suggestions = response.Suggestions;
+            if (response?.Catalog?.Sections != null && response.Catalog.Sections.Count > 0)
+            {
+                var section = response.Catalog.Sections[0];
+                if (section.Blocks != null && section.Blocks.Count > 1 && response.Suggestions != null)
+                {
+                    section.Blocks[1].Suggestions = response.Suggestions;
+                }
+                return section;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex, "Error getting search section");
+        }
 
-        return response.Catalog.Sections[0];
+        return new Section { Id = "search", Blocks = new List<Block>() };
     }
 
     private async Task<ResponseData> GetAttachmentsSectionAsync(string id, string? startFrom)
