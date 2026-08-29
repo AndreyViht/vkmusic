@@ -219,6 +219,7 @@ namespace VK_UI3
             VK.api.RequestsPerSecond = 150;
             CheckMica();
             updateMica += OnUpdateMica;
+            AppThemeService.Initialize();
 
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
             m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark)

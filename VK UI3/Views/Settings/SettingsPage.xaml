@@ -122,15 +122,9 @@
                         </Border>
                             <local:SnowflakesSettingsExpander AutomationProperties.HelpText="Настройки анимации снежинок" AutomationProperties.Name="Настройки снежинок" />
                      
-                        <Border>
-                            <StackPanel Orientation="Horizontal" Spacing="15">
-                                <FontIcon Glyph="&#xE790;" FontSize="18" />
-                                <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Тема оформления" FontWeight="SemiBold" />
-                                    <TextBlock Text="Дополнительные возможности кастомизации будут доступны в следующих обновлениях." FontSize="12" Opacity="0.6" TextWrapping="Wrap" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
+                        <local:ThemeSettingsExpander
+                            AutomationProperties.HelpText="Настройки темы оформления и цветового акцента приложения"
+                            AutomationProperties.Name="Настройки темы оформления" />
                         <Border>
                             <local:HighlightPlayedTracks AutomationProperties.HelpText="Выделяет цветом треки, которые были полностью прослушаны" AutomationProperties.Name="Выделять полностью прослушанные треки" />
                         </Border>

@@ -374,9 +374,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.get_version.outputs.VERSION }}
-          name: ${{ github.event.inputs.namevers != '' && github.event.inputs.namevers || format('🚀 Обновление {0} — Исправления дизайна и отступов', steps.get_version.outputs.VERSION) }}
+          name: ${{ github.event.inputs.namevers != '' && github.event.inputs.namevers || format('🚀 Обновление {0} — Темы оформления и цветовые акценты', steps.get_version.outputs.VERSION) }}
           body: |
-            ${{ github.event.inputs.descr != '' && github.event.inputs.descr || 'В этом обновлении исправлено затемнение окна и сброс эффектов при изменении размера (переход на стабильный MicaBackdrop), исправлен отступ снизу в плейлистах (плеер больше не перекрывает последние треки).' }}
+            ${{ github.event.inputs.descr != '' && github.event.inputs.descr || 'В этом обновлении добавлена полноценная кастомизация тем оформления: Тёмная, Светлая, OLED Чёрный и Системная, а также богатая палитра акцентов (ВКонтакте Синий, Розово-пурпурный неон, Золото & Чёрный, Изумрудный, Киберпанк, Закат, Бирюзовый и Монохром).' }}
           draft: false
           prerelease: false
           generate_release_notes: false
@@ -421,9 +421,9 @@ jobs:
           }
           $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
           $namevers = '${{ github.event.inputs.namevers }}'
-          if ([string]::IsNullOrEmpty($namevers)) { $namevers = '🚀 Обновление ' + '${{ steps.get_version.outputs.VERSION }}' + ' — Исправления дизайна и отступов' }
+          if ([string]::IsNullOrEmpty($namevers)) { $namevers = '🚀 Обновление ' + '${{ steps.get_version.outputs.VERSION }}' + ' — Темы оформления и цветовые акценты' }
           $descr = '${{ github.event.inputs.descr }}'
-          if ([string]::IsNullOrEmpty($descr)) { $descr = 'Исправлено затемнение окна при ресайзе, добавлен нижний отступ для плейлистов (плеер не закрывает треки).' }
+          if ([string]::IsNullOrEmpty($descr)) { $descr = 'Добавлен выбор тем оформления (Тёмная, Светлая, OLED Чёрная, Системная) и цветовых акцентов (ВК Синий, Розово-пурпурный, Золото, Изумруд, Киберпанк и др.).' }
           $message = @"
           <b>🎉 Новый релиз:</b> $namevers
           <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}
