@@ -87,7 +87,7 @@ namespace VK_UI3.Controllers
             }
         }
 
-        public ExtendedAudio TrackDataThis => _TrackDataThisGet().Result;
+        public ExtendedAudio TrackDataThis => VK_UI3.Services.MediaPlayerService.PlayingTrack ?? VK_UI3.Services.MediaPlayerService._trackDataThis;
 
         public string Thumbnail
         {
@@ -355,13 +355,34 @@ namespace VK_UI3.Controllers
             if (isManualChange)
             {
                 SliderPositionMs = (long)e.NewValue;
-                VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(e.NewValue);
+                TrackPositionMs = (long)e.NewValue;
             }
         }
 
         private void VolumeSlider_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
-            isManualChange = false;
+            if (isManualChange)
+            {
+                isManualChange = false;
+                try
+                {
+                    VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(VolumeSlider.Value);
+                }
+                catch { }
+            }
+        }
+
+        private void VolumeSlider_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
+        {
+            if (isManualChange)
+            {
+                isManualChange = false;
+                try
+                {
+                    VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(VolumeSlider.Value);
+                }
+                catch { }
+            }
         }
 
         private void VolumeSlider_PointerEntered(object sender, PointerRoutedEventArgs e)
@@ -371,8 +392,16 @@ namespace VK_UI3.Controllers
 
         private void VolumeSlider_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            isManualChange = false;
-            SliderPositionMs = TrackPositionMs;
+            if (isManualChange)
+            {
+                isManualChange = false;
+                try
+                {
+                    VK_UI3.Services.MediaPlayerService.MediaPlayer.PlaybackSession.Position = TimeSpan.FromMilliseconds(VolumeSlider.Value);
+                }
+                catch { }
+                SliderPositionMs = TrackPositionMs;
+            }
         }
 
         private void SoundSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)

@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Media.Animation;
 using MusicX.Services.Player.Sources;
 using System;
@@ -553,86 +553,36 @@ namespace VK_UI3.Services
             AudioPlayedChangeEvent?.Invoke(trackdata, EventArgs.Empty);
         }
 
-        private static readonly object _trackSwitchLock = new object();
-        private static DateTime _lastTrackSwitchTime = DateTime.MinValue;
-
         public static void PlayNextTrack()
         {
-            // Более надежный debounce с блокировкой
-            if (!Monitor.TryEnter(_trackSwitchLock))
+            MainWindow.mainWindow.DispatcherQueue.TryEnqueue(async () =>
             {
-                System.Diagnostics.Debug.WriteLine("[TrackSwitch] PlayNextTrack blocked by lock");
-                return;
-            }
-
-            try
-            {
-                var now = DateTime.Now;
-                if ((now - _lastTrackSwitchTime).TotalMilliseconds < MEDIA_KEY_DEBOUNCE_MS)
+                try
                 {
-                    System.Diagnostics.Debug.WriteLine("[TrackSwitch] PlayNextTrack debounced");
-                    return;
+                    iVKGetAudio?.setNextTrackForPlay();
+                    await PlayTrack();
                 }
-
-                _lastTrackSwitchTime = now;
-
-                MainWindow.mainWindow.DispatcherQueue.TryEnqueue(async () =>
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        iVKGetAudio?.setNextTrackForPlay();
-                        await PlayTrack();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Error in PlayNextTrack: {ex.Message}");
-                    }
-                });
-            }
-            finally
-            {
-                Monitor.Exit(_trackSwitchLock);
-            }
+                    System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Error in PlayNextTrack: {ex.Message}");
+                }
+            });
         }
-
 
         public static void PlayPreviousTrack()
         {
-            // Используем ту же блокировку, что и для PlayNextTrack
-            if (!Monitor.TryEnter(_trackSwitchLock))
+            MainWindow.mainWindow.DispatcherQueue.TryEnqueue(async () =>
             {
-                System.Diagnostics.Debug.WriteLine("[TrackSwitch] PlayPreviousTrack blocked by lock");
-                return;
-            }
-
-            try
-            {
-                var now = DateTime.Now;
-                if ((now - _lastTrackSwitchTime).TotalMilliseconds < MEDIA_KEY_DEBOUNCE_MS)
+                try
                 {
-                    System.Diagnostics.Debug.WriteLine("[TrackSwitch] PlayPreviousTrack debounced");
-                    return;
+                    iVKGetAudio?.setPreviusTrackForPlay();
+                    await PlayTrack();
                 }
-
-                _lastTrackSwitchTime = now;
-
-                MainWindow.mainWindow.DispatcherQueue.TryEnqueue(async () =>
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        iVKGetAudio?.setPreviusTrackForPlay();
-                        await PlayTrack();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Error in PlayPreviousTrack: {ex.Message}");
-                    }
-                });
-            }
-            finally
-            {
-                Monitor.Exit(_trackSwitchLock);
-            }
+                    System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Error in PlayPreviousTrack: {ex.Message}");
+                }
+            });
         }
 
 
@@ -700,47 +650,65 @@ namespace VK_UI3.Services
             }
         }
 
+        private static int _currentPlayRequestId = 0;
         private static readonly SemaphoreSlim _playTrackSemaphore = new SemaphoreSlim(1, 1);
 
-        private async static Task PlayTrack(long? v = 0, TimeSpan? position = null)
+        private static async Task PlayTrack(long? v = 0, TimeSpan? position = null)
         {
-            // Ограничиваем количество одновременных вызовов PlayTrack
-            if (!await _playTrackSemaphore.WaitAsync(TimeSpan.FromMilliseconds(500)))
-            {
-                System.Diagnostics.Debug.WriteLine("[TrackSwitch] PlayTrack semaphore timeout");
+            if (iVKGetAudio == null)
                 return;
-            }
+
+            int thisRequestId = Interlocked.Increment(ref _currentPlayRequestId);
 
             try
             {
-                if (iVKGetAudio == null)
-                    return;
-
                 _tokenSource?.Cancel();
-                _tokenSource?.Dispose();
-                _tokenSource = new();
+            }
+            catch { }
 
-                // Отменяем предзагрузку предыдущего следующего трека
+            try
+            {
                 _nextTrackTokenSource?.Cancel();
+            }
+            catch { }
+
+            await _playTrackSemaphore.WaitAsync();
+
+            try
+            {
+                if (thisRequestId != _currentPlayRequestId)
+                {
+                    System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Request {thisRequestId} superseded by {_currentPlayRequestId}");
+                    return;
+                }
+
+                _tokenSource?.Dispose();
+                _tokenSource = new CancellationTokenSource();
+
                 _nextTrackTokenSource?.Dispose();
                 _nextTrack = null;
-                _mediaPlayer.Position = new TimeSpan(0);
-                _mediaPlayer.Source = null;
-
-                await EnsureTrackListLoaded();
-
-                if (iVKGetAudio.listAudio.Count == 0) return;
 
                 if (v != null && iVKGetAudio.currentTrack == null)
                     iVKGetAudio.currentTrack = (long)v;
 
+                await EnsureTrackListLoaded();
+
+                if (thisRequestId != _currentPlayRequestId) return;
+                if (iVKGetAudio.listAudio.Count == 0) return;
+
                 var trackdata = await _TrackDataThisGet(true);
-                if (trackdata == null)
+                if (trackdata == null || thisRequestId != _currentPlayRequestId)
                     return;
 
-                SendPlaybackStatistics(trackdata);
-                SendVKStartEvent(trackdata);
-                UpdateSystemMediaDisplay(PlayingTrack);
+                _ = Task.Run(() =>
+                {
+                    try
+                    {
+                        SendPlaybackStatistics(trackdata);
+                        SendVKStartEvent(trackdata);
+                    }
+                    catch { }
+                });
 
                 if (ShouldSkipTrack(trackdata))
                 {
@@ -748,7 +716,15 @@ namespace VK_UI3.Services
                     return;
                 }
 
-                await LoadAndPlayTrack(trackdata, position);
+                await LoadAndPlayTrack(trackdata, position, thisRequestId);
+            }
+            catch (OperationCanceledException)
+            {
+                System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Track {thisRequestId} cancelled");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Error in PlayTrack: {ex.Message}");
             }
             finally
             {
@@ -812,8 +788,9 @@ namespace VK_UI3.Services
                    new DB.SkipPerformerDB().skipIsSet(trackdata.audio.Artist);
         }
 
-        private static async Task LoadAndPlayTrack(ExtendedAudio trackdata, TimeSpan? position)
+        private static async Task LoadAndPlayTrack(ExtendedAudio trackdata, TimeSpan? position, int requestId)
         {
+            if (requestId != _currentPlayRequestId) return;
             System.Diagnostics.Debug.WriteLine($"[TrackSwitch] LoadAndPlayTrack started for track: {trackdata.audio.Title}");
 
             // Освобождаем предыдущие ресурсы перед загрузкой нового трека
@@ -822,23 +799,12 @@ namespace VK_UI3.Services
                 oldItem.AudioTracksChanged -= MediaPlaybackItem_AudioTracksChanged;
                 oldItem.TimedMetadataTracksChanged -= MediaPlaybackItem_TimedMetadataTracksChanged;
             }
-            
-            // Создаем новый CancellationToken для этой операции
-            var loadCancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30));
 
             try
             {
-                var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(trackdata.audio.Url.ToString()));
-                var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
-
-                // Подписываемся на события для корректной очистки
-                mediaPlaybackItem.AudioTracksChanged += MediaPlaybackItem_AudioTracksChanged;
-                mediaPlaybackItem.TimedMetadataTracksChanged += MediaPlaybackItem_TimedMetadataTracksChanged;
-
                 PlayingTrack = trackdata;
+                _trackDataThis = trackdata;
                 _mediaPlayer.Pause();
-
-                System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Before LoadWithMediaSources/LoadBasicMediaItem");
 
                 bool ffmpegExists = new CheckFFmpeg().IsExist();
                 bool useFfmpeg = true;
@@ -856,28 +822,35 @@ namespace VK_UI3.Services
                 else
                 {
                     System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Using basic media item path");
+                    var mediaSource = Windows.Media.Core.MediaSource.CreateFromUri(new Uri(trackdata.audio.Url.ToString()));
+                    var mediaPlaybackItem = new Windows.Media.Playback.MediaPlaybackItem(mediaSource);
+                    mediaPlaybackItem.AudioTracksChanged += MediaPlaybackItem_AudioTracksChanged;
+                    mediaPlaybackItem.TimedMetadataTracksChanged += MediaPlaybackItem_TimedMetadataTracksChanged;
                     LoadBasicMediaItem(trackdata, mediaPlaybackItem);
                 }
 
-                System.Diagnostics.Debug.WriteLine($"[TrackSwitch] After LoadWithMediaSources/LoadBasicMediaItem");
+                if (requestId != _currentPlayRequestId) return;
 
                 if (position != null)
                 {
-                    _mediaPlayer.Position = new TimeSpan(0);
+                    _mediaPlayer.Position = position.Value;
+                }
+                else
+                {
+                    _mediaPlayer.Position = TimeSpan.Zero;
                 }
 
                 iVKGetAudio.ChangePlayAudio(trackdata);
                 NotifyAudioPlayedChange(trackdata);
-
-                // Обновить отображение в SystemMediaTransportControls
                 UpdateSystemMediaDisplay(trackdata);
 
                 _mediaPlayer.Play();
 
                 System.Diagnostics.Debug.WriteLine($"[TrackSwitch] LoadAndPlayTrack completed for track: {trackdata.audio.Title}");
-
-                // Начинаем предзагрузку следующего трека
-                //_ = PreloadNextTrack();
+            }
+            catch (OperationCanceledException)
+            {
+                System.Diagnostics.Debug.WriteLine($"[TrackSwitch] LoadAndPlayTrack cancelled for: {trackdata.audio.Title}");
             }
             catch (Exception ex)
             {
