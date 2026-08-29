@@ -4,6 +4,8 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using VK_UI3.Controllers;
 using VK_UI3.DB;

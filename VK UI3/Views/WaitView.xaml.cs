@@ -3,6 +3,8 @@ using Microsoft.UI.Xaml.Navigation;
 using MusicX.Core.Exceptions.Boom;
 using MusicX.Core.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using VK_UI3.DB;
 using VK_UI3.Views.LoginWindow;
