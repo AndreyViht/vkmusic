@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -288,7 +288,7 @@ namespace VK_UI3.SnowFlake
 
         private void UpdateSnowFlakes(object sender, object e)
         {
-            if (_canvas.ActualWidth == 0 || _canvas.ActualHeight == 0)
+            if (_canvas == null || _canvas.ActualWidth <= 0 || _canvas.ActualHeight <= 0)
             {
                 return;
             }
@@ -382,6 +382,7 @@ namespace VK_UI3.SnowFlake
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
+            if (_canvas == null) return;
             _canvas.SetValue(FrameworkElement.WidthProperty, e.NewSize.Width);
             _canvas.SetValue(FrameworkElement.HeightProperty, e.NewSize.Height);
         }

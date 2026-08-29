@@ -374,9 +374,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.get_version.outputs.VERSION }}
-          name: ${{ github.event.inputs.namevers != '' && github.event.inputs.namevers || format('🚀 Обновление {0} — Исправление поиска и раздел «Для вас»', steps.get_version.outputs.VERSION) }}
+          name: ${{ github.event.inputs.namevers != '' && github.event.inputs.namevers || format('🚀 Обновление {0} — Исправления дизайна и отступов', steps.get_version.outputs.VERSION) }}
           body: |
-            ${{ github.event.inputs.descr != '' && github.event.inputs.descr || 'В этом обновлении исправлено падение при поиске песен, раздел «Для вас» переведён в полный каталог рекомендаций ВК («Собрано алгоритмами») с выбором плейлистов, и обновлен дизайн карточек рекомендаций.' }}
+            ${{ github.event.inputs.descr != '' && github.event.inputs.descr || 'В этом обновлении исправлено затемнение окна и сброс эффектов при изменении размера (переход на стабильный MicaBackdrop), исправлен отступ снизу в плейлистах (плеер больше не перекрывает последние треки).' }}
           draft: false
           prerelease: false
           generate_release_notes: false
@@ -421,9 +421,9 @@ jobs:
           }
           $releaseUrl = 'https://github.com/${{ github.repository }}/releases/tag/${{ steps.get_version.outputs.VERSION }}'
           $namevers = '${{ github.event.inputs.namevers }}'
-          if ([string]::IsNullOrEmpty($namevers)) { $namevers = '🚀 Обновление ' + '${{ steps.get_version.outputs.VERSION }}' + ' — Исправление поиска и раздел «Для вас»' }
+          if ([string]::IsNullOrEmpty($namevers)) { $namevers = '🚀 Обновление ' + '${{ steps.get_version.outputs.VERSION }}' + ' — Исправления дизайна и отступов' }
           $descr = '${{ github.event.inputs.descr }}'
-          if ([string]::IsNullOrEmpty($descr)) { $descr = 'Исправлено падение при поиске песен, раздел «Для вас» переведён в каталог рекомендаций ВК («Собрано алгоритмами»), обновлён дизайн карточек.' }
+          if ([string]::IsNullOrEmpty($descr)) { $descr = 'Исправлено затемнение окна при ресайзе, добавлен нижний отступ для плейлистов (плеер не закрывает треки).' }
           $message = @"
           <b>🎉 Новый релиз:</b> $namevers
           <b>📦 Версия:</b> ${{ steps.get_version.outputs.VERSION }}

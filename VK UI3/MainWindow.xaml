@@ -20,11 +20,11 @@
     Title="Viht Music VK"
     mc:Ignorable="d">
     <Window.SystemBackdrop>
-        <DesktopAcrylicBackdrop />
+        <MicaBackdrop Kind="BaseAlt" />
     </Window.SystemBackdrop>
     <Grid>
         <devCommunity:ConfettiCannon x:Name="ConfettiCanon" />
-        <snow:SnowFlakeEffect Background="Red"
+        <snow:SnowFlakeEffect Background="Transparent"
             x:Name="snow"
             AutoStart="False"
             FlakeCount="100" />

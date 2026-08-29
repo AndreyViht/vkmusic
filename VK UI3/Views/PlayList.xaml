@@ -20,6 +20,7 @@
         <ListView
             x:Name="TrackListView"
             Grid.Row="0"
+            Padding="0,0,0,120"
             AllowDrop="False"
             CanReorderItems="False"
             IsItemClickEnabled="False"

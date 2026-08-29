@@ -892,12 +892,11 @@ namespace VK_UI3
             var set = SettingsTable.GetSetting("backDrop");
             if (set != null)
             {
-                if (!(SystemBackdrop is MicaBackdrop))
-                    SystemBackdrop = new MicaBackdrop() { Kind = MicaKind.BaseAlt };
+                SystemBackdrop = null;
             }
-            else if (!(SystemBackdrop is DesktopAcrylicBackdrop))
+            else if (!(SystemBackdrop is MicaBackdrop))
             {
-                SystemBackdrop = new DesktopAcrylicBackdrop();
+                SystemBackdrop = new MicaBackdrop() { Kind = MicaKind.BaseAlt };
             }
         }
         #endregion

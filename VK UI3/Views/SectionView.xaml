@@ -20,21 +20,23 @@
 	<ScrollView x:Name="scrollVIew" ViewChanged="scrollVIew_ViewChanged" AutomationProperties.Name="Прокручиваемая область" AutomationProperties.HelpText="Область с прокручиваемым содержимым раздела">
 		<ListView
 			x:Name="ListBlocks"
-			Padding="0,20,0,20"
+			Padding="0,20,0,120"
 			ItemTemplateSelector="{StaticResource SectionTemplateSelector}"
 			ItemsSource="{x:Bind blocks, Mode=OneWay}"
 			SelectionMode="None"
 			AutomationProperties.Name="Список блоков"
 			AutomationProperties.HelpText="Список блоков содержимого раздела">
 			<ListView.Footer>
-				<ProgressRing
-					x:Name="LoadingIndicator"
-					Width="50"
-					Height="50"
-					Margin="20"
-					IsActive="True"
-					AutomationProperties.Name="Индикатор загрузки"
-					AutomationProperties.HelpText="Показывает процесс загрузки дополнительного содержимого" />
+				<Grid Height="120" HorizontalAlignment="Center">
+					<ProgressRing
+						x:Name="LoadingIndicator"
+						Width="50"
+						Height="50"
+						Margin="20"
+						IsActive="True"
+						AutomationProperties.Name="Индикатор загрузки"
+						AutomationProperties.HelpText="Показывает процесс загрузки дополнительного содержимого" />
+				</Grid>
 			</ListView.Footer>
 		</ListView>
 	</ScrollView>

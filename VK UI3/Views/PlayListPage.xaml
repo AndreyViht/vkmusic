@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Page
 	x:Class="VK_UI3.Views.PlayListPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -17,7 +17,7 @@
 
 	<ListView
 		x:Name="TrackListView"
-		Padding="0"
+		Padding="0,0,0,120"
 		AllowDrop="false"
 		CanDragItems="False"
 		CanReorderItems="false"
@@ -443,7 +443,9 @@
 			</DataTemplate>
 		</ListView.ItemTemplate>
 		<ListView.Footer>
-			<ProgressRing x:Name="LoadingIndicator" IsActive="False" AutomationProperties.Name="Индикатор загрузки" AutomationProperties.HelpText="Показывает процесс загрузки треков" />
+			<Grid Height="120" HorizontalAlignment="Center">
+				<ProgressRing x:Name="LoadingIndicator" IsActive="False" AutomationProperties.Name="Индикатор загрузки" AutomationProperties.HelpText="Показывает процесс загрузки треков" />
+			</Grid>
 		</ListView.Footer>
 	</ListView>
 
