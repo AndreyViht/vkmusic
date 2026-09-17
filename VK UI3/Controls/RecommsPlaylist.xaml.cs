@@ -207,38 +207,77 @@ namespace VK_UI3.Controls
             update();
         }
 
-        private void SetFallbackGradient(string title)
+        private static Windows.UI.Color ParseHexColor(string hex)
+        {
+            if (string.IsNullOrEmpty(hex)) return Windows.UI.Color.FromArgb(255, 30, 30, 30);
+            hex = hex.TrimStart('#');
+            if (hex.Length == 6)
+            {
+                byte r = Convert.ToByte(hex.Substring(0, 2), 16);
+                byte g = Convert.ToByte(hex.Substring(2, 2), 16);
+                byte b = Convert.ToByte(hex.Substring(4, 2), 16);
+                return Windows.UI.Color.FromArgb(255, r, g, b);
+            }
+            if (hex.Length == 8)
+            {
+                byte a = Convert.ToByte(hex.Substring(0, 2), 16);
+                byte r = Convert.ToByte(hex.Substring(2, 2), 16);
+                byte g = Convert.ToByte(hex.Substring(4, 2), 16);
+                byte b = Convert.ToByte(hex.Substring(6, 2), 16);
+                return Windows.UI.Color.FromArgb(a, r, g, b);
+            }
+            return Windows.UI.Color.FromArgb(255, 30, 30, 30);
+        }
+
+        private static Windows.UI.Color DarkenColor(Windows.UI.Color color, float factor)
+        {
+            return Windows.UI.Color.FromArgb(
+                color.A,
+                (byte)Math.Clamp((int)(color.R * factor), 0, 255),
+                (byte)Math.Clamp((int)(color.G * factor), 0, 255),
+                (byte)Math.Clamp((int)(color.B * factor), 0, 255)
+            );
+        }
+
+        private void SetFallbackGradient(AudioPlaylist playlist)
         {
             var brush = new Microsoft.UI.Xaml.Media.LinearGradientBrush
             {
                 StartPoint = new Windows.Foundation.Point(0, 0),
-                EndPoint = new Windows.Foundation.Point(1, 1)
+                EndPoint = new Windows.Foundation.Point(0.85, 1)
             };
 
-            var t = title?.ToLower() ?? "";
+            var t = playlist?.Title?.ToLower() ?? "";
             if (t.Contains("для вас"))
             {
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 132, 255), Offset = 0.0 });
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 80, 200), Offset = 0.5 });
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 10, 30, 120), Offset = 1.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 119, 255), Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 90, 224), Offset = 0.5 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 56, 168), Offset = 1.0 });
             }
             else if (t.Contains("открыти"))
             {
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 233, 30, 99), Offset = 0.0 });
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 171, 71, 188), Offset = 0.5 });
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 106, 27, 154), Offset = 1.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 224, 36, 195), Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 184, 21, 176), Offset = 0.5 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 107, 10, 128), Offset = 1.0 });
             }
             else if (t.Contains("новинк"))
             {
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 180, 216), Offset = 0.0 });
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 119, 182), Offset = 0.5 });
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 3, 4, 94), Offset = 1.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 206, 209), Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 154, 166), Offset = 0.5 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 0, 79, 94), Offset = 1.0 });
             }
             else if (t.Contains("дня"))
             {
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 142, 36, 170), Offset = 0.0 });
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 94, 53, 177), Offset = 0.5 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 142, 45, 226), Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 101, 31, 255), Offset = 0.5 });
                 brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, 49, 27, 146), Offset = 1.0 });
+            }
+            else if (!string.IsNullOrEmpty(playlist?.MainColor))
+            {
+                var main = ParseHexColor(playlist.MainColor);
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = main, Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = DarkenColor(main, 0.75f), Offset = 0.5 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = DarkenColor(main, 0.45f), Offset = 1.0 });
             }
             else
             {
@@ -246,8 +285,9 @@ namespace VK_UI3.Controls
                 byte r1 = (byte)(40 + (hash % 160));
                 byte g1 = (byte)(40 + ((hash / 3) % 160));
                 byte b1 = (byte)(110 + ((hash / 7) % 140));
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, r1, g1, b1), Offset = 0.0 });
-                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = Windows.UI.Color.FromArgb(255, (byte)(r1 / 2), (byte)(g1 / 2), (byte)(b1 / 2)), Offset = 1.0 });
+                var c = Windows.UI.Color.FromArgb(255, r1, g1, b1);
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = c, Offset = 0.0 });
+                brush.GradientStops.Add(new Microsoft.UI.Xaml.Media.GradientStop { Color = DarkenColor(c, 0.5f), Offset = 1.0 });
             }
 
             CardBackgroundGrid.Background = brush;
@@ -255,36 +295,53 @@ namespace VK_UI3.Controls
 
         public void update()
         {
+            if (_PlayList == null) return;
+
             AnimationsChangeFontIcon.ChangeFontIconWithAnimation("\uF5B0");
 
-            if (_PlayList.Description != null)
+            if (!string.IsNullOrWhiteSpace(_PlayList.Subtitle))
+            {
+                descrAnim.ChangeTextWithAnimation(_PlayList.Subtitle);
+            }
+            else if (!string.IsNullOrWhiteSpace(_PlayList.Description))
             {
                 descrAnim.ChangeTextWithAnimation(_PlayList.Description);
             }
             else if (_PlayList.MainArtists != null && _PlayList.MainArtists.Count != 0)
             {
-                descrAnim.ChangeTextWithAnimation(_PlayList.MainArtists[0].Name);
+                descrAnim.ChangeTextWithAnimation(string.Join(", ", _PlayList.MainArtists.Select(a => a.Name)));
+            }
+            else
+            {
+                descrAnim.ChangeTextWithAnimation(string.Empty);
             }
 
-            titleAnim.ChangeTextWithAnimation(_PlayList.Title);
+            titleAnim.ChangeTextWithAnimation(_PlayList.Title ?? string.Empty);
 
-            SetFallbackGradient(_PlayList.Title);
+            SetFallbackGradient(_PlayList);
 
-            if (_PlayList.Cover != null)
+            bool isAlgorithmic = (_PlayList.Id < 0) ||
+                                 (_PlayList.Title != null && (
+                                     _PlayList.Title.ToLower().Contains("для вас") ||
+                                     _PlayList.Title.ToLower().Contains("открытия") ||
+                                     _PlayList.Title.ToLower().Contains("новинки") ||
+                                     _PlayList.Title.ToLower().Contains("плейлист дня")));
+
+            string coverUrl = _PlayList.VerticalCover ?? _PlayList.Cover;
+
+            if (!string.IsNullOrEmpty(coverUrl))
             {
-                GridThumbs.AddImagesToGrid(_PlayList.Cover);
+                GridThumbs.Stretch = Microsoft.UI.Xaml.Media.Stretch.UniformToFill;
+                GridThumbs.AddImagesToGrid(coverUrl);
             }
-            else if (_PlayList.Thumbs != null && _PlayList.Thumbs.Count > 0)
+            else if (!isAlgorithmic && _PlayList.Thumbs != null && _PlayList.Thumbs.Count > 0)
             {
-                int count = _PlayList.Thumbs.Count;
-                int index = 0;
                 List<string> list = new List<string>();
                 foreach (var item in _PlayList.Thumbs)
                 {
                     string photo = item.Photo600 ?? item.Photo1200 ?? item.Photo300 ?? item.Photo34 ?? item.Photo270 ?? item.Photo135 ?? item.Photo68;
                     if (!string.IsNullOrEmpty(photo))
                         list.Add(photo);
-                    index++;
                 }
                 if (list.Count > 0)
                     GridThumbs.AddImagesToGrid(list);

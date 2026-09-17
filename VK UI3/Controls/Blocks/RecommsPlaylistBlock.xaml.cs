@@ -18,35 +18,40 @@ namespace VK_UI3.Controls.Blocks
         {
             this.InitializeComponent();
 
-
             this.Loading += RecommsPlaylistBlock_Loading;
             this.Unloaded += RecommsPlaylistBlock_Unloaded;
             this.Loaded += RecommsPlaylistBlock_Loaded;
+            this.DataContextChanged += RecommsPlaylistBlock_DataContextChanged;
         }
 
         private void RecommsPlaylistBlock_Loaded(object sender, RoutedEventArgs e)
         {
             myControl.loadMore = load;
+            PopulateBlock();
         }
+
+        private void RecommsPlaylistBlock_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            PopulateBlock();
+        }
+
         Block localBlock;
         private void RecommsPlaylistBlock_Unloaded(object sender, RoutedEventArgs e)
         {
-
-            this.Loading -= RecommsPlaylistBlock_Loading;
-            this.Unloaded -= RecommsPlaylistBlock_Unloaded;
             myControl.loadMore = null;
-
         }
+
         private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
         private async void load()
         {
             await semaphore.WaitAsync();
             try
             {
-                if (localBlock.NextFrom == null) return;
+                if (localBlock == null || localBlock.NextFrom == null) return;
                 var a = await VK.vkService.GetSectionAsync(localBlock.Id, localBlock.NextFrom);
                 localBlock.NextFrom = a.Section.NextFrom;
-                this.DispatcherQueue.TryEnqueue(async () => {
+                if (a.Playlists == null) return;
+                this.DispatcherQueue.TryEnqueue(() => {
                     foreach (var item in a.Playlists)
                     {
                         playlists.Add(item);
@@ -63,14 +68,20 @@ namespace VK_UI3.Controls.Blocks
 
         private void RecommsPlaylistBlock_Loading(FrameworkElement sender, object args)
         {
+            PopulateBlock();
+        }
+
+        private void PopulateBlock()
+        {
             try
             {
                 if (DataContext is not Block block)
                     return;
+
                 localBlock = block;
+                playlists.Clear();
 
-
-                switch (localBlock.Layout.Name)
+                switch (localBlock.Layout?.Name)
                 {
                     case "list":
                         myControl.disableLoadMode = true;
@@ -78,20 +89,19 @@ namespace VK_UI3.Controls.Blocks
                     default:
                         myControl.loadMore = load;
                         myControl.ItemsPanelTemplate = (ItemsPanelTemplate)Microsoft.UI.Xaml.Application.Current.Resources["GlobalItemsPanelTemplate"];
-
                         break;
                 }
 
-
-                foreach (var item in block.Playlists)
+                if (block.Playlists != null)
                 {
-                    playlists.Add(item);
+                    foreach (var item in block.Playlists)
+                    {
+                        playlists.Add(item);
+                    }
                 }
             }
             catch (Exception ex)
             {
-
-
             }
         }
 

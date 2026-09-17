@@ -376,17 +376,22 @@ namespace VK_UI3.Views
                     token.ThrowIfCancellationRequested();
 
                     
-                    var updatesSection = await VK.vkService.GetAudioCatalogAsync("https://vk.ru/audio?section=updates");
-
-                    token.ThrowIfCancellationRequested();
-                    if (updatesSection.Catalog?.Sections?.Count > 0)
+                    try
                     {
-                        var section = updatesSection.Catalog.Sections[0];
-                        section.Title = "Подписки";
-                        catalogs.Catalog.Sections.Insert(catalogs.Catalog.Sections.Count - 1, section);
+                        var updatesSection = await VK.vkService.GetAudioCatalogAsync("https://vk.com/audio?section=updates");
+
+                        token.ThrowIfCancellationRequested();
+                        if (updatesSection.Catalog?.Sections?.Count > 0)
+                        {
+                            var section = updatesSection.Catalog.Sections[0];
+                            section.Title = "Подписки";
+                            catalogs.Catalog.Sections.Insert(catalogs.Catalog.Sections.Count - 1, section);
+                        }
                     }
-
-
+                    catch (Exception)
+                    {
+                        // Опциональный раздел обновлений
+                    }
 
                     var sectionsService = StaticService.Container.GetRequiredService<ICustomSectionsService>();
                     catalogs.Catalog.Sections.AddRange(await sectionsService.GetSectionsAsync().ToArrayAsync());
@@ -397,12 +402,13 @@ namespace VK_UI3.Views
 
                     foreach (var section in catalogs.Catalog.Sections)
                     {
-                        var titleLower = section.Title?.ToLower();
-                        if (titleLower == "обзор" || titleLower == "каталоги" || titleLower == "плейлисты")
+                        var titleLower = section.Title?.ToLower() ?? "";
+                        var urlLower = section.Url?.ToLower() ?? "";
+                        if (titleLower == "обзор" || titleLower == "каталоги" || titleLower == "плейлисты" || urlLower.Contains("section=explore"))
                         {
                             playlistsCatalogSectionId = section.Id;
                         }
-                        if (titleLower == "главная" || titleLower == "для вас" || titleLower == "рекомендации" || titleLower == "собрано алгоритмами")
+                        if (titleLower == "главная" || titleLower == "для вас" || titleLower == "рекомендации" || titleLower == "собрано алгоритмами" || urlLower.Contains("section=general") || urlLower.Contains("section=recomms"))
                         {
                             forYouCatalogSectionId = section.Id;
                         }
@@ -412,6 +418,11 @@ namespace VK_UI3.Views
                         {
                             navSettings.Add(navSet);
                         }
+                    }
+
+                    if (string.IsNullOrEmpty(forYouCatalogSectionId) && catalogs.Catalog != null)
+                    {
+                        forYouCatalogSectionId = catalogs.Catalog.DefaultSection ?? catalogs.Catalog.Sections?.FirstOrDefault()?.Id;
                     }
                     int index = 0;
                     this.DispatcherQueue.TryEnqueue(async () =>
@@ -963,48 +974,13 @@ namespace VK_UI3.Views
 
             try
             {
-                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.ru/audio?section=recomms");
-                if (catalog?.Catalog?.DefaultSection != null)
-                {
-                    forYouCatalogSectionId = catalog.Catalog.DefaultSection;
-                    OpenSection(forYouCatalogSectionId);
-                    return;
-                }
-                if (catalog?.Catalog?.Sections?.Count > 0)
-                {
-                    forYouCatalogSectionId = catalog.Catalog.Sections[0].Id;
-                    OpenSection(forYouCatalogSectionId);
-                    return;
-                }
-            }
-            catch { }
-
-            try
-            {
-                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.ru/audio?section=feed");
-                if (catalog?.Catalog?.DefaultSection != null)
-                {
-                    forYouCatalogSectionId = catalog.Catalog.DefaultSection;
-                    OpenSection(forYouCatalogSectionId);
-                    return;
-                }
-                if (catalog?.Catalog?.Sections?.Count > 0)
-                {
-                    forYouCatalogSectionId = catalog.Catalog.Sections[0].Id;
-                    OpenSection(forYouCatalogSectionId);
-                    return;
-                }
-            }
-            catch { }
-
-            try
-            {
                 var catalog = await VK.vkService.GetAudioCatalogAsync();
                 var mainSec = catalog?.Catalog?.Sections?.FirstOrDefault(s =>
                     s.Title?.ToLower() == "главная" ||
                     s.Title?.ToLower() == "для вас" ||
                     s.Title?.ToLower() == "рекомендации" ||
-                    s.Title?.ToLower() == "собрано алгоритмами");
+                    s.Title?.ToLower() == "собрано алгоритмами" ||
+                    (s.Url != null && (s.Url.Contains("section=general") || s.Url.Contains("section=recomms"))));
                 if (mainSec != null)
                 {
                     forYouCatalogSectionId = mainSec.Id;
@@ -1017,10 +993,50 @@ namespace VK_UI3.Views
                     OpenSection(forYouCatalogSectionId);
                     return;
                 }
+                if (catalog?.Catalog?.Sections?.Count > 0)
+                {
+                    forYouCatalogSectionId = catalog.Catalog.Sections[0].Id;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
             }
             catch { }
 
-            OpenPlayList(-21, AccountsDB.activeAccount.id);
+            try
+            {
+                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.com/audio?section=recomms");
+                if (catalog?.Catalog?.DefaultSection != null)
+                {
+                    forYouCatalogSectionId = catalog.Catalog.DefaultSection;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
+                if (catalog?.Catalog?.Sections?.Count > 0)
+                {
+                    forYouCatalogSectionId = catalog.Catalog.Sections[0].Id;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
+            }
+            catch { }
+
+            try
+            {
+                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.com/audio?section=general");
+                if (catalog?.Catalog?.DefaultSection != null)
+                {
+                    forYouCatalogSectionId = catalog.Catalog.DefaultSection;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
+                if (catalog?.Catalog?.Sections?.Count > 0)
+                {
+                    forYouCatalogSectionId = catalog.Catalog.Sections[0].Id;
+                    OpenSection(forYouCatalogSectionId);
+                    return;
+                }
+            }
+            catch { }
         }
 
         public static async void OpenCatalogPlaylists()
@@ -1033,7 +1049,7 @@ namespace VK_UI3.Views
 
             try
             {
-                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.ru/audio?section=explore");
+                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.com/audio?section=explore");
                 if (catalog?.Catalog?.DefaultSection != null)
                 {
                     playlistsCatalogSectionId = catalog.Catalog.DefaultSection;
@@ -1045,7 +1061,7 @@ namespace VK_UI3.Views
 
             try
             {
-                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.ru/audio?section=playlists");
+                var catalog = await VK.vkService.GetAudioCatalogAsync("https://vk.com/audio?section=playlists");
                 if (catalog?.Catalog?.DefaultSection != null)
                 {
                     playlistsCatalogSectionId = catalog.Catalog.DefaultSection;

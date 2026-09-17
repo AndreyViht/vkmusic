@@ -192,6 +192,18 @@ namespace VkNet.Model.Attachments
         [JsonExtensionData]
         public Dictionary<string, object> AdditionalData { get; set; }
 
+        [JsonProperty("main_color")]
+        public string? MainColor { get; set; }
+
+        public string? VerticalCover
+        {
+            get
+            {
+                if (Photo == null) return null;
+                return Photo.Photo1200 ?? Photo.Photo600 ?? Photo.Photo300 ?? Photo.Photo270 ?? Photo.Photo135 ?? Photo.Photo68;
+            }
+        }
+
         public string Cover
         {
             get
@@ -204,8 +216,6 @@ namespace VkNet.Model.Attachments
                 if (Photo.Photo1200 != null) return Photo.Photo1200;
                 if (Photo.Photo68 != null) return Photo.Photo68;
                 return null;
-
-
             }
         }
         #region Методы
@@ -247,6 +257,7 @@ namespace VkNet.Model.Attachments
                 FeaturedArtists = response["featured_artists"].ToReadOnlyCollectionOf<AudioArtist>(x => x),
                 AccessKey = response["access_key"],
                 IsExplicit = response["is_explicit"],
+                MainColor = response["main_color"],
                 Audios = response["audios"].ToReadOnlyCollectionOf<Audio>(x => x)
             };
 

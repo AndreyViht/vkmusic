@@ -81,7 +81,7 @@
 
         <!-- Подложка с обложками -->
         <Grid x:Name="fadeOp" Opacity="0" CornerRadius="16">
-            <custom:GridImagesCustom x:Name="GridThumbs" CornerRadius="16" AutomationProperties.Name="Изображения плейлиста">
+            <custom:GridImagesCustom x:Name="GridThumbs" CornerRadius="16" Stretch="UniformToFill" AutomationProperties.Name="Изображения плейлиста">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
@@ -93,24 +93,44 @@
             </custom:GridImagesCustom>
         </Grid>
 
-        <!-- Градиентное затемнение для читаемости текста -->
-        <Border CornerRadius="16">
+        <!-- Вертикальная текстура световых лучей/волн (как в официальном VK) -->
+        <Border CornerRadius="16" IsHitTestVisible="False" Opacity="0.16">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#00FFFFFF" Offset="0.0"/>
+                    <GradientStop Color="#35FFFFFF" Offset="0.09"/>
+                    <GradientStop Color="#05FFFFFF" Offset="0.18"/>
+                    <GradientStop Color="#50FFFFFF" Offset="0.27"/>
+                    <GradientStop Color="#10FFFFFF" Offset="0.36"/>
+                    <GradientStop Color="#55FFFFFF" Offset="0.45"/>
+                    <GradientStop Color="#05FFFFFF" Offset="0.55"/>
+                    <GradientStop Color="#45FFFFFF" Offset="0.65"/>
+                    <GradientStop Color="#10FFFFFF" Offset="0.75"/>
+                    <GradientStop Color="#50FFFFFF" Offset="0.84"/>
+                    <GradientStop Color="#00FFFFFF" Offset="0.94"/>
+                    <GradientStop Color="#25FFFFFF" Offset="1.0"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+        <!-- Мягкое затемнение для читаемости текста -->
+        <Border CornerRadius="16" IsHitTestVisible="False">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Color="#55000000" Offset="0.0" />
-                    <GradientStop Color="#00000000" Offset="0.45" />
-                    <GradientStop Color="#90000000" Offset="1.0" />
+                    <GradientStop Color="#35000000" Offset="0.0" />
+                    <GradientStop Color="#00000000" Offset="0.4" />
+                    <GradientStop Color="#50000000" Offset="1.0" />
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
 
         <!-- Контент карточки -->
-        <Grid Padding="14">
+        <Grid Padding="16,16,16,16">
             <!-- Верхняя часть: Название и описание -->
             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top" Spacing="4">
                 <TextBlock
                     x:Name="Title"
-                    FontSize="20"
+                    FontSize="22"
                     FontWeight="Bold"
                     Foreground="White"
                     TextWrapping="Wrap"
@@ -119,24 +139,16 @@
                     AutomationProperties.Name="Название плейлиста" />
                 <TextBlock
                     x:Name="Subtitle"
-                    FontSize="12"
-                    FontWeight="Normal"
-                    Foreground="#E0FFFFFF"
+                    FontSize="13"
+                    FontWeight="SemiBold"
+                    Foreground="#EEFFFFFF"
                     TextWrapping="Wrap"
                     MaxLines="3"
                     TextTrimming="CharacterEllipsis"
                     AutomationProperties.Name="Описание плейлиста" />
             </StackPanel>
 
-            <!-- Нижняя часть: Иконка типа и кнопка воспроизведения -->
-            <FontIcon
-                Glyph="&#xE93C;"
-                FontSize="16"
-                Foreground="#B0FFFFFF"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                AutomationProperties.Name="Иконка плейлиста" />
-
+            <!-- Кнопка воспроизведения (появляется при наведении) -->
             <Grid
                 x:Name="btnGrid"
                 Width="46"
