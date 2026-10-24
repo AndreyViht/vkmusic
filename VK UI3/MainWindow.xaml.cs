@@ -222,7 +222,7 @@ namespace VK_UI3
             AppThemeService.Initialize();
 
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
-            m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+            m_TitleBar.ButtonForegroundColor = ((Content as FrameworkElement)?.RequestedTheme != ElementTheme.Light)
                 ? Colors.White : Colors.Black;
 
             UISettings uI = new();
@@ -753,8 +753,9 @@ namespace VK_UI3
         {
             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, () =>
             {
+                if (AppThemeService.CurrentThemeMode == AppThemeMode.System) AppThemeService.ApplyTheme(AppThemeMode.System, AppThemeService.CurrentAccentColor);
                 AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
-                m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+                m_TitleBar.ButtonForegroundColor = ((Content as FrameworkElement)?.RequestedTheme != ElementTheme.Light)
                     ? Colors.White : Colors.Black;
             });
         }

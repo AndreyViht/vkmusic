@@ -13,7 +13,7 @@
         AutomationProperties.Name="Ячейка владельца">
 
 	<StackPanel PointerPressed="StackPanel_PointerPressed"  Margin="15" CornerRadius="8" Padding="8" Background="{ThemeResource LayerOnAcrylicFillColorDefault}" Orientation="Horizontal">
-		<Grid Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" CornerRadius="50">
+		<Grid Background="{ThemeResource VihtCardBrush}" CornerRadius="{ThemeResource VihtCardCornerRadius}">
 		<Image
 			x:Name="PhotoOwner"
 			Width="100"

@@ -32,15 +32,15 @@
             Padding="0"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-            CornerRadius="8">
+            Background="{ThemeResource VihtCardBrush}"
+            CornerRadius="{ThemeResource VihtCardCornerRadius}">
 
             <Grid
                 Width="250"
                 Height="60"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+                CornerRadius="{ThemeResource VihtCardCornerRadius}" Background="{ThemeResource VihtCardBrush}">
                 <Grid.Resources>
                     <!--  Анимация прозрачности от 0 до 1  -->
                     <Storyboard x:Name="FadeInAnimationGridPlayIcon">
@@ -87,7 +87,7 @@
                         Height="200"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+                        CornerRadius="{ThemeResource VihtCardCornerRadius}" Background="{ThemeResource VihtCardBrush}"
                         Opacity="0">
                         <Image
                             x:Name="GridThumbs"

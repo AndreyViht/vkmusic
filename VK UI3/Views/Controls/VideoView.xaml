@@ -77,7 +77,7 @@
         </Storyboard>
     </UserControl.Resources>
     <Grid
-        Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
+        CornerRadius="{ThemeResource VihtCardCornerRadius}" Background="{ThemeResource VihtCardBrush}"
         PointerMoved="Grid_PointerMoved"
         PointerExited="Grid_PointerExited">
         <MediaPlayerElement

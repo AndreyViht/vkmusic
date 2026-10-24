@@ -40,14 +40,14 @@
     <Grid CornerRadius="8">
         <StackPanel
             Padding="10"
-            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-            CornerRadius="8">
+            Background="{ThemeResource VihtCardBrush}"
+            CornerRadius="{ThemeResource VihtCardCornerRadius}">
 
             <Grid
             Width="180"
             Height="180"
-            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-            CornerRadius="8">
+            Background="{ThemeResource VihtCardBrush}"
+            CornerRadius="{ThemeResource VihtCardCornerRadius}">
                 <Grid.Resources>
                     <!--  Анимация прозрачности от 0 до 1  -->
                     <Storyboard x:Name="FadeInAnimationGridPlayIcon">
@@ -79,7 +79,7 @@
 
                 <Grid>
                     <FontIcon Glyph="&#xE90B;" />
-                    <Grid Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+                    <Grid CornerRadius="{ThemeResource VihtCardCornerRadius}" Background="{ThemeResource VihtCardBrush}">
                         <Image
                 x:Name="MerchImage"
                 Stretch="UniformToFill"
@@ -112,7 +112,7 @@
             CornerRadius="8"
             Opacity="1">
                         <Button
-                Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+                Background="{ThemeResource VihtCardBrush}"
                 x:Name="BookmarkButton"
                 Width="40"
                 Height="40"

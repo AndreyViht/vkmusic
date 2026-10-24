@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Page
 	x:Class="VK_UI3.Views.ErrorPage"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -30,7 +30,7 @@
 				HorizontalAlignment="Center"
 				FontSize="24"
 				FontWeight="Bold"
-				Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+				Foreground="{ThemeResource VihtTextBrush}"
 				Text="Произошла ошибка"
 				TextAlignment="Center"
 				AutomationProperties.HeadingLevel="Level1"
@@ -40,10 +40,10 @@
 			<!--  Детальное описание ошибки  -->
 			<Border
 				Padding="15"
-				Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-				BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+				Background="{ThemeResource VihtCardBrush}"
+				BorderBrush="{ThemeResource VihtStrokeBrush}"
 				BorderThickness="1"
-				CornerRadius="8"
+				CornerRadius="{ThemeResource VihtCardCornerRadius}"
 				AutomationProperties.Name="Область деталей ошибки"
 				AutomationProperties.HelpText="Подробное описание возникшей ошибки">
 
@@ -56,7 +56,7 @@
 						x:Name="ErrorDetailsText"
 						FontFamily="Cascadia Code, Consolas, Courier New"
 						FontSize="14"
-						Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+						Foreground="{ThemeResource VihtTextBrush}"
 						Text="hello"
 						TextWrapping="Wrap"
 						AutomationProperties.Name="Текст деталей ошибки"
@@ -75,7 +75,7 @@
 					x:Name="RetryButton"
 					Click="RetryButton_Click"
 					Content="Повторить"
-					Style="{StaticResource AccentButtonStyle}"
+					Style="{StaticResource VihtAccentButtonStyle}"
 					AutomationProperties.Name="Повторить попытку"
 					AutomationProperties.HelpText="Попытаться выполнить операцию заново" />
 

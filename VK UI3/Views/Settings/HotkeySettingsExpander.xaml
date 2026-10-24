@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <StackPanel
     x:Class="VK_UI3.Views.Settings.HotkeySettingsExpander"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -18,7 +18,7 @@
                 Text="Как настроить горячие клавиши" />
             <TextBlock
                 FontSize="12"
-                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Foreground="{ThemeResource VihtSecondaryTextBrush}"
                 Text="1. Нажмите на поле с комбинацией клавиш, чтобы начать запись&#x0a;2. Нажмите нужную клавишу на клавиатуре (можно с модификаторами Ctrl/Shift/Alt)&#x0a;3. Нажмите Escape для отмены записи&#x0a;4. Отключайте отдельные комбинации через чекбокс справа"
                 TextWrapping="Wrap" />
         </StackPanel>

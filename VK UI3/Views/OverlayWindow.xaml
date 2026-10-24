@@ -65,7 +65,7 @@
                     
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
                         <TextBlock x:Name="CurrentTrackTitle" FontWeight="Bold" FontSize="16" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
-                        <TextBlock x:Name="CurrentTrackArtist" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontSize="13" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
+                        <TextBlock x:Name="CurrentTrackArtist" Foreground="{ThemeResource VihtSecondaryTextBrush}" FontSize="13" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
                     </StackPanel>
 
                     <Grid Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Right" Tapped="ToggleExpand_Click" Background="Transparent" Padding="5">
@@ -99,7 +99,7 @@
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
                                     <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
-                                    <TextBlock Text="{Binding Artist}" FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
+                                    <TextBlock Text="{Binding Artist}" FontSize="12" Foreground="{ThemeResource VihtSecondaryTextBrush}" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
                                 </StackPanel>
                             </StackPanel>
                         </DataTemplate>

@@ -14,8 +14,8 @@
                 <Style TargetType="Border">
                     <Setter Property="Margin" Value="5,5,5,0" />
                     <Setter Property="BorderThickness" Value="1" />
-                    <Setter Property="CornerRadius" Value="4" />
-                    <Setter Property="Background" Value="{ThemeResource LayerFillColorAltBrush}" />
+                    <Setter Property="CornerRadius" Value="{ThemeResource VihtCardCornerRadius}" />
+                    <Setter Property="Background" Value="{ThemeResource VihtCardBrush}" />
                     <Setter Property="Padding" Value="14" />
                 </Style>
                 <Style TargetType="Expander">
@@ -89,6 +89,7 @@
                 </Expander.Content>
             </Expander>
 
+            <Expander Header="Расположение и скрытие меню" HorizontalAlignment="Stretch" Margin="0,0,0,8"><local:NavigationSettings /></Expander>
             <!--  Внешний вид и анимации  -->
             <Expander
                 Margin="0,0,0,8"

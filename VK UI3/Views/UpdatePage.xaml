@@ -15,7 +15,7 @@
 			Padding="8"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
-			Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+			Background="{ThemeResource VihtSurfaceBrush}"
 			CornerRadius="8"
 			AutomationProperties.Name="Карточка обновления"
 			AutomationProperties.HelpText="Карточка с информацией об обновлении">

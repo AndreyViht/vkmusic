@@ -60,6 +60,7 @@
     <Grid AutomationProperties.Name="Основная сетка приложения" AutomationProperties.HelpText="Основная область компоновки приложения">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid
             Grid.Row="0"
@@ -94,20 +95,21 @@
                     AutomationProperties.Name="Основная область содержимого"
                     AutomationProperties.HelpText="Основная область отображения содержимого приложения">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" /><RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                     
                     <!-- Кастомная панель навигации -->
-                    <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled">
+                    <Border x:Name="MenuHost" Grid.Row="0" Grid.ColumnSpan="3" Background="{ThemeResource VihtCardBrush}" BorderBrush="{ThemeResource VihtStrokeBrush}" BorderThickness="0,0,0,1" CornerRadius="{ThemeResource VihtCardCornerRadius}">
+                    <ScrollViewer x:Name="MenuScroll" HorizontalScrollBarVisibility="Auto" HorizontalScrollMode="Enabled" VerticalScrollBarVisibility="Disabled" VerticalScrollMode="Disabled">
                     <StackPanel x:Name="CustomTopNav" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="4" Margin="0,10,0,10">
                         <StackPanel.Resources>
                             <Style TargetType="Button">
                                 <Setter Property="Background" Value="Transparent"/>
                                 <Setter Property="BorderThickness" Value="0"/>
                                 <Setter Property="Padding" Value="12,8"/>
-                                <Setter Property="CornerRadius" Value="8"/>
+                                <Setter Property="CornerRadius" Value="{ThemeResource VihtControlCornerRadius}"/>
                             </Style>
                         </StackPanel.Resources>
                         
@@ -163,23 +165,24 @@
                         </Button>
                     </StackPanel>
                     </ScrollViewer>
+                    </Border>
 
                     <animations:AnimatedSearch
                         x:Name="Search"
-                        Grid.Row="1"
+                        Grid.Row="1" Grid.Column="1"
                         Height="0"
                         Margin="0"
                         OriginalHeight="95"
                         AutomationProperties.Name="Панель поиска"
                         AutomationProperties.HelpText="Панель для поиска музыки и контента" />
-                    <krotos:NavigateFrame x:Name="ContentFrame" Grid.Row="2" AutomationProperties.Name="Фрейм содержимого" AutomationProperties.HelpText="Область отображения основного содержимого" />
+                    <krotos:NavigateFrame x:Name="ContentFrame" Grid.Row="2" Grid.Column="1" AutomationProperties.Name="Фрейм содержимого" AutomationProperties.HelpText="Область отображения основного содержимого" />
                 </Grid>
             </NavigationView>
             <controlLyryc:LyricsPage
                 x:Name="LyricPage"
                 Grid.Row="3"
                 VerticalAlignment="Stretch"
-                Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+                Background="{ThemeResource VihtSurfaceBrush}"
                 Opacity="0"
                 Visibility="Collapsed"
                 AutomationProperties.Name="Страница текстов песен"
@@ -188,7 +191,7 @@
                 x:Name="EqualizerControlPage"
                 Grid.Row="3"
                 VerticalAlignment="Stretch"
-                Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+                Background="{ThemeResource VihtSurfaceBrush}"
                 Opacity="0"
                 Visibility="Collapsed"
                 AutomationProperties.Name="Эквалайзер"
@@ -197,20 +200,20 @@
                 x:Name="SectionViewPageNowPlayingList"
                 Grid.Row="3"
                 VerticalAlignment="Stretch"
-                Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+                Background="{ThemeResource VihtSurfaceBrush}"
                 Opacity="0"
                 Visibility="Collapsed"
                 AutomationProperties.Name="Список воспроизведения"
                 AutomationProperties.HelpText="Отображает список треков в текущем плейлисте" />
         </Grid>
         <Frame
-            Grid.Row="0"
-            Margin="16,0,16,16"
+            Grid.Row="1"
+            Margin="16,8,16,12"
             CornerRadius="20"
             VerticalAlignment="Bottom"
             BorderThickness="0"
-            Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
-            BorderBrush="Transparent"
+            Background="{ThemeResource VihtPlayerBrush}"
+            BorderBrush="{ThemeResource VihtStrokeBrush}"
             AutomationProperties.Name="Плеер"
             AutomationProperties.HelpText="Основной музыкальный плеер приложения">
             <custom:AudioPlayer Margin="0" AutomationProperties.Name="Аудио плеер" AutomationProperties.HelpText="Компонент управления воспроизведением музыки" />

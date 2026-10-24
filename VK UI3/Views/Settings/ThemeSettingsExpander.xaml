@@ -28,6 +28,19 @@
 
     <Expander.Content>
         <StackPanel Spacing="16">
+            <ComboBox x:Name="SurfacePicker" Header="Стиль блоков и кнопок" HorizontalAlignment="Stretch" SelectionChanged="SurfacePicker_SelectionChanged">
+                <ComboBoxItem Content="Windows Desktop — чёткие панели" Tag="WindowsDesktop" />
+                <ComboBoxItem Content="Liquid Glass — мягкое жидкое стекло" Tag="LiquidGlass" />
+                <ComboBoxItem Content="Midnight — бархатный индиго" Tag="Midnight" />
+                <ComboBoxItem Content="Aurora — северное сияние" Tag="Aurora" />
+            </ComboBox>
+            <Border Background="{ThemeResource VihtCardBrush}" BorderBrush="{ThemeResource VihtStrokeBrush}" BorderThickness="1" CornerRadius="{ThemeResource VihtCardCornerRadius}" Padding="16">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Предпросмотр оформления" FontWeight="SemiBold" />
+                    <TextBlock Text="Стиль меняет панели, карточки, кнопки и плеер сразу." Foreground="{ThemeResource VihtSecondaryTextBrush}" TextWrapping="Wrap" />
+                    <Button Content="Пример кнопки" Style="{StaticResource VihtAccentButtonStyle}" />
+                </StackPanel>
+            </Border>
             <!-- Режим темы (Светлая / Тёмная / OLED / Системная) -->
             <StackPanel Spacing="6">
                 <TextBlock
@@ -65,10 +78,10 @@
                                 Height="85"
                                 Padding="8"
                                 Margin="4"
-                                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                Background="{ThemeResource VihtCardBrush}"
+                                BorderBrush="{ThemeResource VihtStrokeBrush}"
                                 BorderThickness="1"
-                                CornerRadius="12"
+                                CornerRadius="{ThemeResource VihtCardCornerRadius}"
                                 Spacing="6"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center">

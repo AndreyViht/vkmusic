@@ -143,15 +143,15 @@
 
         <StackPanel Orientation="Horizontal"
             Padding="10"
-            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-            CornerRadius="8">
+            Background="{ThemeResource VihtCardBrush}"
+            CornerRadius="{ThemeResource VihtCardCornerRadius}">
 
             <!-- Изображение концерта -->
             <Grid
                 Width="100"
                 Height="100"
-                Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                CornerRadius="8">
+                Background="{ThemeResource VihtCardBrush}"
+                CornerRadius="{ThemeResource VihtCardCornerRadius}">
                 <Image
                     x:Name="ConcertImage"
                     Stretch="UniformToFill"
@@ -177,7 +177,7 @@
                         VerticalAlignment="Center"
                         Click="ActionButton_Click"
                         Content="{Binding PurchaseAction.Title, FallbackValue='Купить'}"
-                        Style="{StaticResource AccentButtonStyle}" />
+                        Style="{StaticResource VihtAccentButtonStyle}" />
                 </Grid>
             </Grid>
 

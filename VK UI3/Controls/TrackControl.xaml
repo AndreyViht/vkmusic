@@ -28,7 +28,7 @@
 		<ThemeShadow />
 	</UserControl.Shadow>
 
-	<Grid>
+	<Grid Background="{ThemeResource VihtCardBrush}" CornerRadius="{ThemeResource VihtCardCornerRadius}">
 		<Grid.Resources>
 			<!--  Анимация появления  -->
 			<Storyboard x:Name="FadeInStoryboardSelectedGrid">
@@ -116,7 +116,7 @@
 					<Grid
 						Width="48"
 						Height="48"
-						Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+						Background="{ThemeResource VihtSurfaceBrush}"
 						CornerRadius="8">
 						<FontIcon Foreground="{ThemeResource TextOnAccentFillColorSelectedText}" Glyph="&#xEC4F;" AutomationProperties.Name="Обложка трека" />
 

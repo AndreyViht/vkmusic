@@ -73,8 +73,8 @@
         Padding="8,8,8,8"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
-        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-        CornerRadius="8">
+        Background="{ThemeResource VihtCardBrush}"
+        CornerRadius="{ThemeResource VihtCardCornerRadius}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -84,8 +84,8 @@
             Grid.Column="0"
             Width="50"
             Height="50"
-            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-            CornerRadius="50">
+            Background="{ThemeResource VihtCardBrush}"
+            CornerRadius="{ThemeResource VihtCardCornerRadius}">
             <Image
                 x:Name="userIcon"
                 Width="50"

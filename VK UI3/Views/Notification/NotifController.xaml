@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
 	x:Class="VK_UI3.Views.Notification.NotifController"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -12,9 +12,9 @@
 	<Grid
 		x:Name="MainGrid"
 		Padding="10"
-		Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
+		Background="{ThemeResource VihtCardBrush}"
 		ColumnSpacing="10"
-		CornerRadius="10"
+		CornerRadius="{ThemeResource VihtCardCornerRadius}"
 		RowSpacing="0">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="auto" />

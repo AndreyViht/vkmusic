@@ -27,8 +27,8 @@
         Margin="0"
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
-        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-        CornerRadius="8"
+        Background="{ThemeResource VihtCardBrush}"
+        CornerRadius="{ThemeResource VihtCardCornerRadius}"
         PointerEntered="Grid_PointerEntered"
         PointerExited="Grid_PointerExited"
         PointerPressed="Grid_PointerPressed">
@@ -39,8 +39,8 @@
             Width="300"
             Height="168.5"
             Margin="0"
-            Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-            CornerRadius="4">
+            Background="{ThemeResource VihtCardBrush}"
+            CornerRadius="{ThemeResource VihtCardCornerRadius}">
 
 
            

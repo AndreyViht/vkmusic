@@ -11,8 +11,8 @@
 
     <StackPanel
         Padding="10"
-        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-        CornerRadius="5"
+        Background="{ThemeResource VihtCardBrush}"
+        CornerRadius="{ThemeResource VihtCardCornerRadius}"
         Orientation="Vertical"
         Translation="0,0,8">
 

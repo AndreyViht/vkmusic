@@ -50,6 +50,7 @@ namespace VK_UI3.Services
 
         public static void Initialize()
         {
+            SurfaceTheme.Initialize();
             var savedMode = SettingsTable.GetSetting(SettingThemeMode)?.settingValue;
             if (!string.IsNullOrEmpty(savedMode) && Enum.TryParse<AppThemeMode>(savedMode, out var mode))
             {
@@ -111,18 +112,22 @@ namespace VK_UI3.Services
         {
             if (Application.Current == null) return;
 
+            bool light = mode == AppThemeMode.Light || (mode == AppThemeMode.System && new UISettings().GetColorValue(UIColorType.Background).R > 127);
+            SurfaceTheme.Apply(light, mode == AppThemeMode.OledBlack);
             ElementTheme targetElementTheme = mode switch
             {
                 AppThemeMode.Light => ElementTheme.Light,
                 AppThemeMode.Dark => ElementTheme.Dark,
                 AppThemeMode.OledBlack => ElementTheme.Dark,
-                _ => ElementTheme.Default
+                _ => light ? ElementTheme.Light : ElementTheme.Dark
             };
 
             if (MainWindow.mainWindow?.Content is FrameworkElement root)
             {
                 root.RequestedTheme = targetElementTheme;
             }
+            if (MainWindow.mainWindow != null)
+                MainWindow.mainWindow.AppWindow.TitleBar.ButtonForegroundColor = light ? Colors.Black : Colors.White;
 
             // Apply Dynamic Resource Overrides for accent color
             ApplyAccentColors(accentColor, mode);

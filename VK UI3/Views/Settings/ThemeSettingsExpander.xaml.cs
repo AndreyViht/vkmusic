@@ -18,6 +18,7 @@ namespace VK_UI3.Views.Settings
         private void ThemeSettingsExpander_Loaded(object sender, RoutedEventArgs e)
         {
             _isInitializing = true;
+            SurfacePicker.SelectedIndex = (int)SurfaceTheme.Current;
 
             AccentGridView.ItemsSource = AppThemeService.PredefinedAccents;
 
@@ -68,6 +69,10 @@ namespace VK_UI3.Views.Settings
                 AccentGridView.SelectedItem = item;
                 AppThemeService.SetAccent(item.Id);
             }
+        }
+        private void SurfacePicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!_isInitializing && SurfacePicker.SelectedIndex >= 0) SurfaceTheme.Set((SurfaceStyle)SurfacePicker.SelectedIndex);
         }
     }
 }

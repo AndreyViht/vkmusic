@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <UserControl
     x:Class="VK_UI3.Views.Settings.HotkeySettingControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -9,10 +9,10 @@
 
     <Border
         Padding="12,12"
-        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+        Background="{ThemeResource VihtCardBrush}"
+        BorderBrush="{ThemeResource VihtStrokeBrush}"
         BorderThickness="1"
-        CornerRadius="6">
+        CornerRadius="{ThemeResource VihtCardCornerRadius}">
 
         <Grid>
             <Grid.RowDefinitions>

@@ -13,8 +13,8 @@
         Margin="50"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
-        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-        CornerRadius="8"
+        Background="{ThemeResource VihtCardBrush}"
+        CornerRadius="{ThemeResource VihtCardCornerRadius}"
         AutomationProperties.Name="Индикатор выполнения операции"
         AutomationProperties.HelpText="Показывает, что выполняется какая-то операция в фоновом режиме">
         <Grid.Resources>

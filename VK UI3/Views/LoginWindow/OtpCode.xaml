@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Page
     x:Class="VK_UI3.Views.LoginWindow.OtpCode"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -14,8 +14,8 @@
         Padding="50"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
-        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-        CornerRadius="8"
+        Background="{ThemeResource VihtCardBrush}"
+        CornerRadius="{ThemeResource VihtCardCornerRadius}"
         Translation="0,0,8">
         <Grid.Shadow>
             <ThemeShadow />
@@ -58,7 +58,7 @@
                 AutomationProperties.Name="Кнопка продолжения"
                 Click="SubmitButton_Click"
                 Content="Продолжить"
-                Style="{StaticResource AccentButtonStyle}" />
+                Style="{StaticResource VihtAccentButtonStyle}" />
             <Button
                 x:Name="goAnotherBTN"
                 Margin="0,10,0,0"

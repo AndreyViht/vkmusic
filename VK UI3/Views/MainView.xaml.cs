@@ -90,6 +90,7 @@ namespace VK_UI3.Views
 
         private void MainView_Unloaded(object sender, RoutedEventArgs e)
         {
+            DetachMenuAppearance();
             ContentFrame.Navigated -= ContentFrame_Navigated;
             NavWiv.BackRequested -= NavWiv_BackRequested;
             AccountsDB.ChanhgeActiveAccount -= ChangeAccount;
@@ -116,6 +117,7 @@ namespace VK_UI3.Views
 
         private void MainView_KeyDown(object sender, KeyRoutedEventArgs e)
         {
+            if (e.Key == Windows.System.VirtualKey.F10) { FocusMenu(); e.Handled = true; return; }
             if (e.Key == Windows.System.VirtualKey.F5)
             {
                 MainWindow.onRefreshClickedvoid();
@@ -179,6 +181,7 @@ namespace VK_UI3.Views
         private static DispatcherQueue dispatcherQueue = null;
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
+            AttachMenuAppearance();
 
             NavWiv.IsPaneOpen = false;
             //OpenMyPage(SectionType.MyListAudio);
