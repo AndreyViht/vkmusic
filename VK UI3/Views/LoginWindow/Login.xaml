@@ -80,7 +80,7 @@
 					AutomationProperties.Name="Кнопка отмены" />
 				<Button Content="Локальная музыка без входа" Margin="0,12,0,0" Click="OpenLocalMusic" HorizontalAlignment="Stretch" />
                 <TextBlock Margin="0,20,0,0" TextAlignment="Center">
-					<Hyperlink NavigateUri="https://t.me/vihtm">Viht Music VK в Telegram</Hyperlink>
+					<Hyperlink NavigateUri="https://t.me/anviht">Viht Music VK в Telegram</Hyperlink>
 				</TextBlock>
 
 			</StackPanel>

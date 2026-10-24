@@ -3,6 +3,8 @@
 [![GitHub Release](https://img.shields.io/github/v/release/AndreyViht/vkmusic?include_prereleases&label=Latest%20Release)](https://github.com/AndreyViht/vkmusic/releases)
 
 ## Описание
+Разработчик Viht Music VK: **Viht / AndreyViht / [@anviht](https://t.me/anviht)**.
+
 VihtVK — это абсолютно бесплатное приложение для прослушивания музыки в социальной сети VK.
 VihtVK - По сути своей адаптация VK X и Music X, перенесённый на интерфейс WinUI3. По этому, в нём много схожестей.
 

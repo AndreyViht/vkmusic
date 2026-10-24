@@ -328,7 +328,8 @@
                             Это молодой и скорее всего разовый проект, разработчик делает на свой вкус и для стабильной работы кто бы хотел пользоваться подобными Утилитами.
                             Поддержать проект и развитие инфраструктуры Viht Community можно написав разработчику в телеграм:
                         </TextBlock>
-                        <HyperlinkButton Content="Связаться с разработчиком" NavigateUri="https://t.me/anviht" HorizontalAlignment="Left" />
+                        <TextBlock Text="Разработчик: Viht / AndreyViht / @anviht" TextWrapping="Wrap" />
+                        <HyperlinkButton Content="Viht — @anviht" NavigateUri="https://t.me/anviht" HorizontalAlignment="Left" />
                     </StackPanel>
                 </Expander.Content>
             </Expander>
@@ -339,7 +340,7 @@
                 AutomationProperties.HelpText="Ссылка на Telegram канал проекта"
                 AutomationProperties.Name="Ссылка на Telegram"
                 TextAlignment="Center">
-                <Hyperlink NavigateUri="https://t.me/vihtm">Viht Music VK в Telegram</Hyperlink>
+                <Hyperlink NavigateUri="https://t.me/anviht">Viht Music VK в Telegram</Hyperlink>
             </TextBlock>
 
         </StackPanel>

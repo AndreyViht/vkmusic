@@ -337,10 +337,10 @@ public class CustomSectionsService : ICustomSectionsService
                             {
                                 new Button()
                                 {
-                                    Title = "Телеграм канал",
+                                    Title = "Viht — @anviht",
                                     Action = new ActionButton()
                                     {
-                                        Url = "https://t.me/MusicXPlayer",
+                                        Url = "https://t.me/anviht",
                                         Type = "custom_open_browser"
                                     }
                                 }

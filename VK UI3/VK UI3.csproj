@@ -3,6 +3,9 @@
 
         <AppxPackageVersion>0.3.9.8</AppxPackageVersion>
         <Version>$(AppxPackageVersion)</Version>
+        <Authors>Viht / AndreyViht / @anviht</Authors>
+        <Company>Viht</Company>
+        <Copyright>Copyright © 2026 AndreyViht</Copyright>
         <OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows10.0.22621</TargetFramework>
 		<TargetPlatformMinVersion>10.0.22621.0</TargetPlatformMinVersion>

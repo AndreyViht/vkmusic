@@ -1,4 +1,4 @@
-﻿
+
 using SetupLib;
 using System.Runtime.InteropServices;
 
@@ -136,7 +136,7 @@ namespace Setup
         {
             var psi = new System.Diagnostics.ProcessStartInfo
             {
-                FileName = "https://t.me/vihtm",
+                FileName = "https://t.me/anviht",
                 UseShellExecute = true
             };
             System.Diagnostics.Process.Start(psi);
