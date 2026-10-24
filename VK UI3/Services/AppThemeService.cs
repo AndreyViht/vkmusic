@@ -151,8 +151,8 @@ namespace VK_UI3.Services
             res["AccentFillColorDefaultBrush"] = accentBrush;
             res["AccentFillColorSecondaryBrush"] = new SolidColorBrush(Lighten(accentColor, 0.15));
             res["AccentFillColorTertiaryBrush"] = new SolidColorBrush(Lighten(accentColor, 0.30));
-            res["ToggleSwitchFillOn"] = accentBrush;
-            res["SliderTrackValueFill"] = accentBrush;
+            if (res["ToggleSwitchFillOn"] is SolidColorBrush toggle) toggle.Color = accentColor;
+            if (res["SliderTrackValueFill"] is SolidColorBrush slider) slider.Color = accentColor;
 
             if (mode == AppThemeMode.OledBlack)
             {

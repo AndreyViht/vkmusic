@@ -36,6 +36,7 @@ public sealed partial class MainView
     private bool MenuHasFocus()
     {
         var focused = FocusManager.GetFocusedElement(XamlRoot) as DependencyObject;
+        if (focused is Control control && control.FocusState != FocusState.Keyboard) return false;
         while (focused != null) { if (focused == MenuHost) return true; focused = VisualTreeHelper.GetParent(focused); }
         return false;
     }
