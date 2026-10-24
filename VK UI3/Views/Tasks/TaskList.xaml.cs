@@ -47,6 +47,7 @@ namespace VK_UI3.Views.Tasks
         ObservableCollection<TaskAction> tasks = new ObservableCollection<TaskAction>();
         private void DownloadsList_Unloaded(object sender, RoutedEventArgs e)
         {
+            TaskAction.tasks.CollectionChanged -= Tasks_CollectionChanged;
            
         }
 

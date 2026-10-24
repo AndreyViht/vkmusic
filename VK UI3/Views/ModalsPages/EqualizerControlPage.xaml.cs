@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using MusicX.Services.Player.Sources;
 using System;
@@ -33,7 +33,7 @@ public sealed partial class EqualizerControlPage : UserControl
 
     private void ApplyButton_Click(object sender, RoutedEventArgs e)
     {
-        if (EnableSwitch.IsEnabled)
+        if (EnableSwitch.IsOn)
         {
             VK_UI3.Services.MediaPlayerService.Equalizer = Equalizer.getEqualizes();
         }

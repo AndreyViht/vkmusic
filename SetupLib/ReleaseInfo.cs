@@ -18,6 +18,7 @@ namespace SetupLib
 
     public class PackageAsset
     {
+        public string? Sha256 { get; set; }
         public string Url { get; set; }
         public int Size { get; set; }
         public string Architecture { get; set; }

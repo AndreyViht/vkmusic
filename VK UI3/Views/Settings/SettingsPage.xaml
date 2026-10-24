@@ -23,6 +23,7 @@
                 </Style>
             </StackPanel.Resources>
 
+            <Expander Header="Очередь, локальная музыка и диагностика" HorizontalAlignment="Stretch" Margin="0,0,0,8"><local:PlaybackTools /></Expander>
             <!--  Общие настройки  -->
             <Expander
                 Margin="0,0,0,8"

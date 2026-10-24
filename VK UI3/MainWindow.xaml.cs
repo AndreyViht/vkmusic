@@ -276,7 +276,7 @@ namespace VK_UI3
             }
 
             var navigationInfo = new NavigationInfo { SourcePageType = this };
-            if (AccountsDB.GetAllAccounts().Count == 0)
+            if (string.IsNullOrWhiteSpace(AccountsDB.activeAccount.Token))
             {
                 GoLogin();
             }
@@ -877,13 +877,8 @@ namespace VK_UI3
 
         private static IntPtr SetWindowLong(HWND hWnd, WINDOW_LONG_PTR_INDEX nIndex, IntPtr newProc)
         {
-            if (Environment.Is64BitOperatingSystem)
-            {
-#if X64
-                return PInvoke.SetWindowLongPtr(hWnd, nIndex, newProc);
-#endif
-            }
-            return new IntPtr(PInvoke.SetWindowLong(hWnd, nIndex, newProc.ToInt32()));
+            return IntPtr.Size == 8 ? PInvoke.SetWindowLongPtr(hWnd, nIndex, newProc)
+                : new IntPtr(PInvoke.SetWindowLong(hWnd, nIndex, newProc.ToInt32()));
         }
         #endregion
 
@@ -942,7 +937,7 @@ namespace VK_UI3
             var currentVersion = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}.{assemblyVersion.Revision}";
             var appUpdater = new AppUpdater(currentVersion);
             appUpdater.SelectedPackageType = Packaged.IsPackaged() ? PackageType.MSIX : PackageType.ZIP;
-            var updateAvailable = await appUpdater.CheckForUpdates();
+            var updateAvailable = await appUpdater.CheckForUpdates(true);
 
             if (updateAvailable)
             {

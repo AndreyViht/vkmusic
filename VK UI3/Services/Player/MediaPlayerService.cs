@@ -167,6 +167,7 @@ namespace VK_UI3.Services
             InitializeWin32MediaKeys(hwnd);
 
             _isInitialized = true;
+            PlaybackStateService.Initialize();
         }
 
         private static void InitializeMediaPlayer()
@@ -443,6 +444,8 @@ namespace VK_UI3.Services
                 _mediaPlayer.PlaybackSession.PlaybackStateChanged -= PlaybackSession_PlaybackStateChanged;
 
                 // Освобождаем ресурсы медиаплеера
+                PlaybackStateService.Save();
+                PlaybackStateService.Stop();
                 _mediaPlayer.Dispose();
                 System.Diagnostics.Debug.WriteLine("[MemoryLeakDebug] MediaPlayer disposed");
             }
@@ -559,7 +562,7 @@ namespace VK_UI3.Services
             {
                 try
                 {
-                    iVKGetAudio?.setNextTrackForPlay();
+                    if (!PlaybackStateService.TryPlayQueued()) iVKGetAudio?.setNextTrackForPlay();
                     await PlayTrack();
                 }
                 catch (Exception ex)
@@ -588,25 +591,9 @@ namespace VK_UI3.Services
 
         public static async void PlayList(IVKGetAudio userAudio)
         {
-            if (userAudio.listAudio.Count == 0)
-            {
-                var tcs = new TaskCompletionSource<bool>();
-                EventHandler handler = null;
-                handler = (sender, args) =>
-                {
-                    userAudio.onListUpdate -= handler;
-                    tcs.SetResult(true);
-                };
-                userAudio.onListUpdate += handler;
-
-                userAudio.GetTracks();
-                await tcs.Task;
-            }
-
-            if (userAudio.listAudio.Count == 0) return;
-
+            if (userAudio == null) return;
             iVKGetAudio = userAudio;
-            _ = PlayTrack();
+            await PlayTrack();
         }
 
         #endregion
@@ -650,10 +637,15 @@ namespace VK_UI3.Services
             }
         }
 
+        public static async Task RestorePausedAsync(IVKGetAudio source, TimeSpan position)
+        {
+            iVKGetAudio = source;
+            await PlayTrack(position: position, startPlayback: false);
+        }
         private static int _currentPlayRequestId = 0;
         private static readonly SemaphoreSlim _playTrackSemaphore = new SemaphoreSlim(1, 1);
 
-        private static async Task PlayTrack(long? v = 0, TimeSpan? position = null)
+        private static async Task PlayTrack(long? v = 0, TimeSpan? position = null, bool startPlayback = true)
         {
             if (iVKGetAudio == null)
                 return;
@@ -716,7 +708,8 @@ namespace VK_UI3.Services
                     return;
                 }
 
-                await LoadAndPlayTrack(trackdata, position, thisRequestId);
+                await LoadAndPlayTrack(trackdata, position, thisRequestId, startPlayback);
+                PlaybackStateService.Save();
             }
             catch (OperationCanceledException)
             {
@@ -724,7 +717,9 @@ namespace VK_UI3.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[TrackSwitch] Error in PlayTrack: {ex.Message}");
+                DiagnosticsService.Record("playback", ex);
+                SessionService.Handle(ex);
+                MainWindow.mainWindow.DispatcherQueue.TryEnqueue(() => new Views.Notification.Notification("Не удалось включить трек", "Проверьте сеть или выберите другой трек."));
             }
             finally
             {
@@ -734,24 +729,12 @@ namespace VK_UI3.Services
 
         private static async Task EnsureTrackListLoaded()
         {
-            if (iVKGetAudio.listAudio.Count == 0)
-            {
-                var tcs = new TaskCompletionSource<bool>();
-                EventHandler handler = null;
-                handler = (sender, args) =>
-                {
-                    iVKGetAudio.onListUpdate -= handler;
-                    tcs.SetResult(true);
-                };
-                iVKGetAudio.onListUpdate += handler;
-
-                iVKGetAudio.GetTracks();
-                await tcs.Task;
-            }
+            if (iVKGetAudio != null) await iVKGetAudio.WaitForTracksAsync(_tokenSource?.Token ?? default);
         }
 
         private static void SendPlaybackStatistics(ExtendedAudio trackdata)
         {
+            if (trackdata.audio.Url?.IsFile == true) return;
             ExtendedAudio previousTrack = PlayingTrack;
             int? previousTrackPlayedSeconds = null;
 
@@ -769,6 +752,7 @@ namespace VK_UI3.Services
 
         private static void SendVKStartEvent(ExtendedAudio trackdata)
         {
+            if (trackdata.audio.Url?.IsFile == true) return;
             if (iVKGetAudio is PlayListVK playlistVK)
             {
                 VK.sendStartEvent((long)trackdata.audio.Id,
@@ -788,7 +772,7 @@ namespace VK_UI3.Services
                    new DB.SkipPerformerDB().skipIsSet(trackdata.audio.Artist);
         }
 
-        private static async Task LoadAndPlayTrack(ExtendedAudio trackdata, TimeSpan? position, int requestId)
+        private static async Task LoadAndPlayTrack(ExtendedAudio trackdata, TimeSpan? position, int requestId, bool startPlayback)
         {
             if (requestId != _currentPlayRequestId) return;
             System.Diagnostics.Debug.WriteLine($"[TrackSwitch] LoadAndPlayTrack started for track: {trackdata.audio.Title}");
@@ -844,7 +828,7 @@ namespace VK_UI3.Services
                 NotifyAudioPlayedChange(trackdata);
                 UpdateSystemMediaDisplay(trackdata);
 
-                _mediaPlayer.Play();
+                if (startPlayback) _mediaPlayer.Play();
 
                 System.Diagnostics.Debug.WriteLine($"[TrackSwitch] LoadAndPlayTrack completed for track: {trackdata.audio.Title}");
             }
@@ -982,7 +966,7 @@ namespace VK_UI3.Services
         {
             if (iVKGetAudio != null && iVKGetAudio.countTracks != 0)
             {
-                return await iVKGetAudio.GetTrackPlay(forced);
+                return await iVKGetAudio.GetTrackPlay(forced, _tokenSource?.Token ?? default);
             }
             return _trackDataThis;
         }

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Threading;
 using VK_UI3.Controllers;
 using VK_UI3.Helpers;
 using VK_UI3.Services;
@@ -37,6 +38,7 @@ namespace VK_UI3.VKs.IVK
         /// API для работы с ВКонтакте
         /// </summary>
         public IVkApi api;
+        private readonly long accountId = VK_UI3.DB.AccountsDB.activeAccount.id;
         
         /// <summary>
         /// Идентификатор
@@ -273,7 +275,7 @@ namespace VK_UI3.VKs.IVK
                 }
                 catch (Exception e)
                 {
-                    onErrorLoad?.Invoke(this, new ErrorLoad(e));
+                    NotifyonErrorLoad(e);
                 }
             });
         }
@@ -330,25 +332,37 @@ namespace VK_UI3.VKs.IVK
         /// <param name="tracI">Индекс трека</param>
         /// <param name="prinud">Флаг принудительного получения</param>
         /// <returns>Расширенная аудиозапись</returns>
-        public async Task<ExtendedAudio> GetTrackPlayAsync(long tracI, bool prinud = false)
+        public async Task<ExtendedAudio> GetTrackPlayAsync(long tracI, bool prinud = false, CancellationToken cancellationToken = default)
         {
-            if (!prinud && tracI > listAudio.Count() - 1) return null;
-            while (tracI > listAudio.Count() - 1)
+            if (tracI < 0 || tracI > int.MaxValue || IsCancelled) return null;
+            while (tracI >= listAudio.Count)
             {
-                if (task == null)
-                    if (this is IVKGetTracksMore ivl)
-                    {
-                        ivl.GetTracks(int.Min((int)tracI - listAudio.Count + 1, 1000));
-                    }
-                    else
-                    {
-                        GetTracks();
-                    }
-                if (task != null)
-                    await task;
+                cancellationToken.ThrowIfCancellationRequested();
+                if (!prinud || itsAll) return null;
+                var before = listAudio.Count;
+                await WaitForTracksAsync(cancellationToken, true);
+                if (listAudio.Count <= before) return null;
             }
-            
             return listAudio[(int)tracI];
+        }
+
+        public Exception LastLoadError { get; private set; }
+        public async Task WaitForTracksAsync(CancellationToken token = default, bool more = false)
+        {
+            if ((!more && listAudio.Count != 0) || itsAll) return;
+            if (LastLoadError != null && getLoadedTracks == false) throw LastLoadError;
+            var completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            EventHandler updated = (_, _) => completion.TrySetResult(true);
+            EventHandler failed = (_, e) => completion.TrySetException((e as ErrorLoad)?.exception ?? new IOException("Ошибка загрузки."));
+            onListUpdate += updated;
+            onErrorLoad += failed;
+            try
+            {
+                if ((!more && listAudio.Count != 0) || itsAll) return;
+                if (!getLoadedTracks) GetTracks();
+                await completion.Task.WaitAsync(TimeSpan.FromSeconds(30), token);
+            }
+            finally { onListUpdate -= updated; onErrorLoad -= failed; }
         }
         
         /// <summary>
@@ -356,9 +370,9 @@ namespace VK_UI3.VKs.IVK
         /// </summary>
         /// <param name="prinud">Флаг принудительного получения</param>
         /// <returns>Расширенная аудиозапись</returns>
-        public async Task<ExtendedAudio> GetTrackPlay(bool prinud = false)
+        public async Task<ExtendedAudio> GetTrackPlay(bool prinud = false, CancellationToken token = default)
         {
-            if (countTracks < currentTrack && countTracks != -1) return null;
+            if (currentTrack < 0 || (countTracks >= 0 && currentTrack >= countTracks)) return null;
             if (currentTrack == null)
                 currentTrack = 0;
             
@@ -368,10 +382,11 @@ namespace VK_UI3.VKs.IVK
                 {
                     FillAndShuffleList();
                 }
-                return await GetTrackPlayAsync(shuffleList[(int)currentTrack], prinud);
+                if (currentTrack >= shuffleList.Count) return null;
+                return await GetTrackPlayAsync(shuffleList[(int)currentTrack], prinud, token);
             }
             
-            return await GetTrackPlayAsync((long)currentTrack, prinud);
+            return await GetTrackPlayAsync((long)currentTrack, prinud, token);
         }
         
         /// <summary>
@@ -685,6 +700,12 @@ namespace VK_UI3.VKs.IVK
         /// <param name="e">Исключение</param>
         public void NotifyonErrorLoad(Exception e)
         {
+            LastLoadError = e;
+            getLoadedTracks = false;
+            DiagnosticsService.Record("tracks", e);
+            SessionService.Handle(e, accountId);
+            foreach (var pending in tcs.ToArray()) pending.TrySetException(e);
+            tcs.Clear();
             onErrorLoad?.Invoke(this, new ErrorLoad(e));
         }
         
@@ -697,7 +718,7 @@ namespace VK_UI3.VKs.IVK
             {
                 List<int> shuffleListex = new List<int>();
                 
-                for (int i = shuffleList.Count; listAudio.Count - 1 > i; i++)
+                for (int i = shuffleList.Count; listAudio.Count > i; i++)
                 {
                     shuffleListex.Add(i);
                 }
@@ -726,6 +747,7 @@ namespace VK_UI3.VKs.IVK
                 item.TrySetResult(true);
             }
             
+            LastLoadError = null;
             getLoadedTracks = false;
             onListUpdate?.Invoke(this, EventArgs.Empty);
         }

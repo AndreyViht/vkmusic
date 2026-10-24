@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -494,6 +494,7 @@ namespace VK_UI3.Views
                 }
                 return;
             }
+            if (scrollViewer == null || vkGetAudio.LastLoadError != null) { LoadingIndicator.IsActive = false; return; }
             var isAtBottom = scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 100;
             if (isAtBottom)
             {

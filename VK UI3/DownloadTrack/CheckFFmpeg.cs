@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Linq;
 using VK_UI3.DB;
 
 namespace VK_UI3.DownloadTrack
@@ -108,23 +109,10 @@ namespace VK_UI3.DownloadTrack
 
         public string? getLinkFFMPEG()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-
-                switch (RuntimeInformation.OSArchitecture)
-                {
-                    case Architecture.X86:
-                        return "https://anviht.ru/dependencies/ffmpeg-X32.zip";
-                    case Architecture.X64:
-                        return "https://anviht.ru/dependencies/ffmpeg-X64.zip";
-                    case Architecture.Arm64:
-                        return "https://anviht.ru/dependencies/ffmpeg-ARM64.zip";
-
-                    default:
-                        return null;
-                }
-            }
-            return null;
+            // FFmpeg.AutoGen 7.1 requires ABI 61/59. Pin a compatible shared build.
+            return RuntimeInformation.ProcessArchitecture == Architecture.X64
+                ? "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-07-31-14-10/ffmpeg-n7.1.5-12-g1fdbca85aa-win64-lgpl-shared-7.1.zip"
+                : null;
         }
     }
 
@@ -137,6 +125,9 @@ namespace VK_UI3.DownloadTrack
         public delegate void ProgressChangedHandler(object sender, DownloadProgressChangedEventArgs e);
         public event ProgressChangedHandler ProgressChanged;
 
+        public string LastError { get; private set; }
+        public bool IsDownloading => isDownloading;
+        private readonly string tempZipPath = Path.Combine(Path.GetTempPath(), "viht-ffmpeg-" + Guid.NewGuid().ToString("N") + ".zip");
         private WebClient webClient;
         private CheckFFmpeg checkFFmpeg = new CheckFFmpeg();
         private static bool isDownloading = false;
@@ -144,144 +135,79 @@ namespace VK_UI3.DownloadTrack
 
         public DownloadFileWithProgress()
         {
+            webClient = new WebClient();
+            webClient.DownloadFileCompleted += Completed;
+            webClient.DownloadProgressChanged += ProgressChangedEvent;
             if (MainWindow.downloadFileWithProgress == null)
             {
                 MainWindow.downloadFileWithProgress = this;
-
-                webClient = new WebClient();
-                webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Completed);
-                webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChangedEvent);
-
-                lock (downloadLock)
-                {
-                    if (!checkFFmpeg.IsExist() && !isDownloading)
-                    {
-                        MainWindow.mainWindow.requstDownloadFFMpegAsync();
-                    }
-                    else if (isDownloading)
-                    {
-                        MainWindow.mainWindow.MainWindow_showDownload();
-                    }
-                }
+                _ = MainWindow.mainWindow.requstDownloadFFMpegAsync();
             }
-            else
-            {
-                MainWindow.mainWindow.MainWindow_showDownload();
-            }
+            else MainWindow.mainWindow.MainWindow_showDownload();
         }
 
         public double? mb;
 
         public async void DownloadFile()
         {
-            lock (downloadLock)
+            lock (downloadLock) { if (isDownloading) return; isDownloading = true; }
+            LastError = null;
+            try
             {
-                if (isDownloading)
-                    return;
-                isDownloading = true;
+                var url = checkFFmpeg.getLinkFFMPEG() ?? throw new NotSupportedException("Автозагрузка FFmpeg недоступна для этой архитектуры.");
+                mb = await checkFFmpeg.getFileSizeInMBAsync();
+                webClient.DownloadFileAsync(new Uri(url), tempZipPath);
             }
-
-            await Task.Run(async () =>
-            {
-                string tempZipPath = Path.Combine(Path.GetTempPath(), "ffmpeg_temp.zip");
-                string? url = checkFFmpeg.getLinkFFMPEG();
-
-                if (url != null)
-                {
-                    if (File.Exists(tempZipPath))
-                    {
-                        File.Delete(tempZipPath);
-                    }
-
-                    mb = await checkFFmpeg.getFileSizeInMBAsync();
-                    webClient.DownloadFileAsync(new Uri(url), tempZipPath);
-                }
-            });
+            catch (Exception error) { Completed(this, new AsyncCompletedEventArgs(error, false, null)); }
         }
 
-        public void CancelDownload()
-        {
-            webClient.CancelAsync();
-            foreach (var item in PlayListDownload.PlayListDownloads)
-            {
-                item.Cancel();
-            }
-            lock (downloadLock)
-            {
-                isDownloading = false;
-            }
-            MainWindow.downloadFileWithProgress = null;
-        }
+        public void CancelDownload() { webClient.CancelAsync(); }
 
         private void ExtractFFmpegFromZip(string zipPath)
         {
-            string extractPath = checkFFmpeg.GetFFmpegDirectory();
-            string ffmpegBinaryName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "ffmpeg.exe" : "ffmpeg";
-
-            // Clear existing directory
-            if (Directory.Exists(extractPath))
+            var staging = Path.Combine(Path.GetTempPath(), "viht-ffmpeg-extract-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(staging);
+            try
             {
-                Directory.Delete(extractPath, true);
+                ZipFile.ExtractToDirectory(zipPath, staging);
+                var codec = Directory.GetFiles(staging, "avcodec-61.dll", SearchOption.AllDirectories).SingleOrDefault()
+                    ?? throw new InvalidDataException("В архиве нет совместимых библиотек FFmpeg 7.1.");
+                var binary = Path.GetDirectoryName(codec);
+                string[] required = { "avcodec-61.dll", "avdevice-61.dll", "avfilter-10.dll", "avformat-61.dll", "avutil-59.dll", "swresample-5.dll", "swscale-8.dll" };
+                if (required.Any(name => !File.Exists(Path.Combine(binary, name)))) throw new InvalidDataException("Неполный архив FFmpeg.");
+                var target = checkFFmpeg.GetFFmpegDirectory();
+                foreach (var file in Directory.GetFiles(binary)) File.Copy(file, Path.Combine(target, Path.GetFileName(file)), true);
+                foreach (var license in Directory.GetFiles(staging, "*COPYING*", SearchOption.AllDirectories).Concat(Directory.GetFiles(staging, "LICENSE*", SearchOption.AllDirectories)))
+                    File.Copy(license, Path.Combine(target, Path.GetFileName(license)), true);
+                if (!checkFFmpeg.IsExist()) throw new InvalidDataException("Проверка FFmpeg не пройдена.");
             }
-            Directory.CreateDirectory(extractPath);
-
-            // Extract archive
-            ZipFile.ExtractToDirectory(zipPath, extractPath);
-
-            // On Windows, the binary is in the 'bin' subdirectory
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                string binPath = Path.Combine(extractPath, "bin", ffmpegBinaryName);
-                if (File.Exists(binPath))
-                {
-                    string destinationPath = Path.Combine(extractPath, ffmpegBinaryName);
-                    File.Move(binPath, destinationPath);
-                }
-            }
-
-            // Clean up
-            File.Delete(zipPath);
+            finally { if (Directory.Exists(staging)) Directory.Delete(staging, true); }
         }
 
         private void Completed(object sender, AsyncCompletedEventArgs e)
         {
-            lock (downloadLock)
-            {
-                isDownloading = false;
-            }
-
-            if (e.Error != null)
-            {
-                // Handle download error
-                DownloadCompleted?.Invoke(this, e);
-                return;
-            }
-
             try
             {
-                string tempZipPath = Path.Combine(Path.GetTempPath(), "ffmpeg_temp.zip");
-                if (File.Exists(tempZipPath))
+                if (e.Cancelled) throw new OperationCanceledException();
+                if (e.Error != null) throw e.Error;
+                ExtractFFmpegFromZip(tempZipPath);
+                LastError = null;
+                MainWindow.mainWindow.DispatcherQueue.TryEnqueue(() =>
                 {
-                    ExtractFFmpegFromZip(tempZipPath);
-                }
-
-                DownloadCompleted?.Invoke(this, EventArgs.Empty);
-
-                if (SettingsTable.GetSetting("downloadALL") == null)
-                    PlayListDownload.ResumeOnlyFirst();
-                else
-                    PlayListDownload.ResumeAll();
-
-                MainWindow.mainWindow.MainWindow_showDownload();
+                    if (SettingsTable.GetSetting("downloadALL") == null) PlayListDownload.ResumeOnlyFirst(); else PlayListDownload.ResumeAll();
+                });
             }
-            catch (Exception ex)
+            catch (Exception error)
             {
-                // Handle extraction error
-                DownloadCompleted?.Invoke(this, new AsyncCompletedEventArgs(ex, false, null));
+                VK_UI3.Services.DiagnosticsService.Record("ffmpeg-download", error);
+                LastError = error is OperationCanceledException ? "Загрузка отменена." : "Не удалось установить FFmpeg. Проверьте сеть и повторите загрузку.";
             }
             finally
             {
-                MainWindow.downloadFileWithProgress = null;
+                lock (downloadLock) isDownloading = false;
+                if (File.Exists(tempZipPath)) File.Delete(tempZipPath);
+                DownloadCompleted?.Invoke(this, EventArgs.Empty);
+                if (LastError == null) MainWindow.downloadFileWithProgress = null;
             }
         }
 

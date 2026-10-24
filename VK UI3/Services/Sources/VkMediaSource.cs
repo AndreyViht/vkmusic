@@ -1,4 +1,4 @@
-﻿using FFMediaToolkit.Audio;
+using FFMediaToolkit.Audio;
 using FFMediaToolkit.Decoding;
 using MusicX.Shared.Player;
 using NLog;
@@ -13,6 +13,7 @@ using VkNet.Model.Attachments;
 using Windows.Media;
 using Windows.Media.Playback;
 using Windows.Storage.Streams;
+using VK_UI3.Services;
 
 namespace MusicX.Services.Player.Sources;
 
@@ -27,7 +28,7 @@ public class VkMediaSource : MediaSourceBase
     public override async Task<bool> OpenWithMediaPlayerAsync(MediaPlayer player, Audio track,
         CancellationToken cancellationToken = default, AudioEqualizer equalizer = null)
     {
-        if (string.IsNullOrEmpty(track.Url.ToString())) return false;
+        if (track?.Url == null) return false;
 
         try
         {
@@ -76,26 +77,10 @@ public class VkMediaSource : MediaSourceBase
 
             RegisterSourceObjectReference(player, rtMediaSource);
 
-            if (equalizer == null)
-            {
-                System.Diagnostics.Debug.WriteLine("[FFMedia] Equalizer is null, clearing audio filters");
-                rtMediaSource.ClearFFmpegAudioFilters();
-            }
-            else
-            {
-                string filterString = equalizer.GetFFmpegFilterString();
-                System.Diagnostics.Debug.WriteLine($"[FFMedia] Equalizer filter string: '{filterString}'");
-                if (!string.IsNullOrEmpty(filterString))
-                {
-                    System.Diagnostics.Debug.WriteLine($"[FFMedia] Setting audio filters: {filterString}");
-                    rtMediaSource.SetFFmpegAudioFilters(filterString, rtMediaSource.AudioStreams.First());
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("[FFMedia] Filter string empty, clearing audio filters");
-                    rtMediaSource.ClearFFmpegAudioFilters();
-                }
-            }
+            var filters = PlaybackOptions.Filters(equalizer?.GetFFmpegFilterString());
+            if (string.IsNullOrWhiteSpace(filters)) rtMediaSource.ClearFFmpegAudioFilters();
+            else rtMediaSource.SetFFmpegAudioFilters(filters, rtMediaSource.AudioStreams.First());
+
         }
         catch (OperationCanceledException)
         {
@@ -119,22 +104,7 @@ public class VkMediaSource : MediaSourceBase
             mediaOptions.DemuxerOptions.PrivateOptions = new Dictionary<string, string>(baseMediaOptions.DemuxerOptions.PrivateOptions);
 
 
-            // Добавляем эквалайзер, если он передан
-            if (equalizer != null)
-            {
-                string filterString = equalizer.GetFFmpegFilterString();
-                System.Diagnostics.Debug.WriteLine($"[FFMedia] FFMediaToolkit equalizer filter string: '{filterString}'");
-                if (!string.IsNullOrEmpty(filterString))
-                {
-                    // Добавляем loudnorm после эквалайзера
-                    mediaOptions.EqualizerArgs = $"{filterString}";
-                    System.Diagnostics.Debug.WriteLine($"[FFMedia] Set EqualizerArgs: {mediaOptions.EqualizerArgs}");
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("[FFMedia] Filter string empty, EqualizerArgs remains null");
-                }
-            }
+            mediaOptions.EqualizerArgs = PlaybackOptions.Filters(equalizer?.GetFFmpegFilterString());
 
             // i think its better to use task.run over task.yield because we aren't doing async with ffmpeg
             var playbackItem = await Task.Run(() =>

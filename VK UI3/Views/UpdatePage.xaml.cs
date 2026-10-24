@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using SetupLib;
@@ -35,7 +35,7 @@ namespace VK_UI3.Views
 
         private void UpdatePage_Unloaded(object sender, RoutedEventArgs e)
         {
-         //   appUpdater.DownloadProgressChanged -= AppUpdater_DownloadProgressChanged;
+         appUpdater.DownloadProgressChanged -= AppUpdater_DownloadProgressChanged;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -61,24 +61,30 @@ namespace VK_UI3.Views
 
         private async void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
-            // Subscribe to the DownloadProgressChanged event
-            appUpdater.DownloadProgressChanged += AppUpdater_DownloadProgressChanged;
             UpdateBTN.IsEnabled = false;
-
-
-            // Start the download and open the file
-            await appUpdater.DownloadAndOpenFile(true, false, PathInstallZIP: AppContext.BaseDirectory);
+            appUpdater.DownloadProgressChanged -= AppUpdater_DownloadProgressChanged;
+            appUpdater.DownloadProgressChanged += AppUpdater_DownloadProgressChanged;
+            try
+            {
+                await appUpdater.DownloadAndOpenFile(true, false, PathInstallZIP: AppContext.BaseDirectory);
+                if (appUpdater.SelectedPackageType == PackageType.ZIP) Application.Current.Exit();
+            }
+            catch (Exception error)
+            {
+                VK_UI3.Services.DiagnosticsService.Record("update", error);
+                new Notification.Notification("Обновление не установлено", "Проверьте сеть и повторите попытку. Текущие файлы приложения сохранены.");
+            }
+            finally { UpdateBTN.IsEnabled = true; appUpdater.DownloadProgressChanged -= AppUpdater_DownloadProgressChanged; }
         }
 
 
         private void AppUpdater_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            // Update the ProgressBar and the TextBlock with the download progress
-            if (viewModel != null)
+            DispatcherQueue.TryEnqueue(() =>
             {
                 viewModel.DownloadProgress = e.Percentage;
                 viewModel.DownloadProgressText = $"{Math.Round(e.BytesDownloaded / 1024.0 / 1024, 2)} МБ";
-            }
+            });
         }
     }
 

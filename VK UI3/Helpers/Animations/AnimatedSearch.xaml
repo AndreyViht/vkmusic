@@ -8,7 +8,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <AutoSuggestBox Margin="20,5,20,5" PlaceholderText="Поиск музыки, плейлистов, исполнителей"
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+    <ComboBox Grid.Row="1" x:Name="FilterBox" SelectedIndex="0" Margin="20,0,20,5" AutomationProperties.Name="Тип результатов поиска">
+        <ComboBoxItem Content="Всё" Tag="all"/><ComboBoxItem Content="Треки" Tag="audios"/>
+        <ComboBoxItem Content="Исполнители" Tag="artists"/><ComboBoxItem Content="Плейлисты" Tag="playlists"/>
+    </ComboBox>
+    <AutoSuggestBox TextChanged="SearchTextChanged" SuggestionChosen="SearchSuggestionChosen" Margin="20,5,20,5" PlaceholderText="Поиск музыки, плейлистов, исполнителей"
      
         
         x:Name="searchTXT"
