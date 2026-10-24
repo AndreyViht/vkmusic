@@ -137,6 +137,7 @@ namespace VK_UI3.VKs.IVK
             try
             {
                 if (getLoadedTracks) return;
+                if (countTracks >= 0 && listAudio.Count >= countTracks) { itsAll = true; NotifyOnListUpdate(); return; }
                 getLoadedTracks = true;
                 
                 task = Task.Run(async () =>
@@ -211,6 +212,7 @@ namespace VK_UI3.VKs.IVK
             try
             {
                 if (getLoadedTracks) return;
+                if (countTracks >= 0 && listAudio.Count >= countTracks) { itsAll = true; NotifyOnListUpdate(); return; }
                 getLoadedTracks = true;
                 
                 task = Task.Run(async () =>
