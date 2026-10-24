@@ -113,7 +113,12 @@ public sealed partial class MusicIslandWindow : Window
     }
     private void PreviousClicked(object sender, RoutedEventArgs e) => MediaPlayerService.ExecuteAction(PlayerAction.PreviousTrack);
     private void NextClicked(object sender, RoutedEventArgs e) => MediaPlayerService.PlayNextTrack();
-    private void OpenClicked(object sender, RoutedEventArgs e) { HideIsland(); owner.ShowWindowAgain(); owner.Activate(); }
+    private void OpenClicked(object sender, RoutedEventArgs e)
+    {
+        HideIsland();
+        if (owner.AppWindow.Presenter is OverlappedPresenter presenter && presenter.State == OverlappedPresenterState.Minimized) presenter.Restore();
+        owner.ShowWindowAgain(); owner.Activate();
+    }
     private void SeekChanged(object sender, RangeBaseValueChangedEventArgs e)
     {
         if (!syncing && MediaPlayerService.MediaPlayer.PlaybackSession.CanSeek)

@@ -42,7 +42,12 @@ public static class MusicIslandService
                 state is MediaPlaybackState.Playing or MediaPlaybackState.Paused);
             if (show)
             {
-                island ??= new MusicIslandWindow(owner);
+                if (island == null)
+                {
+                    var created = new MusicIslandWindow(owner);
+                    created.Closed += (_, _) => { if (ReferenceEquals(island, created)) island = null; };
+                    island = created;
+                }
                 island.ShowIsland();
             }
             else island?.HideIsland();
