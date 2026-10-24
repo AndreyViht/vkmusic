@@ -78,6 +78,7 @@ namespace VK_UI3
             InitializeUIComponents();
             InitializeNavigation();
             MediaPlayerService.Initialize(this);
+            MusicIslandService.Initialize(this);
         }
 
         private void InitializeWindowProperties()
@@ -255,11 +256,6 @@ namespace VK_UI3
 
             hvn = (HWND)WinRT.Interop.WindowNative.GetWindowHandle(this);
             
-            var overlaySetting = SettingsTable.GetSetting("overlayPlayer");
-            if (overlaySetting != null && overlaySetting.settingValue == "1")
-            {
-                VK_UI3.Views.Settings.OverlaySetting.UpdateOverlayState(true);
-            }
         }
 
         private void InitializeNavigation()

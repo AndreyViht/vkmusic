@@ -1,0 +1,47 @@
+<Window
+    x:Class="VK_UI3.Views.MusicIslandWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Viht — музыкальный островок">
+    <Border x:Name="Island" Background="#101013" BorderBrush="#45454E" BorderThickness="1" CornerRadius="28" Padding="12" RequestedTheme="Dark"
+            PointerEntered="IslandEntered" PointerExited="IslandExited">
+        <Border.Resources>
+            <Style x:Key="IslandButton" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="Background" Value="#25252C"/><Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderThickness" Value="0"/><Setter Property="CornerRadius" Value="18"/>
+                <Setter Property="Width" Value="34"/><Setter Property="Height" Value="34"/><Setter Property="Padding" Value="0"/>
+            </Style>
+        </Border.Resources>
+        <StackPanel Spacing="10">
+            <Grid ColumnSpacing="10" Height="44">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="44"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <Border Background="#2E3039" CornerRadius="12">
+                    <Grid><FontIcon Glyph="&#xEC4F;" Foreground="#D1D5E2" FontSize="20"/><Image x:Name="Cover" Stretch="UniformToFill"/></Grid>
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock x:Name="TrackTitle" Text="Музыка" Foreground="White" FontWeight="SemiBold" FontSize="13" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock x:Name="TrackArtist" Foreground="#BCBEC9" FontSize="11" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
+                    <Button Style="{StaticResource IslandButton}" Click="PreviousClicked" AutomationProperties.Name="Предыдущий трек" ToolTipService.ToolTip="Предыдущий трек"><FontIcon Glyph="&#xE892;" FontSize="13" Foreground="White"/></Button>
+                    <Button Style="{StaticResource IslandButton}" Click="PlayPauseClicked" AutomationProperties.Name="Пауза или продолжить" ToolTipService.ToolTip="Пауза / продолжить"><FontIcon x:Name="PlayIcon" Glyph="&#xE769;" FontSize="15" Foreground="White"/></Button>
+                    <Button Style="{StaticResource IslandButton}" Click="NextClicked" AutomationProperties.Name="Следующий трек" ToolTipService.ToolTip="Следующий трек"><FontIcon Glyph="&#xE893;" FontSize="13" Foreground="White"/></Button>
+                </StackPanel>
+            </Grid>
+            <StackPanel x:Name="Details" Visibility="Collapsed" Spacing="4">
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <TextBlock x:Name="Elapsed" Text="0:00" FontSize="11" Foreground="#BCBEC9" VerticalAlignment="Center"/>
+                    <Slider x:Name="Seek" Grid.Column="1" Minimum="0" Maximum="1" StepFrequency="0.1" ValueChanged="SeekChanged" AutomationProperties.Name="Позиция воспроизведения"/>
+                    <TextBlock x:Name="Duration" Grid.Column="2" Text="0:00" FontSize="11" Foreground="#BCBEC9" VerticalAlignment="Center"/>
+                </Grid>
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <FontIcon Glyph="&#xE995;" FontSize="14" Foreground="#BCBEC9" VerticalAlignment="Center"/>
+                    <Slider x:Name="Volume" Grid.Column="1" Minimum="0" Maximum="100" ValueChanged="VolumeChanged" AutomationProperties.Name="Громкость"/>
+                    <Button Grid.Column="2" Content="Открыть Viht" Click="OpenClicked" Foreground="White" Background="#25252C" BorderThickness="0" CornerRadius="12" FontSize="11"/>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

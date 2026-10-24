@@ -4,6 +4,11 @@ using SetupLib;
 using SetupLib.Services;
 
 var passed = 0;
+Check(VK_UI3.Services.MusicIslandPolicy.ShouldShow(true, true, true, true), "Island while minimized with music");
+Check(!VK_UI3.Services.MusicIslandPolicy.ShouldShow(true, false, true, true), "Hide island when main window restored");
+Check(!VK_UI3.Services.MusicIslandPolicy.ShouldShow(true, true, false, true), "No island without a track");
+Check(!VK_UI3.Services.MusicIslandPolicy.ShouldShow(false, true, true, true), "Respect island setting");
+Check(!VK_UI3.Services.MusicIslandPolicy.ShouldShow(true, true, true, false), "No island when playback stopped");
 void Check(bool condition, string name) { if (!condition) throw new Exception(name); passed++; }
 Check(UpdatePolicy.ParseVersion("v0.3.10") > UpdatePolicy.ParseVersion("0.3.9.8"), "Numeric version ordering");
 Check(UpdatePolicy.ParseVersion("1.2") == UpdatePolicy.ParseVersion("1.2.0.0"), "Equivalent versions");

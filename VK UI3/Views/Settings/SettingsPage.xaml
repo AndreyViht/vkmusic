@@ -117,7 +117,7 @@
                             <local:BackDropSetting AutomationProperties.HelpText="Включает или выключает эффект прозрачности в приложении" AutomationProperties.Name="Выключить прозрачность" />
                         </Border>
                         <Border Visibility="Collapsed">
-                            <local:OverlaySetting AutomationProperties.HelpText="Включает или выключает оверлейный мини-плеер поверх всех окон" AutomationProperties.Name="Показывать мини-плеер поверх всех окон" />
+                            <local:OverlaySetting AutomationProperties.HelpText="Трек, пауза, переключение, перемотка и громкость сверху экрана, только когда Viht свёрнут. При наведении островок раскрывается." AutomationProperties.Name="Музыкальный островок при сворачивании" />
                         </Border>
                         <Border>
                             <local:DisableNavigationAnimationsSetting AutomationProperties.HelpText="Включает или выключает анимации при переходе между разделами. Отключение анимаций может ускорить восприятие загрузки." AutomationProperties.Name="Отключить анимации переходов" />
