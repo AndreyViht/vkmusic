@@ -198,6 +198,7 @@ namespace VK_UI3.Controllers
                 RootGrid.SizeChanged += RootGrid_SizeChanged;
 
             this.Loaded += AudioPlayer_Loaded;
+            this.Unloaded += AudioPlayer_Unloaded;
             VK_UI3.Services.MediaPlayerService.oniVKUpdate += AudioPlayer_oniVKUpdate;
             VK_UI3.Services.MediaPlayerService.AudioPlayedChangeEvent += AudioPlayer_AudioPlayedChange;
             VK_UI3.Services.MediaPlayerService.VolumeChanged += MediaPlayerService_VolumeChanged;
@@ -243,6 +244,7 @@ namespace VK_UI3.Controllers
 
         private void AudioPlayer_Loaded(object sender, RoutedEventArgs e)
         {
+            InitializeProgressAppearance();
             actualHeight = pageRa.ActualHeight;
             if (iVKGetAudio == null)
             {
@@ -252,6 +254,7 @@ namespace VK_UI3.Controllers
 
         private void AudioPlayer_Unloaded(object sender, RoutedEventArgs e)
         {
+            StopProgressAppearance();
             VK_UI3.Services.MediaPlayerService.AudioPlayedChangeEvent -= AudioPlayer_AudioPlayedChange;
             VK_UI3.Services.MediaPlayerService.VolumeChanged -= MediaPlayerService_VolumeChanged;
             VK_UI3.Services.MediaPlayerService.PositionChanged -= MediaPlayerService_PositionChanged;
@@ -288,6 +291,12 @@ namespace VK_UI3.Controllers
 
         private void RootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            bool compact = RootGrid.ActualWidth < 1050;
+            Grid.SetRow(TransportPanel, compact ? 1 : 0);
+            Grid.SetColumn(TransportPanel, compact ? 0 : 2);
+            Grid.SetColumnSpan(TransportPanel, compact ? 4 : 1);
+            PlayerContent.ColumnDefinitions[2].Width = compact ? new GridLength(0) : new GridLength(3, GridUnitType.Star);
+            RootGrid.Clip = new RectangleGeometry { Rect = new Rect(0, 0, RootGrid.ActualWidth, RootGrid.ActualHeight) };
             AnimateRedRectangle();
         }
 
@@ -516,8 +525,10 @@ namespace VK_UI3.Controllers
             OnPropertyChanged(nameof(TrackDataThis));
 
             changeImage.ChangeImageWithAnimation(Thumbnail);
-            changeText.ChangeTextWithAnimation(TrackDataThis?.audio?.Artist ?? string.Empty);
-            changeText2.ChangeTextWithAnimation(TrackDataThis?.audio?.Title ?? string.Empty);
+            ArtistTextBlock.Text = TrackDataThis?.audio?.Artist ?? string.Empty;
+            ToolTipService.SetToolTip(ArtistTextBlock, ArtistTextBlock.Text);
+            TitleTextBlock.Text = TrackDataThis?.audio?.Title ?? string.Empty;
+            ToolTipService.SetToolTip(TitleTextBlock, TitleTextBlock.Text);
 
             FlyOutControl.dataTrack = TrackDataThis;
         }
@@ -645,26 +656,14 @@ namespace VK_UI3.Controllers
 
         #region Animation Methods
 
+        private Storyboard progressWidthAnimation;
         private void AnimateRedRectangle()
         {
             if (RootGrid == null || RedRectangle == null) return;
-
-            this.DispatcherQueue.TryEnqueue(() =>
+            DispatcherQueue.TryEnqueue(() =>
             {
-                double toWidth = RootGrid.ActualWidth * RedFillPercent;
-                var animation = new DoubleAnimation
-                {
-                    To = toWidth,
-                    Duration = new Duration(TimeSpan.FromMilliseconds(40)),
-                    EnableDependentAnimation = true,
-                };
-
-                Storyboard.SetTarget(animation, RedRectangle);
-                Storyboard.SetTargetProperty(animation, "Width");
-                var sb = new Storyboard();
-                sb.Children.Add(animation);
-                sb.Begin();
-                RedRectangle.Width = toWidth;
+                progressWidthAnimation?.Stop();
+                RedRectangle.Width = Math.Max(0, RootGrid.ActualWidth * Math.Clamp(RedFillPercent, 0, 1));
             });
         }
 
@@ -700,51 +699,9 @@ namespace VK_UI3.Controllers
             await Task.Delay((int)(durationSeconds * 1000));
         }
 
-        private async Task StartTitleMarqueeIfNeeded()
-        {
-            if (isTitleAnimating) return;
-            isTitleAnimating = true;
+        private Task StartTitleMarqueeIfNeeded() => Task.CompletedTask;
 
-            await Task.Delay(100);
-            var outerGrid = (FrameworkElement)TitleClipGrid.Parent;
-            double containerWidth = outerGrid.ActualWidth;
-            double textWidth = TitleTextBlock.ActualWidth;
-
-            if (textWidth > containerWidth && isPointerOver)
-            {
-                titleMarqueeOffset = containerWidth - textWidth - 15;
-                while (isPointerOver)
-                {
-                    await AnimateTranslate(TitleTranslate, titleMarqueeOffset, 3);
-                    await AnimateTranslate(TitleTranslate, 0, 1);
-                    await Task.Delay(2000);
-                }
-            }
-            isTitleAnimating = false;
-        }
-
-        private async Task StartArtistMarqueeIfNeeded()
-        {
-            if (isArtistAnimating) return;
-            isArtistAnimating = true;
-
-            await Task.Delay(100);
-            var outerGrid = (FrameworkElement)ArtistClipGrid.Parent;
-            double containerWidth = outerGrid.ActualWidth;
-            double textWidth = ArtistTextBlock.ActualWidth;
-
-            if (textWidth > containerWidth && isPointerOver)
-            {
-                artistMarqueeOffset = containerWidth - textWidth - 15;
-                while (isPointerOver)
-                {
-                    await AnimateTranslate(ArtistTranslate, artistMarqueeOffset, 3);
-                    await AnimateTranslate(ArtistTranslate, 0, 1);
-                    await Task.Delay(2000);
-                }
-            }
-            isArtistAnimating = false;
-        }
+        private Task StartArtistMarqueeIfNeeded() => Task.CompletedTask;
 
         private void ReverseTitleMarquee()
         {

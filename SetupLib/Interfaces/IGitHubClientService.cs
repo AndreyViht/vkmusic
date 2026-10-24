@@ -8,7 +8,7 @@ namespace SetupLib.Interfaces
 {
     public interface IGitHubClientService
     {
-        Task<ReleaseInfo> GetLatestReleaseInfo(string owner, string repo, string currentVersion);
+        Task<ReleaseInfo> GetLatestReleaseInfo(string owner, string repo, string currentVersion, PackageType? requiredPackage = null);
     }
 
 

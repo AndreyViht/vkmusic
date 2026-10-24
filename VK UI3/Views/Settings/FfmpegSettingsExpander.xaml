@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Expander
     x:Class="VK_UI3.Views.Settings.FfmpegSettingsExpander"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -60,10 +60,10 @@
                                         <Grid
                                             Margin="0,4,0,8"
                                             Padding="8"
-                                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                                            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                            Background="{ThemeResource VihtCardBrush}"
+                                            BorderBrush="{ThemeResource VihtStrokeBrush}"
                                             BorderThickness="1"
-                                            CornerRadius="4">
+                                            CornerRadius="{ThemeResource VihtCardCornerRadius}">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
@@ -81,7 +81,7 @@
                                                 Grid.Row="1"
                                                 Margin="0,4,0,8"
                                                 FontSize="12"
-                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                Foreground="{ThemeResource VihtSecondaryTextBrush}"
                                                 Text="{x:Bind Description}"
                                                 TextWrapping="Wrap" />
 
@@ -137,8 +137,8 @@
             <Grid
                 Margin="0,12,0,0"
                 Padding="12"
-                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                CornerRadius="4">
+                Background="{ThemeResource VihtCardBrush}"
+                CornerRadius="{ThemeResource VihtCardCornerRadius}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -170,7 +170,7 @@
                         Grid.Column="2"
                         Click="AddCustomSetting_Click"
                         Content="Добавить"
-                        Style="{StaticResource AccentButtonStyle}" />
+                        Style="{StaticResource VihtAccentButtonStyle}" />
                 </Grid>
             </Grid>
 
@@ -189,7 +189,7 @@
                     Margin="10,0,0,0"
                     Click="SaveAllSettings_Click"
                     Content="Сохранить все"
-                    Style="{StaticResource AccentButtonStyle}"
+                    Style="{StaticResource VihtAccentButtonStyle}"
                     ToolTipService.ToolTip="Сохранить все изменения" />
             </StackPanel>
 

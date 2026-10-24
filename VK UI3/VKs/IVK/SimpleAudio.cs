@@ -54,7 +54,7 @@ namespace VK_UI3.VKs.IVK
         /// <returns>Список URI фотографий</returns>
         public override List<string> getPhotosList()
         {
-            return null;
+            return new List<string>();
         }
         
         /// <summary>
@@ -76,6 +76,7 @@ namespace VK_UI3.VKs.IVK
         public override void GetTracks()
         {
             itsAll = true;
+            NotifyOnListUpdate();
             return;
         }
         

@@ -42,15 +42,15 @@
 				<Grid x:Name="ThumbGrid" AutomationProperties.Name="Обложка плейлиста" AutomationProperties.HelpText="Визуальное представление плейлиста">
 					<StackPanel
 						VerticalAlignment="Top"
-						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-						CornerRadius="8">
+						Background="{ThemeResource VihtCardBrush}"
+						CornerRadius="{ThemeResource VihtCardCornerRadius}">
 						<Grid
 							Grid.Column="0"
 							Width="200"
 							Height="200"
 							Margin="5"
-							Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-							CornerRadius="4"
+							Background="{ThemeResource VihtCardBrush}"
+							CornerRadius="{ThemeResource VihtCardCornerRadius}"
 							Translation="0,0,10">
 							<FontIcon Glyph="&#xE90B;" AutomationProperties.Name="Иконка плейлиста" AutomationProperties.HelpText="Стандартная иконка плейлиста" />
 							<customs:GridImagesCustom
@@ -77,8 +77,8 @@
 								Padding="10"
 								HorizontalAlignment="Right"
 								VerticalAlignment="Bottom"
-								Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
-								CornerRadius="4"
+								Background="{ThemeResource VihtCardBrush}"
+								CornerRadius="{ThemeResource VihtCardCornerRadius}"
 								Opacity="0.9"
 								AutomationProperties.Name="Тип плейлиста"
 								AutomationProperties.HelpText="Иконка, обозначающая тип плейлиста">
@@ -90,8 +90,8 @@
 							Margin="5"
 							Padding="10"
 							VerticalAlignment="Bottom"
-							Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
-							CornerRadius="10"
+							Background="{ThemeResource VihtCardBrush}"
+							CornerRadius="{ThemeResource VihtCardCornerRadius}"
 							Orientation="Horizontal"
 							PointerEntered="ownerGrid_PointerEntered"
 							PointerExited="ownerGrid_PointerExited"
@@ -152,8 +152,8 @@
 								Width="30"
 								Height="30"
 								Margin="0,0,5,0"
-								Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-								CornerRadius="100"
+								Background="{ThemeResource VihtCardBrush}"
+								CornerRadius="{ThemeResource VihtCardCornerRadius}"
 								AutomationProperties.Name="Аватар владельца"
 								AutomationProperties.HelpText="Аватар владельца плейлиста">
 								<Image
@@ -184,8 +184,8 @@
 					<StackPanel
 						x:Name="TextsT"
 						Padding="10"
-						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-						CornerRadius="4"
+						Background="{ThemeResource VihtCardBrush}"
+						CornerRadius="{ThemeResource VihtCardCornerRadius}"
 						Translation="0,0,16"
 						AutomationProperties.Name="Текстовая информация"
 						AutomationProperties.HelpText="Текстовая информация о плейлисте">
@@ -221,7 +221,7 @@
 						x:Name="AddInfo"
 						Margin="0,10,0,0"
 						Padding="10"
-						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+						CornerRadius="{ThemeResource VihtCardCornerRadius}" Background="{ThemeResource VihtCardBrush}"
 						Opacity="0.5"
 						Orientation="Vertical"
 						Translation="0,0,16"
@@ -292,7 +292,7 @@
 						x:Name="stackPanel"
 						Margin="0,10,0,0"
 						Padding="10,5,5,2"
-						Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
+						Background="{ThemeResource VihtCardBrush}"
 						CornerRadius="4"
 						RenderTransformOrigin="0.5,0.5"
 						SelectionMode="None"

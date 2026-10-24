@@ -22,14 +22,14 @@
     <Window.SystemBackdrop>
         <MicaBackdrop Kind="BaseAlt" />
     </Window.SystemBackdrop>
-    <Grid>
+    <Grid Background="{ThemeResource VihtBackgroundBrush}">
         <devCommunity:ConfettiCannon x:Name="ConfettiCanon" />
         <snow:SnowFlakeEffect Background="Transparent"
             x:Name="snow"
             AutoStart="False"
             FlakeCount="100" />
   
-        <Grid>
+        <Grid Background="{ThemeResource VihtBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />

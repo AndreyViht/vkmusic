@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -63,6 +63,7 @@ namespace VK_UI3.Views.LoginWindow
         {
             
 
+            if (string.IsNullOrWhiteSpace(LoginTextBox.Text)) return;
             Task task = new Task(() =>
             {
                 loginInvike();
@@ -73,6 +74,8 @@ namespace VK_UI3.Views.LoginWindow
 
 
         }
+
+        private void OpenLocalMusic(object sender, RoutedEventArgs e) => MainWindow.contentFrame.Navigate(typeof(VK_UI3.Views.LibraryPage), "local");
 
         private void loginInvike()
         {
@@ -282,7 +285,8 @@ namespace VK_UI3.Views.LoginWindow
         {
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
-                Task task = new Task(() =>
+                if (string.IsNullOrWhiteSpace(LoginTextBox.Text)) return;
+            Task task = new Task(() =>
                 {
                     loginInvike();
 

@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
@@ -50,6 +50,12 @@ namespace VK_UI3.Controls
                 this.Hide();
                 return;
             }
+            foreach (var old in Items.OfType<MenuFlyoutItem>().Where(i => i.Tag as string == "queue-action").ToArray()) Items.Remove(old);
+            var next = new MenuFlyoutItem { Text = "Воспроизвести следующим", Tag = "queue-action" };
+            next.Click += (_, _) => VK_UI3.Services.PlaybackStateService.Enqueue(dataTrack, true);
+            var queued = new MenuFlyoutItem { Text = "Добавить в очередь", Tag = "queue-action" };
+            queued.Click += (_, _) => VK_UI3.Services.PlaybackStateService.Enqueue(dataTrack);
+            Items.Insert(0, queued); Items.Insert(0, next);
             updateUIFlyOut();
             createShareGoupsMenu();
         }

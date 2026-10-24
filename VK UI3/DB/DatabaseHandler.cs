@@ -56,7 +56,8 @@ namespace VK_UI3.DB
                     if (ex.Message.Contains("file is not a database"))
                     {
                         // Если пароль не подходит, удаляем файл БД и создаем новый
-                        File.Delete(databasePath);
+                        File.Move(databasePath, databasePath + ".backup-" + DateTime.Now.ToString("yyyyMMdd-HHmmss-ffff"));
+                        _db?.Dispose();
                         _db = new SQLiteConnection(options);
                         _db.CreateTable<Accounts>();
                         _db.CreateTable<PathTable>();

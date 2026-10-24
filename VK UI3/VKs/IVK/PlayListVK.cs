@@ -73,7 +73,7 @@ namespace VK_UI3.VKs.IVK
                 {
                     var p = await VK.vkService.GetPlaylistAsync(100, _playlist.Id, _playlist.AccessKey, _playlist.OwnerId);
                     
-                    if ((p.Playlist.MainArtists == null || p.Playlist.MainArtists.Count == 0) && p.Playlist.OwnerId < 0 && p.Groups != null)
+                    if ((p.Playlist.MainArtists == null || p.Playlist.MainArtists.Count == 0) && p.Playlist.OwnerId < 0 && p.Groups?.Count > 0)
                     {
                         p.Playlist.OwnerName = p.Groups[0].Name;
                     }
@@ -123,9 +123,7 @@ namespace VK_UI3.VKs.IVK
                             s += trackArtist.Name + ", ";
                         }
                         
-                        var artists = s.Remove(s.Length - 2);
-                        
-                        artists = artists;
+                        artists = s.Remove(s.Length - 2);
                     }
                     else
                     {
@@ -159,14 +157,14 @@ namespace VK_UI3.VKs.IVK
                     // Логируем ошибку
                     Console.WriteLine($"Ошибка при получении плейлиста: {e.Message}");
                     // Можно также вызвать событие ошибки, если это предусмотрено
-                    // onErrorLoad?.Invoke(this, new ErrorLoad(e));
+                    NotifyonErrorLoad(e);
                 }
                 finally
                 {
                     // Очистка ресурсов
                 }
                 getLoadedTracks = false;
-                NotifyOnListUpdate();
+                if (LastLoadError == null) NotifyOnListUpdate();
             });
         }
         
@@ -193,7 +191,7 @@ namespace VK_UI3.VKs.IVK
                 // Логируем ошибку
                 Console.WriteLine($"Ошибка при создании плейлиста из рекомендаций: {e.Message}");
                 // Можно также вызвать событие ошибки, если это предусмотрено
-                // onErrorLoad?.Invoke(this, new ErrorLoad(e));
+                NotifyonErrorLoad(e);
             }
         }
         
@@ -312,7 +310,7 @@ namespace VK_UI3.VKs.IVK
                                 batchReset.Dispose();
                             }
                             
-                            if (countTracks == listAudio.Count()) itsAll = true;
+                            if (countTracks <= listAudio.Count() || extendedAudios.Count == 0) itsAll = true;
                             
                             getLoadedTracks = false;
                         }
@@ -325,7 +323,7 @@ namespace VK_UI3.VKs.IVK
                         getLoadedTracks = false;
                         Console.WriteLine($"Ошибка при получении треков плейлиста: {e.Message}");
                         // Можно также вызвать событие ошибки, если это предусмотрено
-                        // onErrorLoad?.Invoke(this, new ErrorLoad(e));
+                        NotifyonErrorLoad(e);
                         task = null;
                     }
                 });
@@ -389,7 +387,7 @@ namespace VK_UI3.VKs.IVK
                                 batchReset.Dispose();
                             }
                             
-                            if (countTracks == listAudio.Count()) itsAll = true;
+                            if (countTracks <= listAudio.Count() || extendedAudios.Count == 0) itsAll = true;
                             
                             getLoadedTracks = false;
                         }
@@ -402,7 +400,7 @@ namespace VK_UI3.VKs.IVK
                         getLoadedTracks = false;
                         Console.WriteLine($"Ошибка при получении треков плейлиста: {e.Message}");
                         // Можно также вызвать событие ошибки, если это предусмотрено
-                        // onErrorLoad?.Invoke(this, new ErrorLoad(e));
+                        NotifyonErrorLoad(e);
                         task = null;
                     }
                 });

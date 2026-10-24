@@ -24,7 +24,7 @@ namespace VK_UI3.DB
 
         public static SettingsTable? GetSetting(string settingName, string standartSetting = null)
         {
-            var setting = DatabaseHandler.getConnect().Query<SettingsTable>("Select * FROM SettingsTable WHERE settingName = '" + settingName + "'");
+            var setting = DatabaseHandler.getConnect().Query<SettingsTable>("Select * FROM SettingsTable WHERE settingName = ?", settingName);
 
             if (setting.Count == 0)
             {
@@ -41,7 +41,7 @@ namespace VK_UI3.DB
 
         public static void RemoveSetting(string settingName)
         {
-            DatabaseHandler.getConnect().Query<SettingsTable>("DELETE FROM SettingsTable WHERE settingName = '" + settingName + "'");
+            DatabaseHandler.getConnect().Query<SettingsTable>("DELETE FROM SettingsTable WHERE settingName = ?", settingName);
 
         }
 

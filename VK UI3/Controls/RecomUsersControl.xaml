@@ -118,8 +118,8 @@
                 <Grid
                     Width="20"
                     Height="20"
-                    Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-                    CornerRadius="100">
+                    Background="{ThemeResource VihtCardBrush}"
+                    CornerRadius="{ThemeResource VihtCardCornerRadius}">
                     <Image x:Name="AvatarImage" AutomationProperties.Name="Аватар пользователя" />
                 </Grid>
                 <TextBlock

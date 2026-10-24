@@ -45,7 +45,7 @@
             AutomationProperties.Name="Панель управления"
             AutomationProperties.HelpText="Панель с кнопками управления плейлистами">
             <Button
-                Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
+                Background="{ThemeResource VihtCardBrush}"
                 x:Name="CreateButton"
                 Margin="10"
                 Click="CreateButton_Click"
@@ -57,7 +57,7 @@
                 </StackPanel>
             </Button>
             <Button
-                Background="{ThemeResource AcrylicBackgroundFillColorBaseBrush}"
+                Background="{ThemeResource VihtCardBrush}"
                 x:Name="Cancel"
                 Margin="10,0,10,10"
                 Click="Cancel_Click"

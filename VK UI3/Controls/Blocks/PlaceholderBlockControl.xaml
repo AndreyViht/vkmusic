@@ -13,8 +13,8 @@
     </UserControl.Shadow>
     <Grid
         Padding="10"
-        Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}"
-        CornerRadius="8"
+        Background="{ThemeResource VihtCardBrush}"
+        CornerRadius="{ThemeResource VihtCardCornerRadius}"
         Translation="0,0,8">
 
 

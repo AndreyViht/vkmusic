@@ -14,8 +14,8 @@
                 <Style TargetType="Border">
                     <Setter Property="Margin" Value="5,5,5,0" />
                     <Setter Property="BorderThickness" Value="1" />
-                    <Setter Property="CornerRadius" Value="4" />
-                    <Setter Property="Background" Value="{ThemeResource LayerFillColorAltBrush}" />
+                    <Setter Property="CornerRadius" Value="{ThemeResource VihtCardCornerRadius}" />
+                    <Setter Property="Background" Value="{ThemeResource VihtCardBrush}" />
                     <Setter Property="Padding" Value="14" />
                 </Style>
                 <Style TargetType="Expander">
@@ -23,6 +23,7 @@
                 </Style>
             </StackPanel.Resources>
 
+            <Expander Header="Очередь, локальная музыка и диагностика" HorizontalAlignment="Stretch" Margin="0,0,0,8"><local:PlaybackTools /></Expander>
             <!--  Общие настройки  -->
             <Expander
                 Margin="0,0,0,8"
@@ -88,6 +89,7 @@
                 </Expander.Content>
             </Expander>
 
+            <Expander Header="Расположение и скрытие меню" HorizontalAlignment="Stretch" Margin="0,0,0,8"><local:NavigationSettings /></Expander>
             <!--  Внешний вид и анимации  -->
             <Expander
                 Margin="0,0,0,8"
@@ -115,7 +117,7 @@
                             <local:BackDropSetting AutomationProperties.HelpText="Включает или выключает эффект прозрачности в приложении" AutomationProperties.Name="Выключить прозрачность" />
                         </Border>
                         <Border Visibility="Collapsed">
-                            <local:OverlaySetting AutomationProperties.HelpText="Включает или выключает оверлейный мини-плеер поверх всех окон" AutomationProperties.Name="Показывать мини-плеер поверх всех окон" />
+                            <local:OverlaySetting AutomationProperties.HelpText="Трек, пауза, переключение, перемотка и громкость сверху экрана, только когда Viht свёрнут. При наведении островок раскрывается." AutomationProperties.Name="Музыкальный островок при сворачивании" />
                         </Border>
                         <Border>
                             <local:DisableNavigationAnimationsSetting AutomationProperties.HelpText="Включает или выключает анимации при переходе между разделами. Отключение анимаций может ускорить восприятие загрузки." AutomationProperties.Name="Отключить анимации переходов" />
@@ -326,7 +328,8 @@
                             Это молодой и скорее всего разовый проект, разработчик делает на свой вкус и для стабильной работы кто бы хотел пользоваться подобными Утилитами.
                             Поддержать проект и развитие инфраструктуры Viht Community можно написав разработчику в телеграм:
                         </TextBlock>
-                        <HyperlinkButton Content="Связаться с разработчиком" NavigateUri="https://t.me/anviht" HorizontalAlignment="Left" />
+                        <TextBlock Text="Разработчик: Viht / AndreyViht / @anviht" TextWrapping="Wrap" />
+                        <HyperlinkButton Content="Viht — @anviht" NavigateUri="https://t.me/anviht" HorizontalAlignment="Left" />
                     </StackPanel>
                 </Expander.Content>
             </Expander>
@@ -337,7 +340,7 @@
                 AutomationProperties.HelpText="Ссылка на Telegram канал проекта"
                 AutomationProperties.Name="Ссылка на Telegram"
                 TextAlignment="Center">
-                <Hyperlink NavigateUri="https://t.me/vihtm">Viht Music VK в Telegram</Hyperlink>
+                <Hyperlink NavigateUri="https://t.me/anviht">Viht Music VK в Telegram</Hyperlink>
             </TextBlock>
 
         </StackPanel>

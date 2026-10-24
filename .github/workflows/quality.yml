@@ -1,0 +1,34 @@
+name: Проверка и ZIP для тестирования
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            6.0.x
+      - uses: microsoft/setup-msbuild@v2
+      - name: Проверки загрузки и обновления
+        run: dotnet run --project Tests/VihtVK.Checks/VihtVK.Checks.csproj --configuration Release
+      - name: Сборка приложения
+        run: msbuild "VK UI3/VK UI3.csproj" /restore /p:Configuration=Unpacked /p:Platform=x64 /p:MinVerSkip=true /verbosity:minimal
+      - name: ZIP для проверки
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem -LiteralPath 'VK UI3/bin/x64/Unpacked' -Recurse -Filter 'Viht Music VK.exe' | Select-Object -First 1
+          if (-not $exe) { throw 'Не найден результат сборки' }
+          Compress-Archive -Path (Join-Path $exe.Directory.FullName '*') -DestinationPath VihtVK-test-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: VihtVK-test-x64
+          path: VihtVK-test-x64.zip

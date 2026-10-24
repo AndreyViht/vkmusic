@@ -63,8 +63,8 @@ namespace VK_UI3.VKs.IVK
                 // Логируем ошибку
                 Console.WriteLine($"Ошибка при получении количества аудиозаписей пользователя: {ex.Message}");
                 // Можно также вызвать событие ошибки, если это предусмотрено
-                // onErrorLoad?.Invoke(this, new ErrorLoad(ex));
-                return null;
+                NotifyonErrorLoad(ex);
+                throw;
             }
         }
         
@@ -137,6 +137,7 @@ namespace VK_UI3.VKs.IVK
             try
             {
                 if (getLoadedTracks) return;
+                if (countTracks >= 0 && listAudio.Count >= countTracks) { itsAll = true; NotifyOnListUpdate(); return; }
                 getLoadedTracks = true;
                 
                 task = Task.Run(async () =>
@@ -176,7 +177,7 @@ namespace VK_UI3.VKs.IVK
                                 batchReset.WaitOne();
                                 batchReset.Dispose();
                             }
-                            if (countTracks == listAudio.Count()) itsAll = true;
+                            if (countTracks <= listAudio.Count() || extendedAudios.Count == 0) itsAll = true;
                             
                             getLoadedTracks = false;
                         }
@@ -188,10 +189,9 @@ namespace VK_UI3.VKs.IVK
                         // Логируем ошибку
                         Console.WriteLine($"Ошибка при получении аудиозаписей пользователя: {ex.Message}");
                         // Можно также вызвать событие ошибки, если это предусмотрено
-                        // onErrorLoad?.Invoke(this, new ErrorLoad(ex));
+                        NotifyonErrorLoad(ex);
                         getLoadedTracks = false;
                         task = null;
-                        NotifyOnListUpdate();
                     }
                 });
             }
@@ -212,6 +212,7 @@ namespace VK_UI3.VKs.IVK
             try
             {
                 if (getLoadedTracks) return;
+                if (countTracks >= 0 && listAudio.Count >= countTracks) { itsAll = true; NotifyOnListUpdate(); return; }
                 getLoadedTracks = true;
                 
                 task = Task.Run(async () =>
@@ -251,7 +252,7 @@ namespace VK_UI3.VKs.IVK
                                 batchReset.WaitOne();
                                 batchReset.Dispose();
                             }
-                            if (countTracks == listAudio.Count()) itsAll = true;
+                            if (countTracks <= listAudio.Count() || extendedAudios.Count == 0) itsAll = true;
                             
                             getLoadedTracks = false;
                         }
@@ -263,17 +264,15 @@ namespace VK_UI3.VKs.IVK
                         // Логируем ошибку
                         Console.WriteLine($"Ошибка при получении аудиозаписей пользователя: {ex.Message}");
                         // Можно также вызвать событие ошибки, если это предусмотрено
-                        // onErrorLoad?.Invoke(this, new ErrorLoad(ex));
+                        NotifyonErrorLoad(ex);
                         getLoadedTracks = false;
                         task = null;
-                        NotifyOnListUpdate();
                     }
                 });
             }
             catch (Exception e)
             {
-                semaphore.Release(); // Освобождает семафор
-                throw e;
+                throw;
             }
             finally
             {

@@ -1,62 +1,40 @@
-﻿using SetupLib.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SetupLib.Services
+using SetupLib.Interfaces;
+namespace SetupLib.Services;
+public class FileDownloadService : IFileDownloadService
 {
-    public class FileDownloadService : IFileDownloadService
+    private readonly Func<HttpClient> createClient;
+    public FileDownloadService(Func<HttpClient>? createClient = null) => this.createClient = createClient ?? (() => new HttpClient());
+    public event EventHandler<DownloadProgressChangedEventArgs>? DownloadProgressChanged;
+    public async Task DownloadFileAsync(string url, string destinationPath)
     {
-        public event EventHandler<DownloadProgressChangedEventArgs> DownloadProgressChanged;
-
-        public async Task DownloadFileAsync(string url, string destinationPath)
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri) || uri.Scheme != "https") throw new InvalidOperationException("Для загрузки требуется HTTPS-адрес.");
+        var partial = destinationPath + ".partial";
+        using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(10));
+        try
         {
-            using (var httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(10) })
-            using (var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
-            using (var streamToReadFrom = await response.Content.ReadAsStreamAsync())
+            using var client = createClient();
+            using var response = await client.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, timeout.Token);
+            response.EnsureSuccessStatusCode();
+            if (response.Content.Headers.ContentType?.MediaType?.Contains("html", StringComparison.OrdinalIgnoreCase) == true)
+                throw new InvalidDataException("Сервер вернул веб-страницу вместо файла. Проверьте источник обновления.");
+            var length = response.Content.Headers.ContentLength;
+            await using (var source = await response.Content.ReadAsStreamAsync(timeout.Token))
+            await using (var target = File.Create(partial))
             {
-                using (var streamToWriteTo = File.Create(destinationPath))
+                long total = 0;
+                var buffer = new byte[81920];
+                int count;
+                while ((count = await source.ReadAsync(buffer, timeout.Token)) != 0)
                 {
-                    var totalRead = 0L;
-                    var buffer = new byte[8192];
-                    var isMoreToRead = true;
-
-                    do
-                    {
-                        var read = await streamToReadFrom.ReadAsync(buffer, 0, buffer.Length);
-                        if (read == 0)
-                        {
-                            isMoreToRead = false;
-                        }
-                        else
-                        {
-                            await streamToWriteTo.WriteAsync(buffer, 0, read);
-                            totalRead += read;
-
-                            var percentage = totalRead * 100d / response.Content.Headers.ContentLength.Value;
-                            OnDownloadProgressChanged(
-                                response.Content.Headers.ContentLength.Value,
-                                totalRead,
-                                percentage
-                            );
-                        }
-                    } while (isMoreToRead);
-
-                    await streamToWriteTo.FlushAsync();
+                    await target.WriteAsync(buffer.AsMemory(0, count), timeout.Token);
+                    total += count;
+                    DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
+                    { BytesDownloaded = total, TotalBytes = length ?? 0, Percentage = length > 0 ? total * 100d / length.Value : 0 });
                 }
+                if (total == 0 || (length.HasValue && total != length.Value)) throw new IOException("Файл загружен не полностью.");
             }
+            File.Move(partial, destinationPath, true);
         }
-
-        protected virtual void OnDownloadProgressChanged(long totalBytes, long bytesDownloaded, double percentage)
-        {
-            DownloadProgressChanged?.Invoke(this, new DownloadProgressChangedEventArgs
-            {
-                TotalBytes = totalBytes,
-                BytesDownloaded = bytesDownloaded,
-                Percentage = percentage
-            });
-        }
+        finally { if (File.Exists(partial)) File.Delete(partial); }
     }
 }

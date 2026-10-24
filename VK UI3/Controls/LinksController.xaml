@@ -38,12 +38,12 @@
         </Grid.ColumnDefinitions>
 
         <Grid
-             Background="{ThemeResource LayerFillColorAltBrush}"
+             Background="{ThemeResource VihtCardBrush}"
             Grid.Column="0"
             Width="40"
             Height="40"
             Margin="10"
-            CornerRadius="50">
+            CornerRadius="{ThemeResource VihtCardCornerRadius}">
             <Image x:Name="imageLink" AutomationProperties.Name="{x:Bind MainText.Text, Mode=OneWay}" />
             <Grid x:Name="gridIconLinnk" Background="{ThemeResource CustomAcrylicInAppBrush}" Opacity="0">
                 <FontIcon Glyph="&#xE71B;" />

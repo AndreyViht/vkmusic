@@ -57,11 +57,11 @@ namespace SetupLib
         public delegate void InstallStatusChangedEventHandler(object sender, InstallStatusChangedEventArgs e);
         public event InstallStatusChangedEventHandler InstallStatusChanged;
 
-        public async Task<bool> CheckForUpdates()
+        public async Task<bool> CheckForUpdates(bool requireSelectedPackage = false)
         {
             InstallStatusChanged?.Invoke(this, new InstallStatusChangedEventArgs { Status = "Проверка наличия обновлений..." });
 
-            _currentReleaseInfo = await _gitHubClientService.GetLatestReleaseInfo("AndreyViht", "vkmusic", currentVersion);
+            _currentReleaseInfo = await _gitHubClientService.GetLatestReleaseInfo("AndreyViht", "vkmusic", currentVersion, requireSelectedPackage ? SelectedPackageType : null);
 
             if (_currentReleaseInfo == null)
             {

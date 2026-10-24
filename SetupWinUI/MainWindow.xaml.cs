@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Input;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -213,7 +213,7 @@ namespace SetupWinUI
         {
             var psi = new System.Diagnostics.ProcessStartInfo
             {
-                FileName = "https://t.me/vihtm",
+                FileName = "https://t.me/anviht",
                 UseShellExecute = true
             };
             System.Diagnostics.Process.Start(psi);

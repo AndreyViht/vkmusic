@@ -9,7 +9,7 @@
     mc:Ignorable="d">
 
     <StackPanel Margin="5" Orientation="Horizontal" AutomationProperties.Name="Группа">
-        <Grid Margin="10" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}" CornerRadius="50">
+        <Grid Margin="10" Background="{ThemeResource VihtCardBrush}" CornerRadius="{ThemeResource VihtCardCornerRadius}">
             <Image
             x:Name="GroupImage"
             Width="100"

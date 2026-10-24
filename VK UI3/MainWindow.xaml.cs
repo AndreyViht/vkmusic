@@ -78,6 +78,7 @@ namespace VK_UI3
             InitializeUIComponents();
             InitializeNavigation();
             MediaPlayerService.Initialize(this);
+            MusicIslandService.Initialize(this);
         }
 
         private void InitializeWindowProperties()
@@ -222,7 +223,7 @@ namespace VK_UI3
             AppThemeService.Initialize();
 
             AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
-            m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+            m_TitleBar.ButtonForegroundColor = ((Content as FrameworkElement)?.RequestedTheme != ElementTheme.Light)
                 ? Colors.White : Colors.Black;
 
             UISettings uI = new();
@@ -255,11 +256,6 @@ namespace VK_UI3
 
             hvn = (HWND)WinRT.Interop.WindowNative.GetWindowHandle(this);
             
-            var overlaySetting = SettingsTable.GetSetting("overlayPlayer");
-            if (overlaySetting != null && overlaySetting.settingValue == "1")
-            {
-                VK_UI3.Views.Settings.OverlaySetting.UpdateOverlayState(true);
-            }
         }
 
         private void InitializeNavigation()
@@ -276,7 +272,7 @@ namespace VK_UI3
             }
 
             var navigationInfo = new NavigationInfo { SourcePageType = this };
-            if (AccountsDB.GetAllAccounts().Count == 0)
+            if (string.IsNullOrWhiteSpace(AccountsDB.activeAccount.Token))
             {
                 GoLogin();
             }
@@ -753,8 +749,9 @@ namespace VK_UI3
         {
             DispatcherQueue.TryEnqueue(DispatcherQueuePriority.High, () =>
             {
+                if (AppThemeService.CurrentThemeMode == AppThemeMode.System) AppThemeService.ApplyTheme(AppThemeMode.System, AppThemeService.CurrentAccentColor);
                 AppWindowTitleBar m_TitleBar = m_AppWindow.TitleBar;
-                m_TitleBar.ButtonForegroundColor = (Application.Current.RequestedTheme == ApplicationTheme.Dark)
+                m_TitleBar.ButtonForegroundColor = ((Content as FrameworkElement)?.RequestedTheme != ElementTheme.Light)
                     ? Colors.White : Colors.Black;
             });
         }
@@ -877,13 +874,8 @@ namespace VK_UI3
 
         private static IntPtr SetWindowLong(HWND hWnd, WINDOW_LONG_PTR_INDEX nIndex, IntPtr newProc)
         {
-            if (Environment.Is64BitOperatingSystem)
-            {
-#if X64
-                return PInvoke.SetWindowLongPtr(hWnd, nIndex, newProc);
-#endif
-            }
-            return new IntPtr(PInvoke.SetWindowLong(hWnd, nIndex, newProc.ToInt32()));
+            return IntPtr.Size == 8 ? PInvoke.SetWindowLongPtr(hWnd, nIndex, newProc)
+                : new IntPtr(PInvoke.SetWindowLong(hWnd, nIndex, newProc.ToInt32()));
         }
         #endregion
 
@@ -942,7 +934,7 @@ namespace VK_UI3
             var currentVersion = $"{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}.{assemblyVersion.Revision}";
             var appUpdater = new AppUpdater(currentVersion);
             appUpdater.SelectedPackageType = Packaged.IsPackaged() ? PackageType.MSIX : PackageType.ZIP;
-            var updateAvailable = await appUpdater.CheckForUpdates();
+            var updateAvailable = await appUpdater.CheckForUpdates(true);
 
             if (updateAvailable)
             {

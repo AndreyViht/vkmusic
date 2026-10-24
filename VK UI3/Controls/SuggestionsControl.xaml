@@ -26,8 +26,8 @@
     </UserControl.Shadow>
     <Grid
         Padding="0"
-          Background="{ThemeResource LayerOnAccentAcrylicFillColorDefault}"
-            CornerRadius="25,25,25,25"
+          Background="{ThemeResource VihtCardBrush}"
+            CornerRadius="{ThemeResource VihtCardCornerRadius}"
         
                 PointerEntered="Grid_PointerEntered"
                 PointerExited="Grid_PointerExited"

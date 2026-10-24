@@ -14,6 +14,38 @@
                 <ResourceDictionary Source="ms-appx:///DevWinUI/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <SolidColorBrush x:Key="VihtBackgroundBrush" Color="#141820" />
+            <SolidColorBrush x:Key="VihtSurfaceBrush" Color="#222A36" />
+            <AcrylicBrush x:Key="VihtCardBrush" TintColor="#222A36" TintOpacity="1" FallbackColor="#222A36" />
+            <SolidColorBrush x:Key="VihtControlBrush" Color="#303C4E" />
+            <SolidColorBrush x:Key="VihtStrokeBrush" Color="#4C5C72" />
+            <SolidColorBrush x:Key="VihtTextBrush" Color="#F5F8FF" />
+            <SolidColorBrush x:Key="VihtSecondaryTextBrush" Color="#C0CDDE" />
+            <SolidColorBrush x:Key="VihtPlayerBrush" Color="#202938" />
+            <SolidColorBrush x:Key="VihtPlayerTextBrush" Color="#F5F8FF" />
+            <SolidColorBrush x:Key="VihtAccentBrush" Color="#0077FF" />
+            <SolidColorBrush x:Key="VihtAccentTextBrush" Color="White" />
+            <CornerRadius x:Key="VihtCardCornerRadius">10</CornerRadius>
+            <CornerRadius x:Key="VihtControlCornerRadius">6</CornerRadius>
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{ThemeResource VihtTextBrush}" />
+            </Style>
+            <Style TargetType="FontIcon">
+                <Setter Property="Foreground" Value="{ThemeResource VihtTextBrush}" />
+            </Style>
+            <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="Background" Value="{ThemeResource VihtControlBrush}" />
+                <Setter Property="Foreground" Value="{ThemeResource VihtTextBrush}" />
+                <Setter Property="BorderBrush" Value="{ThemeResource VihtStrokeBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="CornerRadius" Value="{ThemeResource VihtControlCornerRadius}" />
+            </Style>
+            <Style x:Key="VihtAccentButtonStyle" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                <Setter Property="Background" Value="{ThemeResource VihtAccentBrush}" />
+                <Setter Property="Foreground" Value="{ThemeResource VihtAccentTextBrush}" />
+                <Setter Property="CornerRadius" Value="{ThemeResource VihtControlCornerRadius}" />
+            </Style>
+
 
             <Thickness x:Key="ContentDialogPadding">0,0,0,0</Thickness>
             

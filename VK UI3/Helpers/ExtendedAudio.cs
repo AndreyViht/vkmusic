@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using VK_UI3.Controllers;
 using VK_UI3.VKs.IVK;
 
@@ -7,6 +7,7 @@ namespace VK_UI3.Helpers
 {
     public class ExtendedAudio
     {
+        public override string ToString() => $"{audio?.Artist} — {audio?.Title}";
 
         public class SelectedChange : EventArgs
         {

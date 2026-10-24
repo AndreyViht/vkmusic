@@ -90,6 +90,7 @@ namespace VK_UI3.Views
 
         private void MainView_Unloaded(object sender, RoutedEventArgs e)
         {
+            DetachMenuAppearance();
             ContentFrame.Navigated -= ContentFrame_Navigated;
             NavWiv.BackRequested -= NavWiv_BackRequested;
             AccountsDB.ChanhgeActiveAccount -= ChangeAccount;
@@ -116,6 +117,7 @@ namespace VK_UI3.Views
 
         private void MainView_KeyDown(object sender, KeyRoutedEventArgs e)
         {
+            if (e.Key == Windows.System.VirtualKey.F10) { FocusMenu(); e.Handled = true; return; }
             if (e.Key == Windows.System.VirtualKey.F5)
             {
                 MainWindow.onRefreshClickedvoid();
@@ -179,6 +181,7 @@ namespace VK_UI3.Views
         private static DispatcherQueue dispatcherQueue = null;
         private void MainView_Loaded(object sender, RoutedEventArgs e)
         {
+            AttachMenuAppearance();
 
             NavWiv.IsPaneOpen = false;
             //OpenMyPage(SectionType.MyListAudio);
@@ -198,6 +201,7 @@ namespace VK_UI3.Views
 
             this.Unloaded += MainView_Unloaded;
 
+            _ = SessionService.ValidateAsync();
             _ = CreateNavigation();
             dispatcherQueue = this.DispatcherQueue;
 
@@ -244,7 +248,7 @@ namespace VK_UI3.Views
 
             new Notification.Notification("А ты еще не подписан?", @"Привет! 🖐
 
-Я разработчик Viht Music VK. 
+Разработчик: Viht / AndreyViht / @anviht.
 И я вижу, что ты еще не подписан на паблик в ВК, где в дальнейшем возможно будут публиковаться новости о разработке, а также буду делиться своими мыслями и альбомами. В общем, можешь подписаться? 💖
 
 Вы всегда можете задать мне свои вопросы и предложить что-то новое, поделиться своими мыслями касательно разработки, интерфейса и других деталей. Возможно Вам чего-то не хватает, что может было бы Вам полезно, а мне интересно реализовывать.
@@ -257,7 +261,7 @@ namespace VK_UI3.Views
                     Process.Start(new ProcessStartInfo
                     {
                         UseShellExecute = true,
-                        FileName = "https://t.me/vihtm"
+                        FileName = "https://t.me/anviht"
                     });
 
                 }), true),
@@ -294,6 +298,12 @@ namespace VK_UI3.Views
 
         private void ChangeAccount(object sender, EventArgs e)
         {
+            forYouCatalogSectionId = null;
+            playlistsCatalogSectionId = null;
+            MediaPlayerService.StopPlayback();
+            MediaPlayerService.iVKGetAudio = null;
+            PlaybackStateService.ResetForAccount();
+            _ = SessionService.ValidateAsync();
             updateAllWithReacreate();
         }
 
@@ -462,7 +472,7 @@ namespace VK_UI3.Views
                 {
                     this.DispatcherQueue.TryEnqueue(async () =>
                     {
-                        AddRetryButton();
+                        if (!SessionService.Handle(e)) AddRetryButton();
                     });
                 }
 
@@ -777,7 +787,7 @@ namespace VK_UI3.Views
             frame.Navigate(typeof(WaitView), sectionView, new DrillInNavigationTransitionInfo());
         }
 
-        public static void OpenSearchSection(string searchString)
+        public static void OpenSearchSection(string searchString, string filter = "all")
         {
 
             if (!mainView.PlayNowPanelListCLosed)
@@ -787,6 +797,7 @@ namespace VK_UI3.Views
 
             var sectionView = new WaitParameters();
             sectionView.searchText = searchString;
+            sectionView.searchFilter = filter;
             sectionView.SectionID = "search";
         
             sectionView.sectionType = SectionType.Search;
@@ -939,7 +950,7 @@ namespace VK_UI3.Views
             {
                 if (sp.Children.Count > 1 && sp.Children[1] is Microsoft.UI.Xaml.Controls.TextBlock txt)
                 {
-                    txt.Visibility = Microsoft.UI.Xaml.Visibility.Collapsed;
+                    txt.Visibility = Microsoft.UI.Xaml.Visibility.Visible;
                 }
             }
         }
@@ -1074,11 +1085,18 @@ namespace VK_UI3.Views
             OpenPlayListLists(openedPlayList: OpenedPlayList.UserAlbums);
         }
 
+        public static void OpenLibrary(string mode)
+        {
+            frame.Navigate(typeof(LibraryPage), mode, new DrillInNavigationTransitionInfo());
+        }
+
         private void navigateInvokeCustom(string tag)
         {
             navToAnotherPage = true;
             switch (tag)
             {
+                case "очередь": OpenLibrary("queue"); break;
+                case "локальная музыка": OpenLibrary("local"); break;
                 case "моя музыка":
                     OpenMyPage(SectionType.MyListAudio);
                     break;

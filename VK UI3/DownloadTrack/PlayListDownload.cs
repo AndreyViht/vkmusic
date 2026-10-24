@@ -1,4 +1,4 @@
-﻿using FFmpeg.AutoGen;
+using FFmpeg.AutoGen;
 using Microsoft.UI.Dispatching;
 using System;
 using System.Collections.Generic;
@@ -52,6 +52,8 @@ namespace VK_UI3.DownloadTrack
 
         DispatcherQueue dispatcherQueue;
         public bool error = false;
+        public string ErrorText { get; private set; }
+        private bool running;
 
         /// <summary>
         /// Создаёт загрузчик
@@ -114,6 +116,8 @@ namespace VK_UI3.DownloadTrack
 
         public async Task PlayListDownloadAsync()
         {
+            if (running) return;
+            running = true;
             _ = Task.Run(async () =>
             {
                 try
@@ -122,7 +126,7 @@ namespace VK_UI3.DownloadTrack
 
                     while (iVKGetAudio.listAudio.Count() > downloaded || !iVKGetAudio.itsAll)
                     {
-                        pauseEvent.WaitOne();
+                        WaitHandle.WaitAny(new[] { pauseEvent, cts.Token.WaitHandle });
                         if (cts.Token.IsCancellationRequested)
                         {
                             break;
@@ -130,10 +134,9 @@ namespace VK_UI3.DownloadTrack
 
                         while (downloaded >= iVKGetAudio.listAudio.Count && iVKGetAudio.countTracks != -1 && !iVKGetAudio.itsAll)
                         {
-                            var tcsz = new TaskCompletionSource<bool>();
-                            iVKGetAudio.tcs.Add(tcsz);
-                            iVKGetAudio.GetTracks();
-                            await tcsz.Task;
+                            var before = iVKGetAudio.listAudio.Count;
+                            await iVKGetAudio.WaitForTracksAsync(cts.Token, true);
+                            if (before == iVKGetAudio.listAudio.Count) break;
                         }
                         if (downloaded >= iVKGetAudio.listAudio.Count) break;
 
@@ -173,6 +176,7 @@ namespace VK_UI3.DownloadTrack
 
                         MakeTags(outputTemp, a);
                         File.Move(outputTemp, output);
+                        PathTable.AddPath(location);
 
                         downloaded++;
 
@@ -202,11 +206,15 @@ namespace VK_UI3.DownloadTrack
                 catch (Exception ex)
                 {
                     this.error = true;
+                    ErrorText = "Загрузка прервана. Нажмите «Повторить».";
+                    VK_UI3.Services.DiagnosticsService.Record("track-download", ex);
+                    VK_UI3.Services.SessionService.Handle(ex);
                     dispatcherQueue.TryEnqueue(async () =>
                     {
                         StatusUpdate();
                     });
                 }
+                finally { running = false; }
             }, cts.Token);
         }
 
@@ -242,7 +250,7 @@ namespace VK_UI3.DownloadTrack
                     return filePath;
                 }
 
-                var audioFile = TagLib.File.Create(filePath);
+                using var audioFile = TagLib.File.Create(filePath);
 
                 audioFile.Tag.Title = audio.Title != null ? audio.Title : "";
                 if (audio.Artist != null)
@@ -265,6 +273,12 @@ namespace VK_UI3.DownloadTrack
             catch { return null; }
         }
 
+
+        public void Retry()
+        {
+            if (running || cts.IsCancellationRequested) return;
+            error = false; ErrorText = null; Resume(); _ = PlayListDownloadAsync();
+        }
 
         public void Pause()
         {
@@ -293,7 +307,7 @@ namespace VK_UI3.DownloadTrack
 
         public void Cancel()
         {
-            if (error)
+            if (error && !running)
             {
                 PlayListDownloads.Remove(this);
                 PlayListDownloadsList.Remove(iVKGetAudio);

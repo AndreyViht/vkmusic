@@ -55,7 +55,7 @@ namespace VK_UI3.Views.Download
                 playListDownload.onStatusUpdate -= (OnTrackDownloaded_Event);
             }
             playListDownload = (DataContext as PlayListDownload);
-            DownloadTitle.Text = playListDownload.iVKGetAudio.name;
+            DownloadTitle.Text = playListDownload.iVKGetAudio.name ?? "Загрузка музыки";
 
             if (DownloadTitle.Text.Length > 20)
             {
@@ -126,9 +126,9 @@ namespace VK_UI3.Views.Download
 
 
 
-                    double totalTracks = (double)playListDownload.iVKGetAudio.countTracks;
+                    double totalTracks = playListDownload.iVKGetAudio.countTracks ?? 0;
                     double downloadedTracks = playListDownload.downloaded;
-                    double percentageDownloaded = (downloadedTracks / totalTracks) * 100;
+                    double percentageDownloaded = totalTracks > 0 ? Math.Clamp(downloadedTracks / totalTracks * 100, 0, 100) : 0;
 
                     DownloadProgressBar.Value = Math.Round(percentageDownloaded);
                     // Объявляем об изменении значения прогресса для экранного диктора
@@ -141,6 +141,7 @@ namespace VK_UI3.Views.Download
                     if (playListDownload.error)
                     {
                         DownloadProgressBar.ShowError = true;
+                        dx.Text = playListDownload.ErrorText ?? "Ошибка загрузки";
                     }
 
                 }
@@ -159,6 +160,8 @@ namespace VK_UI3.Views.Download
 
             }
         }
+
+        private void Retry_clicked(object sender, RoutedEventArgs e) => playListDownload.Retry();
 
         private void Cancel_clicked(object sender, RoutedEventArgs e)
         {

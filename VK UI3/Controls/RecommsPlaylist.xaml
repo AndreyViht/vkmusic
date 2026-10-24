@@ -44,7 +44,7 @@
         </customFlyout:CustomFlyout>
     </UserControl.ContextFlyout>
 
-    <Grid x:Name="CardBackgroundGrid" CornerRadius="16" Background="{ThemeResource LayerOnAccentAcrylicFillColorDefaultBrush}">
+    <Grid x:Name="CardBackgroundGrid" CornerRadius="{ThemeResource VihtCardCornerRadius}" Background="{ThemeResource VihtCardBrush}">
         <Grid.Resources>
             <!-- Анимация прозрачности кнопки Play -->
             <Storyboard x:Name="FadeInAnimationGridPlayIcon">
@@ -155,7 +155,7 @@
                 Height="46"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
-                Background="{ThemeResource LayerOnMicaBaseAltFillColorDefaultBrush}"
+                Background="{ThemeResource VihtSurfaceBrush}"
                 CornerRadius="23"
                 Opacity="0">
                 <Button
@@ -183,7 +183,7 @@
         <Border
             x:Name="HoverBorder"
             BorderThickness="1"
-            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderBrush="{ThemeResource VihtStrokeBrush}"
             CornerRadius="16"
             IsHitTestVisible="False"
             Opacity="0.4" />
